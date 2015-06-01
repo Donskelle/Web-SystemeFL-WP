@@ -10,6 +10,8 @@ Man darf dem Repo nur joinen, wenn man ein cooles Profilbild hat!!
  * custom roles  -> user, mod, dokuadmin
    https://managewp.com/create-custom-user-roles-wordpress
    https://stackoverflow.com/questions/12985692/how-to-create-custom-user-role-in-wordpress
+   Beste Beschreibung:
+     *  http://camwebdesign.com/techniques/wordpress-create-custom-roles-and-capabilities/
  
  * login redirect
    https://codex.wordpress.org/Plugin_API/Filter_Reference/login_redirect
