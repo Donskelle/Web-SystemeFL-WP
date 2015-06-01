@@ -14,7 +14,7 @@
  *
  *
  */
-class RoleManager {
+class RoleSetup {
 
 
 
