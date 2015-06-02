@@ -11,9 +11,9 @@ License: A "Slug" license name e.g. GPL2
 
 
 require_once( 'Administration/RoleSetup.php' );
-require_once('GUI/Admin_GUI.php');
-require_once('GUI/Moderator_GUI.php');
-require_once('GUI/User_GUI.php');
+require_once('GUI_Backend/Admin_GUI.php');
+require_once('GUI_Backend/Moderator_GUI.php');
+require_once('GUI_Backend/User_GUI.php');
 /*
  * Anscheinend können neue Rollen nur mit Lösungen, die ich nicht kenne, aus Dateien, die nicht die "PluginDatei" sind
  * gesetzt werden. Daher muss dieser Teil in dieser Datei bleiben.
@@ -85,5 +85,6 @@ function buildDashboardGUI(){
     }
 }
 
+function frontendController(){
 
-//new Admin_GUI();
+}
