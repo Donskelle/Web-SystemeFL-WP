@@ -11,6 +11,7 @@ License: A "Slug" license name e.g. GPL2
 
 
 require_once( 'Administration/RoleSetup.php' );
+require_once('GUI/Widgets/Admin_Widget_Test.php');
 
 /*
  * Anscheinend können neue Rollen nur mit Lösungen, die ich nicht kenne, aus Dateien, die nicht die "PluginDatei" sind
@@ -29,7 +30,7 @@ function register_roles() {
 	remove_role('dokuModerator');
 	remove_role('dokuAdmin');*/
 }
-
+new Admin_Widget_Test();
 add_action('template_redirect', 'login_users');
 /**
  *  Wenn ein Benutzer nicht eingelogged ist, wird er auf die Loginpage redirected.
@@ -39,7 +40,9 @@ function login_users() {
 	if ( ! is_user_logged_in() ) {
 		auth_redirect(); //https://codex.wordpress.org/Function_Reference/auth_redirect
 	}else{
+
 		//Der Hook nach dem login ist wp_login https://codex.wordpress.org/Plugin_API/Action_Reference/wp_login
 		//DO GUI STUFF CONTROLLER
 	}
 }
+

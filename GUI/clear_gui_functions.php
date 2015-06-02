@@ -8,3 +8,6 @@
 
 
 //TODO: Funktionen schreiben, welche alle unnötigen GUI-Elemente aus dem WP_Backend löschen.
+//Da unsere Customroles nicht Admin sind, fällt viel der GUI weg.
+
+
