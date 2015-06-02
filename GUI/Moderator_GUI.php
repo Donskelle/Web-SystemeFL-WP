@@ -6,10 +6,19 @@
  * Time: 21:49
  */
 
+require_once('Widgets/ModGruppenÜbersicht.php');
+
 /**
  * Class ModeratorGUI
- * Enthält die Moderatorfunktionen für die GUI.
+ * //TODO: Moderator Funktionen in Dashboard/Widgets einbauen.
  */
 class ModeratorGUI {
-//TODO: Moderator Funktionen in Dashboard/Widgets einbauen.
+
+    public function __construct(){
+        new ModGruppenÜbersicht();
+    }
+
+
+
+
 }

@@ -1,20 +1,34 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: KRa
+ * User: Jan
  * Date: 02.06.2015
  * Time: 10:10
  */
-//http://code.tutsplus.com/tutorials/how-to-build-custom-dashboard-widgets--wp-29778
+
+/**
+ * Class CustomWidget
+ *
+ * Oberklasse für Backend Widgets.
+ *
+ * //http://code.tutsplus.com/tutorials/how-to-build-custom-dashboard-widgets--wp-29778
+ *  TODO: Handler o. Callbacks einfügen. Sowas wie SetContent oder getContent, wenn der Benutzer das Widget benutzt.
+ */
 abstract class CustomWidget {
 
     protected $widgetID = '';
     protected $widgetTitle = '';
-    protected $callback_function_name = 'widget_content';
+    /**
+     * Diese Variable darf nicht geändert werden.
+     * @var string
+     */
+    private $callback_function_name = 'widget_content';
 
 
     /**
+     * Konstruktor von CustomWidget
      *
+     * Setzt id und Titel des Widgets und registriert es.
      */
     public function __construct($id, $title)
     {
@@ -27,11 +41,13 @@ abstract class CustomWidget {
      * @param $title
      * @return mixed
      */
-    public function set_widget_meta($id, $title){
+    private function set_widget_meta($id, $title){
         $this->widgetID = $id;
         $this->widgetTitle = $title;
     }
     /**
+     * Wrapperfunktion für wp_add_dashboard_widget.
+     * Muss public sein, da WP es erfordert.
      * @return mixed
      */
     public function add_dash_board_widget(){
@@ -42,26 +58,9 @@ abstract class CustomWidget {
         );
     }
 
-
-
-/**
-     * Die Callbackfunktion des Widgets.
+    /**
+     * Die Callbackfunktion des Widgets. Nur diese Funktion muss implementiert werden.
      * @return mixed
      */
     abstract public function widget_content();
-        /*$user = wp_get_current_user();
-        echo "Hello <strong>" . $user->user_login . "</strong>, this is your custom widget. You can, for instance, list all the posts you've published:";
-
-        $r = new WP_Query( apply_filters( 'widget_posts_args', array(
-        'posts_per_page' => 10,
-        'post_status' => 'publish',
-        'author' => $user->ID
-        ) ) );
-
-        if ( $r->have_posts() ) :
-
-        ?><!--
-
-                    --><?php
-        /*endif;*/
 }

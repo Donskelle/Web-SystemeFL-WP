@@ -7,5 +7,5 @@
  */
 
 class User_GUI {
-//TODO: USER Funktionen für das Frontend.
+//TODO: USER Funktionen für das Backend. - Joke. Diese Klasse sollte evt. nur genutzt werden, um das ganze WP Backend für den normalen Nutzer zu sperren
 }
