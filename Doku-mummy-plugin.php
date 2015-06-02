@@ -14,6 +14,8 @@ require_once( 'Administration/RoleSetup.php' );
 require_once('GUI_Backend/Admin_GUI.php');
 require_once('GUI_Backend/Moderator_GUI.php');
 require_once('GUI_Backend/User_GUI.php');
+require_once('GUI_Frontend/ShowCustomField.php');
+require_once('GUI_Frontend/CustomField.php');
 /*
  * Anscheinend können neue Rollen nur mit Lösungen, die ich nicht kenne, aus Dateien, die nicht die "PluginDatei" sind
  * gesetzt werden. Daher muss dieser Teil in dieser Datei bleiben.
@@ -85,6 +87,21 @@ function buildDashboardGUI(){
     }
 }
 
+function init_customfield(){
+    new CustomField();
+}
+
+function show_CustomField(){
+    new ShowCustomField();
+}
+
 function frontendController(){
+    if(is_admin()){
+        add_action('load-post.php', 'init_customfield');
+        add_action('load-post-new.php', 'init_customfield');
+    }else{
+        show_CustomField();
+    }
 
 }
+add_action('init', 'frontendController');
