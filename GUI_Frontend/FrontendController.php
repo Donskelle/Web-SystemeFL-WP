@@ -5,12 +5,17 @@
  * Date: 02.06.2015
  * Time: 13:33
  */
+function frontendController(){
+    new ShowCustomField();
+}
+
 
 class ShowCustomField {
     public function __construct(){
         add_action('the_content', array($this, 'add_function_to_page'));
     }
 
+    
     public function add_function_to_page($content)
     {
         if ( is_page() )
@@ -23,14 +28,17 @@ class ShowCustomField {
                     case 'Keine':
                         $content .= "Keine";
                         break;
-                    case 'Login':
-                        $content .= "Login";
+
+                    case 'Startseite':
+                        $content .= "Willkommen auf DokuMummy Worpress";
                         break;
+
                     case 'Dokumente':
                         $content .= "Dokumente";
                         break;
 
                     case 'Gruppen':
+                        require_once("Views/GroupView.php");
                         $content .= "Gruppen";
                         break;
 

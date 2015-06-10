@@ -26,9 +26,9 @@ class Admin_Widget_Test extends CustomWidget {
         echo "Hello <strong>" . $user->user_login . " (".$user->roles[0].")</strong>, this is your custom widget. You can, for instance, list all the posts you've published:";
 
         $r = new WP_Query( apply_filters( 'widget_posts_args', array(
-        'posts_per_page' => 10,
-        'post_status' => 'publish',
-        'author' => $user->ID
+            'posts_per_page' => 10,
+            'post_status' => 'publish',
+            'author' => $user->ID
         ) ) );
 
         if ( $r->have_posts() ) :
