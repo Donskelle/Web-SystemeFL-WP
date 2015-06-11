@@ -41,9 +41,10 @@ class Menu {
 
 
 	public function __construct() {
-        //$privateDocs = getAuthDocuments();
-    	//$privateGroups = getAuthGroups();
-       
+       /**
+        * DEMO DATEN
+        * @var array
+        */
         $this->privateDocs = array(
             0 => array(
                 "name" => "DokuMummy",
@@ -65,25 +66,49 @@ class Menu {
                 "url" => "#" 
             )
         );
+
+
+        /**
+         * SeitenUrl holen
+         * @var array
+         */
+        $pagesFilter = array(
+            'post_type' => 'page',
+            'meta_key' => 'custom_element_grid_class_meta_box',
+            'meta_value' => 'Gruppen'
+        );
+        
+        $pages = get_posts($pagesFilter);
+        $GroupLink = get_permalink($pages[0]->ID);
+
+        $pagesFilter["meta_value"] = "Dokumente";
+        $pages = get_posts($pagesFilter);
+        $documentLink = get_permalink($pages[0]->ID);
+
+
+        $pagesFilter["meta_value"] = "Startseite";
+        $pages = get_posts($pagesFilter);
+        $homeLink = get_permalink($pages[0]->ID);
+        
     	
-    	echo $this->view();
+    	echo $this->view($GroupLink, $documentLink, $homeLink);
     }
 
-    private function view() {
+    private function view($groupLink, $documentLink, $homeLink) {
     	$menu = array();
     	$menu[] = "<div class='menuDokuMummy'>";
     		$menu[] = "<ul>";
-    			$menu[] = "<li class='title'>Home</li>";
-	    		$menu[] = "<li><a href='Startseite'>Startseite</a></li>";
+    			$menu[] = "<li class='title'><a href='" . $homeLink . "'Home</li>";
+	    		$menu[] = "<li><a href='" . $homeLink . "'>Startseite</a></li>";
 
-	    		$menu[] = "<li class='title'>Meine Dokumente</li>";
-	    		$menu[] = "<li><a href=''>Neues Dokument</a></li>";
+	    		$menu[] = "<li class='title'><a href='" . $documentLink . "'>Meine Dokumente</li>";
+	    		$menu[] = "<li><a href='" . $documentLink . "'>Neues Dokument</a></li>";
                 foreach ($this->privateDocs as $document) {
                     $menu[] = "<li><a href='" . $document["url"] . "'>" . $document["name"] . "</a></li>";
                 }
 
 
-	    		$menu[] = "<li class='title'>Gruppen</li>";
+	    		$menu[] = "<li class='title'><a href='" . $groupLink . "'>Gruppen</a></li>";
                 foreach ($this->privateGroups as $group) {
                     $menu[] = "<li><a href='" . $group["url"] . "'>" . $group["name"] . "</a></li>";
                 }
