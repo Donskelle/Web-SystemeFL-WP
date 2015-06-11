@@ -13,6 +13,7 @@ License: A "Slug" license name e.g. GPL2
 require_once( 'Administration/RoleSetup.php' );
 
 require_once( 'Models/Groups.php' );
+require_once( 'Models/Documents.php' );
 
 require_once('GUI_Backend/Admin_GUI.php');
 require_once('GUI_Backend/Moderator_GUI.php');
@@ -39,7 +40,13 @@ function dokumummy_activated() {
      * Datenbanken für Gruppen erstellen
      */
     $groups = new Groups();
-    $groups->initGroupDatabase();
+    $groups->initDatabase();
+
+    /**
+     * Datenbanken für Dokumente erstellen
+     */
+    $documents = new Documents();
+    $documents->initDatabase();
 }
 
 

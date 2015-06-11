@@ -9,7 +9,7 @@ class Groups {
 	public function getAllGroups() {
 		global $wpdb;
 
-	    $table_name = $this->buildDbName( $this->dbTableNameGroup );
+	    $table_name = $wpdb->prefix . $this->dbTableNameGroup;
 
 	    $results = $wpdb->get_results( 'SELECT * FROM '.$table_name);
 
@@ -23,13 +23,13 @@ class Groups {
 
 
 	/**
-	 * [initGroupDatabase description]
+	 * [initDatabase description]
 	 * Erstellt Datenbanken für die Gruppen
 	 * Datenbanken:
-	 * Prefix + DokuMummy_Groups
-	 * Prefix + DokuMummy_Users_in_Groups
+	 * Prefix + dokumummy_groups
+	 * Prefix + dokumummy_users_in_groups
 	 */
-	public function initGroupDatabase()
+	public function initDatabase()
 	{
 		global $wpdb;
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -38,14 +38,16 @@ class Groups {
 		/**
 		 * Datenbank für Gruppen
 		 */
-		$table_name_groups = $this->buildDbName( $this->dbTableNameGroup );
+		$table_name_groups = $wpdb->prefix . $this->dbTableNameGroup;
 
-	    $sql = "CREATE TABLE $table_name_groups (
-			id int(11) NOT NULL AUTO_INCREMENT,
+	    $sql = "CREATE TABLE IF NOT EXISTS $table_name_groups (
+			id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			name varchar(255) DEFAULT NULL,
 			description varchar(255) DEFAULT NULL,
 			active int(1) DEFAULT 1,
-			PRIMARY KEY id (id)
+			created_at timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+ 			updated_at timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+ 			PRIMARY KEY (id)
 	    )";
 		dbDelta( $sql );
 
@@ -53,14 +55,16 @@ class Groups {
 	    /**
 		 * Datenbank für die Verbindung von User zu Gruppen
 		 */
-		$table_name_users_in_groups = $this->buildDbName( $this->dbTableNameUserInGroup );
+		$table_name_users_in_groups = $wpdb->prefix . $this->dbTableNameUserInGroup ;
 		$wps_usertable = $wpdb->prefix . "users";
 
-	    $sql = "CREATE TABLE $table_name_users_in_groups (
-			id int(11) NOT NULL AUTO_INCREMENT,
+	    $sql = "CREATE TABLE IF NOT EXISTS $table_name_users_in_groups (
+			id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			user_id bigint(20) UNSIGNED NOT NULL,
-			group_id int(11) NOT NULL,
-			UNIQUE KEY id (id),
+			group_id int(11) UNSIGNED NOT NULL,
+			created_at timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+ 			updated_at timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+			PRIMARY KEY (id),
 			FOREIGN KEY (user_id) references $wps_usertable(ID) on update cascade on delete cascade,
 			FOREIGN KEY (group_id) references $table_name_groups(id) on update cascade on delete cascade
 	    )";
