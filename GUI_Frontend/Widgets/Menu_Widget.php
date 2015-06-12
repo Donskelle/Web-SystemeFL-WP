@@ -8,8 +8,8 @@ add_action('wp_enqueue_scripts', 'add_menu_stylesheet' );
 
 function add_menu_stylesheet() {
     // Respects SSL, Style.css is relative to the current file
-    wp_register_style( 'prefix-style', plugins_url('css/menu.css', __FILE__) );
-    wp_enqueue_style( 'prefix-style' );
+    wp_register_style( 'dm-menu-style', plugins_url('css/menu.css', __FILE__) );
+    wp_enqueue_style( 'dm-menu-style' );
 }
 
 
@@ -34,8 +34,8 @@ function widget_sidebar_init() {
 
 
 class Menu {   
-    private $privateDocs;
-    private $privateGroups;
+    private $authDocs;
+    private $authGroups;
     private $currentRoute;
 
 
@@ -45,7 +45,7 @@ class Menu {
         * DEMO DATEN
         * @var array
         */
-        $this->privateDocs = array(
+        $this->authDocs = array(
             0 => array(
                 "name" => "DokuMummy",
                 "url" => "#" 
@@ -56,16 +56,9 @@ class Menu {
             )
         );
 
-        $this->privateGroups = array(
-            0 => array(
-                "name" => "Entwicklung",
-                "url" => "#" 
-            ),
-            1 => array(
-                "name" => "Support",
-                "url" => "#" 
-            )
-        );
+
+        $groups = new Groups();
+        $this->authGroups = $groups->getAuthGroups();
 
 
         /**
@@ -103,14 +96,14 @@ class Menu {
 
 	    		$menu[] = "<li class='title'><a href='" . $documentLink . "'>Meine Dokumente</li>";
 	    		$menu[] = "<li><a href='" . $documentLink . "'>Neues Dokument</a></li>";
-                foreach ($this->privateDocs as $document) {
+                foreach ($this->authDocs as $document) {
                     $menu[] = "<li><a href='" . $document["url"] . "'>" . $document["name"] . "</a></li>";
                 }
 
 
 	    		$menu[] = "<li class='title'><a href='" . $groupLink . "'>Gruppen</a></li>";
-                foreach ($this->privateGroups as $group) {
-                    $menu[] = "<li><a href='" . $group["url"] . "'>" . $group["name"] . "</a></li>";
+                foreach ($this->authGroups as $group) {
+                    $menu[] = "<li><a href='" .  $groupLink . "?id=" . $group->id . "'>" . $group->name . "</a></li>";
                 }
 	 
 	    	$menu[] = "</ul>";

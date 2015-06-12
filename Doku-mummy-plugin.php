@@ -25,7 +25,7 @@ require_once('GUI_Frontend/Widgets/Menu_Widget.php');
 
 
 /*
- * register_activation_hook aktiviert sich, wenn das Plugin installiert wird.
+ * register_activation_hook aktiviert sich, wenn das Plugin aktiviert wird.
  * */
 register_activation_hook(__FILE__,  'dokumummy_activated');
 
@@ -49,19 +49,45 @@ function dokumummy_activated() {
     $documents->initDatabase();
 }
 
-
-add_action('template_redirect', 'login_users');
 /**
  *  Wenn ein Benutzer nicht eingelogged ist, wird er auf die Loginpage redirected.
  *  Der Test auf is_user_logged_in ist wichtig, da sonst immer auf die Loginpage verviesen wird.
  */
-function login_users() {
+add_action('template_redirect', 'login_redirect');
+function login_redirect() {
 	if ( ! is_user_logged_in() ) {
 		auth_redirect(); //https://codex.wordpress.org/Function_Reference/auth_redirect
     }
 }
 
-add_action('init', 'buildDashboardGUI');
+/**
+ * Wird beim Init des Plugins ausgeführt
+ */
+add_action('init', 'initPlugin');
+function initPlugin() {
+    buildDashboardGUI();
+    controllerInit();
+}
+
+
+function buildDashboardGUI(){
+    if(is_user_logged_in()){
+        $role = get_user_role(wp_get_current_user());
+        buildRoleGUI($role);
+    }
+}
+
+
+function controllerInit(){
+    if(is_admin()) {
+        add_action('load-post.php', 'init_customfield');
+        add_action('load-post-new.php', 'init_customfield');
+    } else {
+        frontendController();
+    }
+}
+
+
 /**
  * Gibt die Rolle des Users als String zurück.
  * @param WP_USER $user
@@ -70,7 +96,6 @@ add_action('init', 'buildDashboardGUI');
 function get_user_role($user){
     return $user->roles[0];
 }
-
 
 /**
  *
@@ -92,23 +117,3 @@ function buildRoleGUI($role){
             break;
     }
 }
-
-
-function buildDashboardGUI(){
-    if(is_user_logged_in()){
-        $role = get_user_role(wp_get_current_user());
-        buildRoleGUI($role);
-    }
-}
-
-
-function customFieldInit(){
-    if(is_admin()) {
-        add_action('load-post.php', 'init_customfield');
-        add_action('load-post-new.php', 'init_customfield');
-    } else{
-        frontendController();
-    }
-
-}
-add_action('init', 'customFieldInit');

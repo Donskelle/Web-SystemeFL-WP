@@ -1,0 +1,13 @@
+.groupView {
+
+}
+.groupView .group {
+	margin: 20px 0;
+}
+.groupView .group p {
+	
+}
+.groupView .group .groupName {
+	font-weight: bold;
+	margin: 5px 0;
+}

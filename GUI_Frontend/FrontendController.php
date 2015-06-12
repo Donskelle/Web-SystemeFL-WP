@@ -5,6 +5,14 @@
  * Date: 02.06.2015
  * Time: 13:33
  */
+
+add_action('wp_enqueue_scripts', 'add_view_stylesheet' );
+
+function add_view_stylesheet() {
+    // Respects SSL, Style.css is relative to the current file
+    wp_register_style( 'dm-view-style', plugins_url('Views/css/view.css', __FILE__) );
+    wp_enqueue_style( 'dm-view-style' );
+}
 function frontendController(){
     new ShowCustomField();
 }
@@ -39,7 +47,6 @@ class ShowCustomField {
 
                     case 'Gruppen':
                         require_once("Views/GroupView.php");
-                        $content .= "Gruppen";
                         break;
 
                     default:

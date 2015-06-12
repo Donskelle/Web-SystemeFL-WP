@@ -18,9 +18,67 @@ class Groups {
 
 
 	public function getAuthGroups() {
+		$user = wp_get_current_user();
+
+		if($user->roles[0] == "dokuAdmin" || $user->roles[0] == "administrator") {
+			return $this->getAllGroups();
+		}
+		else {
+			return $this->getUserGroups($user->ID);
+		}
+	}
+
+	public function getUserGroups($user_id) {
 
 	}
 
+	public function getFields( array $meta_boxes ) {
+
+	}
+
+	public function getGroup($id) {
+		global $wpdb;
+
+	    $table_name = $wpdb->prefix . $this->dbTableNameGroup;
+
+	    $results = $wpdb->get_row( "SELECT * FROM  $table_name WHERE id=$id");
+
+	    return( $results);
+	}
+
+	public function getGroupAndUsers($id) {
+		global $wpdb;
+		$table_useringroup = $wpdb->prefix . $this->dbTableNameUserInGroup;
+		$table_wpuser = $wpdb->prefix . "users";
+
+		$group = $this->getGroup($id);
+		$group->user = $wpdb->get_results("SELECT user_id, $table_wpuser.user_nicename FROM  $table_useringroup right outer join $table_wpuser on $table_useringroup.user_id=$table_wpuser.ID WHERE $table_useringroup.group_id=17");
+		return $group;
+	}
+
+	public function saveGroup($name, $description, $user_id) {
+		global $wpdb;
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		$table_name = $wpdb->prefix . $this->dbTableNameGroup;
+
+		$sql = $wpdb->insert(
+			$table_name, 
+			array( 
+				'name' => $name, 
+				'description' => $description
+			)
+		);
+
+		// Person, welche die Gruppe erstellt hat, wird zur Gruppe hinzugefügt
+		$table_connect = $wpdb->prefix . $this->dbTableNameUserInGroup;
+		$sql = $wpdb->insert(
+			$table_connect, 
+			array( 
+				'user_id' => $user_id, 
+				'group_id' =>  $wpdb->insert_id 
+			)
+		);
+	}
 
 	/**
 	 * [initDatabase description]
@@ -68,15 +126,6 @@ class Groups {
 			FOREIGN KEY (user_id) references $wps_usertable(ID) on update cascade on delete cascade,
 			FOREIGN KEY (group_id) references $table_name_groups(id) on update cascade on delete cascade
 	    )";
-		dbDelta( $sql );
-
-
-	   	/**
-	   	 * Demo Daten hinzufügen
-	   	 */
-	   	$sql = "INSERT INTO `$table_name_groups`(`name`, `description`) VALUES ('Entwicklung','Hier gehört alles zur Entwicklung rein');";
-		dbDelta( $sql );
-		$sql = "INSERT INTO `$table_name_groups`(`name`, `description`) VALUES ('Support','Hier gehört alles zum Support rein');";
 		dbDelta( $sql );
 	}
 
