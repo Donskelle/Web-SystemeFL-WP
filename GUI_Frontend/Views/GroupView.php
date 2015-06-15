@@ -19,7 +19,16 @@ class GroupView {
         // Bestimmte ID wird abgefragt
         if(isset($_GET["id"]))
         {
+            $user = wp_get_current_user();
             $detailGroup = $groups->getGroupAndUsers($_GET["id"]);
+
+            $detailGroup->userToAdd = array();
+
+            if($user->roles[0] == "dokuAdmin" || $user->roles[0] == "administrator" )
+            {
+                $detailGroup->userToAdd = $groups->getUserNotInGroup($_GET["id"]);
+            }
+
             echo $this->detailView($detailGroup);
         }
         // Allgemeine Gruppenansicht
@@ -88,6 +97,20 @@ class GroupView {
                 $output[] = "<p>";
                 $output[] = $user->user_nicename;
                 $output[] = "</p>";
+            }
+
+           
+
+            if(count($arDetailGroup) > 0)
+            {
+                $output[] = "<h2>Nutzer hinzufügen</h2>";
+                foreach($arDetailGroup->userToAdd as $user) {
+                    $output[] = "<p>";
+                    $output[] = "<a href='$user->ID'>";
+                    $output[] = $user->user_nicename;
+                    $output[] = "</a>";
+                    $output[] = "</p>";
+                }
             }
 
             $output[] = "</div>";
