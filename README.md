@@ -18,3 +18,10 @@ Man darf dem Repo nur joinen, wenn man ein cooles Profilbild hat!!
  
  * template_redirect für die verschiedenen ansichten
    https://wordpress.stackexchange.com/questions/25154/change-template-dynamically
+
+
+##TODOs:
+
+ * User zu Gruppen hinzufügen
+ * Erstellen/Anlegen von Dokumenten
+ * Ace-Editor einbinden
