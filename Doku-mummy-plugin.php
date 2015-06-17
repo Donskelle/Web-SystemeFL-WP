@@ -141,3 +141,10 @@ function remove_default_widgets(){
 }
 
 add_action('widgets_init', 'remove_default_widgets', 11);
+
+/* TODO: Funktioniert noch nicht.
+function add_dokumummy_widget(){
+	unregister_widget('Widget-Menu-DokuMummy'); //der name des custom widgets
+}
+
+add_action('widgets_init', 'add_dokumummy_widget');*/
