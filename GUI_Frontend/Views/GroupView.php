@@ -9,11 +9,21 @@ class GroupView {
 		$groups = new Groups();
 
         /**
-         * Wenn gepostet wurde, wird eine Gruppe erstellt
+         * Wenn gepostet wurde
          */
         if($_POST) {
-            if(isset($_POST["group_name"]))
+            // Gruppe wird erstellt
+            if(isset($_POST["group_name"])) {
                 $groups->saveGroup($_POST["group_name"], $_POST["group_description"], get_current_user_id());
+            }
+            // User wird hinzugefügt
+            if(isset($_POST["userToAdd"])) {
+                $groups->addUser($_POST["group_id"], $_POST["userToAdd"]);
+            }
+
+            if(isset($_POST["userToDelete"])) {
+                $groups->deleteUser($_POST["group_id"], $_POST["userToDelete"]);
+            }
         }
         
         // Bestimmte ID wird abgefragt
@@ -31,6 +41,7 @@ class GroupView {
 
             echo $this->detailView($detailGroup);
         }
+
         // Allgemeine Gruppenansicht
         else {
             $arGroups = $groups->getAuthGroups();
@@ -38,7 +49,9 @@ class GroupView {
         }
     }
 
-
+    /**
+     * Standart Gruppenübersicht
+     */
     private function groupView($arGroups) {
     	$output = array();
         $user = wp_get_current_user();
@@ -80,9 +93,13 @@ class GroupView {
     	return implode("\n", $output);
     }
 
+
+    /**
+     * Einzel Gruppenansicht
+     */
     private function detailView($arDetailGroup) {
         $output = array();
-        $user = wp_get_current_user();
+        $currentUser = wp_get_current_user();
 
         $output[] = "<div class='groupView'>";
             $output[] = "<h2>" . $arDetailGroup->name . "</h2>";
@@ -95,20 +112,25 @@ class GroupView {
             
             foreach($arDetailGroup->user as $user) {
                 $output[] = "<p>";
-                $output[] = $user->user_nicename;
+                //Wenn Admin Form zum entfernen hinzufügen
+                if($currentUser->roles[0] == "dokuAdmin" || $currentUser->roles[0] == "administrator" ) {
+                    $output[] = $this->viewFormDeleteUser($_GET["id"], $user->user_id, $user->user_nicename);
+                }
+                // Wenn kein Admin nur Namen
+                else {
+                    $output[] = $user->user_nicename;
+                }
                 $output[] = "</p>";
             }
 
            
 
-            if(count($arDetailGroup) > 0)
+            if(count($arDetailGroup->userToAdd) > 0)
             {
                 $output[] = "<h2>Nutzer hinzufügen</h2>";
                 foreach($arDetailGroup->userToAdd as $user) {
                     $output[] = "<p>";
-                    $output[] = "<a href='$user->ID'>";
-                    $output[] = $user->user_nicename;
-                    $output[] = "</a>";
+                    $output[] = $this->viewFormAddUser($_GET["id"], $user->ID, $user->user_nicename);
                     $output[] = "</p>";
                 }
             }
@@ -128,5 +150,28 @@ class GroupView {
         $response[] = '</form>';
         return implode("\n", $response);
     }
+
+    private function viewFormAddUser($group_id, $user_id, $user_name) {
+        $response = array();
+        $response[] = '<form action="" method="post">';        
+            $response[] = '<input type="hidden" name="group_id" value="' . $group_id . '"/>';
+            $response[] = '<input type="hidden" name="userToAdd" value="' . $user_id . '"/>';
+            $response[] = $user_name;
+            $response[] = '<input type="submit" name="submit" value="Hinzufügen" class="button" />';
+        $response[] = '</form>';
+        return implode("\n", $response);
+    }
+
+    private function viewFormDeleteUser($group_id, $user_id, $user_name) {
+        $response = array();
+        $response[] = '<form action="" method="post">';        
+            $response[] = '<input type="hidden" name="group_id" value="' . $group_id . '"/>';
+            $response[] = '<input type="hidden" name="userToDelete" value="' . $user_id . '"/>';
+            $response[] = $user_name;
+            $response[] = '<input type="submit" name="submit" value="Entfernen" class="button" />';
+        $response[] = '</form>';
+        return implode("\n", $response);
+    }
+
 }
 ?>

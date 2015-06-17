@@ -1,17 +1,21 @@
 <?php
 class Groups {
 
-	private $dbTableNameGroup = "dokumummy_groups";
-	private $dbTableNameUserInGroup = "dokumummy_users_in_groups";
+	private $dbTableGroup = "dokumummy_groups";
+	private $dbTableUserInGroup = "dokumummy_users_in_groups";
 
 
+	function __construct() {
+		global $wpdb;
+
+		$this->dbTableGroup = $wpdb->prefix . $this->dbTableGroup;
+		$this->dbTableUserInGroup = $wpdb->prefix . $this->dbTableUserInGroup;
+	}
 
 	public function getAllGroups() {
 		global $wpdb;
 
-	    $table_name = $wpdb->prefix . $this->dbTableNameGroup;
-
-	    $results = $wpdb->get_results( 'SELECT * FROM '.$table_name);
+	    $results = $wpdb->get_results( 'SELECT * FROM ' . $this->dbTableGroup);
 
 	    return $results;
 	}
@@ -28,8 +32,26 @@ class Groups {
 		}
 	}
 
-	public function getUserGroups($user_id) {
+	public function addUser($group_id, $user_id) {
+		global $wpdb;
+		$sql = $wpdb->insert(
+			$this->dbTableUserInGroup, 
+			array( 
+				'user_id' => $user_id, 
+				'group_id' =>  $group_id
+			)
+		);
+	}
 
+	public function deleteUser($group_id, $user_id) {
+		global $wpdb;
+		$sql = $wpdb->delete(
+			$this->dbTableUserInGroup, 
+			array( 
+				'user_id' => $user_id, 
+				'group_id' =>  $group_id
+			)
+		);
 	}
 
 	public function getFields( array $meta_boxes ) {
@@ -39,7 +61,7 @@ class Groups {
 	public function getUserNotInGroup($id) {
 		global $wpdb;
 
-	    $table_useringroup = $wpdb->prefix . $this->dbTableNameUserInGroup;
+	    $table_useringroup = $this->dbTableUserInGroup;
 	    $table_wpuser = $wpdb->prefix . "users";
 
 	    $results = $wpdb->get_results("SELECT $table_wpuser.user_nicename, $table_wpuser.ID FROM wp_users LEFT OUTER JOIN $table_useringroup ON wp_users.ID = $table_useringroup.user_id AND $table_useringroup.group_id=$id WHERE $table_useringroup.group_id IS NULL ");
@@ -50,7 +72,7 @@ class Groups {
 	public function getGroup($id) {
 		global $wpdb;
 
-	    $table_name = $wpdb->prefix . $this->dbTableNameGroup;
+	    $table_name = $this->dbTableGroup;
 
 	    $results = $wpdb->get_row( "SELECT * FROM  $table_name WHERE id=$id");
 
@@ -59,7 +81,7 @@ class Groups {
 
 	public function getGroupAndUsers($id) {
 		global $wpdb;
-		$table_useringroup = $wpdb->prefix . $this->dbTableNameUserInGroup;
+		$table_useringroup = $this->dbTableUserInGroup;
 		$table_wpuser = $wpdb->prefix . "users";
 
 		$group = $this->getGroup($id);
@@ -70,7 +92,7 @@ class Groups {
 	public function saveGroup($name, $description, $user_id) {
 		global $wpdb;
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-		$table_name = $wpdb->prefix . $this->dbTableNameGroup;
+		$table_name = $this->dbTableGroup;
 
 		$sql = $wpdb->insert(
 			$table_name, 
@@ -81,7 +103,7 @@ class Groups {
 		);
 
 		// Person, welche die Gruppe erstellt hat, wird zur Gruppe hinzugefügt
-		$table_connect = $wpdb->prefix . $this->dbTableNameUserInGroup;
+		$table_connect = $this->dbTableUserInGroup;
 		$sql = $wpdb->insert(
 			$table_connect, 
 			array( 
@@ -107,9 +129,9 @@ class Groups {
 		/**
 		 * Datenbank für Gruppen
 		 */
-		$table_name_groups = $wpdb->prefix . $this->dbTableNameGroup;
+		$tableGroups = $this->dbTableGroup;
 
-	    $sql = "CREATE TABLE IF NOT EXISTS $table_name_groups (
+	    $sql = "CREATE TABLE IF NOT EXISTS $tableGroups (
 			id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			name varchar(255) DEFAULT NULL,
 			description varchar(255) DEFAULT NULL,
@@ -124,10 +146,10 @@ class Groups {
 	    /**
 		 * Datenbank für die Verbindung von User zu Gruppen
 		 */
-		$table_name_users_in_groups = $wpdb->prefix . $this->dbTableNameUserInGroup ;
+		$tableUserInGroups = $this->dbTableUserInGroup ;
 		$wps_usertable = $wpdb->prefix . "users";
 
-	    $sql = "CREATE TABLE IF NOT EXISTS $table_name_users_in_groups (
+	    $sql = "CREATE TABLE IF NOT EXISTS $tableUserInGroups (
 			id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			user_id bigint(20) UNSIGNED NOT NULL,
 			group_id int(11) UNSIGNED NOT NULL,
@@ -138,12 +160,6 @@ class Groups {
 			FOREIGN KEY (group_id) references $table_name_groups(id) on update cascade on delete cascade
 	    )";
 		dbDelta( $sql );
-	}
-
-
-	private function buildDbName($para) {
-		global $wpdb;
-		return $wpdb->prefix . $para;
 	}
 }
 
