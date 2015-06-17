@@ -7,38 +7,27 @@
  */
 
 class SphinxDocument {
-    /**
-     * Sphinx(exe) Path
-     * @var string
-     */
-    private $sphinx_file_path = "";
-    /**
-     * Abschnitte des Documents.
-     * @var array
-     */
-    private $aAbschnitte = array();
 
     public function __construct(){
 
     }
 
     /**
-     * @param {SphinxDocument} $abschnitt
+     * @param  $abschnitt
      */
     public function addAbschnitt($abschnitt){
 
     }
 
-    /**
-     * @param {SphinxDocument} $abschnitt
-     */
-    public function removeAbschnitt($abschnitt){
 
+    public function createNewDocument($path, $project_name, $author){
+        $command = "Scripts/createDocument.py ".$path." ".$project_name." ".$author;
+        shell_exec($command);
     }
 
 
-    private function deleteAbschnitt(){
-        
+    public function getDocumentContent(){
+        return "content";
     }
 
 
