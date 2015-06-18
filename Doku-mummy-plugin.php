@@ -24,6 +24,9 @@ require_once('GUI_Frontend/FrontendController.php');
 require_once('GUI_Frontend/Widgets/Menu_Widget.php');
 
 
+require_once('Sphinx/SphinxDocument.php');
+
+
 /*
  * register_activation_hook aktiviert sich, wenn das Plugin aktiviert wird.
  * */
@@ -69,7 +72,9 @@ function initPlugin() {
     controllerInit();
 }
 
-
+/**
+ *  Baut die Dashboard GUI auf.
+ */
 function buildDashboardGUI(){
     if(is_user_logged_in()){
         $role = get_user_role(wp_get_current_user());
@@ -99,7 +104,9 @@ function get_user_role($user){
 
 /**
  *
+ * Erstellt die GUIs für die verschiedenen Rollen.
  *
+ * Der WP-Admin behält seinen normale GUI.
  * @param string $role
  */
 function buildRoleGUI($role){
@@ -148,3 +155,9 @@ function add_dokumummy_widget(){
 }
 
 add_action('widgets_init', 'add_dokumummy_widget');*/
+
+
+
+
+//Test Sphinx.
+(new SphinxDocument())->createNewDocument("janTest", "jan");

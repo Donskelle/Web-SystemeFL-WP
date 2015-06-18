@@ -13,7 +13,7 @@
  *
  *
  * Stellt einen Abschnitt eines Sphinxprojekts dar.
- *
+ * TODO: IMplement
  */
 class DocumentAbschnitt {
 
@@ -22,7 +22,9 @@ class DocumentAbschnitt {
 
     }
 
-
+    public function getFileName(){
+        return "filename";
+    }
 
 
 

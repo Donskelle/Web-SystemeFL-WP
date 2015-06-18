@@ -34,7 +34,8 @@ if __name__ == '__main__':
        args = sys.argv
        createNewProject(args[1], args[2], args[3])
         
-    except Error:
+    except Exception, e:
        print "something went wrong!"
+       print e
        print "Parameter: path project_name author"
       
