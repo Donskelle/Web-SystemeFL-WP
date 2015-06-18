@@ -12,6 +12,9 @@ class Groups {
 		$this->dbTableUserInGroup = $wpdb->prefix . $this->dbTableUserInGroup;
 	}
 
+    /**
+     * @return mixed Alle vorhandenen Gruppen.
+     */
 	public function getAllGroups() {
 		global $wpdb;
 
@@ -21,6 +24,7 @@ class Groups {
 	}
 
 
+
 	public function getAuthGroups() {
 		$user = wp_get_current_user();
 
@@ -28,10 +32,15 @@ class Groups {
 			return $this->getAllGroups();
 		}
 		else {
-			return $this->getUserGroups($user->ID);
+			return $this->getUserGroups($user->ID);//TODO Methode nicht vorhanden?
 		}
 	}
 
+    /**
+     * Fügt einen Nutzer einer Gruppe hinzu.
+     * @param $group_id
+     * @param $user_id
+     */
 	public function addUser($group_id, $user_id) {
 		global $wpdb;
 		$sql = $wpdb->insert(
@@ -43,6 +52,12 @@ class Groups {
 		);
 	}
 
+    /**
+     * Löscht einen Benutzer aus einer Gruppe.
+     *
+     * @param $group_id
+     * @param $user_id
+     */
 	public function deleteUser($group_id, $user_id) {
 		global $wpdb;
 		$sql = $wpdb->delete(
@@ -58,6 +73,12 @@ class Groups {
 
 	}
 
+    /**
+     * Testet, ob  ein Benutzer überhaupt in einer Gruppe ist.
+     *
+     * @param $id
+     * @return mixed
+     */
 	public function getUserNotInGroup($id) {
 		global $wpdb;
 
@@ -69,6 +90,11 @@ class Groups {
 	    return( $results);
 	}
 
+    /**
+     * Holt eine Gruppe von der Datenbank.
+     * @param $id DB-Id der Gruppe
+     * @return mixed Gruppeninformationen
+     */
 	public function getGroup($id) {
 		global $wpdb;
 
@@ -79,6 +105,11 @@ class Groups {
 	    return( $results);
 	}
 
+    /**
+     * Gibt die Benutzer einer Gruppe zurück.
+     * @param $id
+     * @return mixed
+     */
 	public function getGroupAndUsers($id) {
 		global $wpdb;
 		$table_useringroup = $this->dbTableUserInGroup;
@@ -89,6 +120,13 @@ class Groups {
 		return $group;
 	}
 
+    /**
+     * Speichert/Erstellt eine Gruppe
+     *
+     * @param $name
+     * @param $description
+     * @param $user_id
+     */
 	public function saveGroup($name, $description, $user_id) {
 		global $wpdb;
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );

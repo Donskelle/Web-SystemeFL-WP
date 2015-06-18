@@ -49,8 +49,12 @@ class GroupView {
         }
     }
 
+
     /**
-     * Standart Gruppenübersicht
+     * Standardgruppenansicht
+     *
+     * @param $arGroups
+     * @return string
      */
     private function groupView($arGroups) {
     	$output = array();
@@ -96,6 +100,9 @@ class GroupView {
 
     /**
      * Einzel Gruppenansicht
+     *
+     * @param $arDetailGroup
+     * @return string
      */
     private function detailView($arDetailGroup) {
         $output = array();
@@ -141,6 +148,11 @@ class GroupView {
         return implode("\n", $output);
     }
 
+    /**
+     * Form für die Erstellung einer neuen Gruppe.
+     *
+     * @return string
+     */
     private function viewFormCreateGroup() {
         $response = array();
         $response[] = '<form action="" method="post">';
@@ -151,6 +163,14 @@ class GroupView {
         return implode("\n", $response);
     }
 
+    /**
+     * Füge einer Gruppe einen neuen User zu.
+     *
+     * @param $group_id
+     * @param $user_id
+     * @param $user_name
+     * @return string
+     */
     private function viewFormAddUser($group_id, $user_id, $user_name) {
         $response = array();
         $response[] = '<form action="" method="post">';        
@@ -162,6 +182,15 @@ class GroupView {
         return implode("\n", $response);
     }
 
+    /**
+     * Form: Lösche einen Nutzer von einer Gruppe.
+     *
+     *
+     * @param $group_id
+     * @param $user_id
+     * @param $user_name
+     * @return string
+     */
     private function viewFormDeleteUser($group_id, $user_id, $user_name) {
         $response = array();
         $response[] = '<form action="" method="post">';        
