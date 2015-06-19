@@ -160,4 +160,16 @@ add_action('widgets_init', 'add_dokumummy_widget');*/
 
 
 //Test Sphinx.
-(new SphinxDocument())->createNewDocument("janTest", "jan");
+
+add_action('init', 'myFunction');
+
+function myFunction()
+{
+    $id = get_current_user_id();
+    echo "qweeeeeeeeeeeeeeeeeeeUserid :" . $id;
+    if ($id != 0) {
+        (new SphinxDocument())->createNewDocument("janTest", "jan", $id);
+    }
+}
+
+

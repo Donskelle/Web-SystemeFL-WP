@@ -15,6 +15,10 @@
  */
 class SphinxDocument {
 
+    private $dbDocuments = 'wp_dokumummy_documents';
+
+
+
     /**
      * Speicherordner der Sphinxprojekte.
      * @var
@@ -55,16 +59,51 @@ class SphinxDocument {
 
 
     /**
+     * Gibt die Namen der Dokumente eines Users aus.
+     * @param $userid
+     */
+    public function getDocumentsByUser($userid){
+
+    }
+
+
+    /**
      * Ertellt eine neues Sphinxproject
      *
      * @param $project_name
-     * @param $author
+     * @param $authorName
+     * @param $userId
      */
-    public function createNewDocument( $project_name, $author){
+    public function createNewDocument( $project_name, $authorName, $userId){
+        global $wpdb;
+
 
         $project_path = $this->sphinxDir."/".$project_name;
-        $command = "python ". $this->sphinxScriptCreateDocument ." ".$project_path." ".$project_name." ".$author;
-        //TODO: Insert into database.
+        $command = "python ". $this->sphinxScriptCreateDocument ." ".$project_path." ".$project_name." ".$authorName;
+        //TODO: Insert into database. user name etc.
+        echo "creating .......................... document......inserting.";
+
+        $wpdb->insert($this->dbDocuments, array(
+            'name' => $project_name,
+            'path' => $project_path,
+            'layout' => "",
+            'user_id' => $userId,
+        ));
+        if(!$wpdb->insert($this->dbDocuments, array(
+                'name' => $project_name,
+                'path' => $project_path,
+                'layout' => "",
+                'user_id' => $userId,
+        ))){
+           echo "createNewDocument not successful";
+        }else{
+
+        }
+
+
+
+
+
         $output = shell_exec($command);
         echo "<pre>$output</pre>";
         echo $command;
