@@ -169,6 +169,7 @@ function myFunction()
     echo "qweeeeeeeeeeeeeeeeeeeUserid :" . $id;
     if ($id != 0) {
         (new SphinxDocument())->createNewDocument("janTest", "jan", $id);
+        (new SphinxDocument())->deleteDocument(10);
     }
 }
 

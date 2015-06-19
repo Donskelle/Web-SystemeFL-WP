@@ -70,44 +70,31 @@ class SphinxDocument {
     /**
      * Ertellt eine neues Sphinxproject
      *
-     * @param $project_name
-     * @param $authorName
-     * @param $userId
+     * @param $project_name Name des Projektes.
+     * @param $authorName Autorname, wahrscheinlich wp nicename.
+     * @param $userId Ersteller des Projekts.
      */
     public function createNewDocument( $project_name, $authorName, $userId){
         global $wpdb;
-
-
         $project_path = $this->sphinxDir."/".$project_name;
         $command = "python ". $this->sphinxScriptCreateDocument ." ".$project_path." ".$project_name." ".$authorName;
-        //TODO: Insert into database. user name etc.
-        echo "creating .......................... document......inserting.";
 
-        $wpdb->insert($this->dbDocuments, array(
-            'name' => $project_name,
-            'path' => $project_path,
-            'layout' => "",
-            'user_id' => $userId,
-        ));
+
         if(!$wpdb->insert($this->dbDocuments, array(
                 'name' => $project_name,
                 'path' => $project_path,
                 'layout' => "",
-                'user_id' => $userId,
+                'updated_at' => current_time('mysql'),
+                'user_id' => $userId
         ))){
            echo "createNewDocument not successful";
         }else{
-
+            //Erstelle das Projekt nur, wenn der Datenbankeintrag erfolgreich war. Verhindert komische Referenzen etc.
+            $output = shell_exec($command);
+            echo "<pre>$output</pre>";
+            echo $command;
+            $this->changePermissions(); //gibt dem webserver schreib rechte für das neue Projekt.
         }
-
-
-
-
-
-        $output = shell_exec($command);
-        echo "<pre>$output</pre>";
-        echo $command;
-        $this->changePermissions(); //gibt dem webserver schreib rechte für das neue Projekt.
     }
 
 
@@ -134,9 +121,29 @@ class SphinxDocument {
 
     /**
      * Löscht ein Dokument
-     * @param $project_name
+     *
+     * @param $project_id Id des Projektes.
      */
-    public function deleteDocument($project_name){
+    public function deleteDocument($project_id){
+        global $wpdb;
+
+        $result = $wpdb->get_row("SELECT name, path FROM $this->dbDocuments WHERE id=$project_id");
+
+        if(!$result){
+            //Wenn das Dokument nicht gefunden wurde.
+        }else {
+            $wpdb->delete($this->dbDocuments,array(
+                'id'=>$project_id
+            ));
+
+            $command = "rm -rf $result->path";
+            shell_exec("$command");
+
+        }
+
+
+
+
         //TODO: implement
     }
 

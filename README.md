@@ -2,6 +2,14 @@
 
 Man darf dem Repo nur joinen, wenn man ein cooles Profilbild hat!!
 
+##Tips:
+
+* Bei Wordpress die Default Timezone auf Berlin stellen. Sonst werden in der DB die falsche Zeiten
+  angegeben.
+
+* Bitte die Sudo file ändern, sonst laufen die ganzen scripts etc nicht: https://stackoverflow.com/questions/3173201/sudo-in-php-exec
+
+
 ##Ressourcen:
 
  * wp_insert_user() -> von der dokumummy datenbank abfragen und automatisch in wp_dokumummy einspielen.
