@@ -174,7 +174,7 @@ class Groups {
 			name varchar(255) DEFAULT NULL,
 			description varchar(255) DEFAULT NULL,
 			active int(1) DEFAULT 1,
-			created_at timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+			created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
  			updated_at timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
  			PRIMARY KEY (id)
 	    )";
@@ -191,7 +191,7 @@ class Groups {
 			id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			user_id bigint(20) UNSIGNED NOT NULL,
 			group_id int(11) UNSIGNED NOT NULL,
-			created_at timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+			created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
  			updated_at timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 			PRIMARY KEY (id),
 			FOREIGN KEY (user_id) references $wps_usertable(ID) on update cascade on delete cascade,

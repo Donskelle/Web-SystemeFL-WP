@@ -30,7 +30,7 @@ class Documents {
 			path varchar(255) NOT NULL,
 			layout varchar(255) NOT NULL,
 			user_id bigint(20) UNSIGNED NOT NULL,
-			created_at timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+			created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
 			updated_at timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 			PRIMARY KEY (id),
 			FOREIGN KEY (user_id) references $wps_usertable(ID) on update cascade on delete cascade
@@ -47,7 +47,7 @@ class Documents {
 			id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			document_id int(11) UNSIGNED NOT NULL,
 			group_id int(11) UNSIGNED NOT NULL,
-			created_at timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+			created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
 			updated_at timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 			PRIMARY KEY (id),
 			FOREIGN KEY (document_id) references $documents_table(id) on update cascade on delete cascade,
