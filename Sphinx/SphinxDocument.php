@@ -58,7 +58,7 @@ class SphinxDocument {
      */
     public function addAbschnitt($abschnitt){
         $abschnitt ->getFileName();
-        //TODO: Write to filesystem 
+        //TODO: Write to filesystem
     }
 
 
