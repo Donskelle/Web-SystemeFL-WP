@@ -174,4 +174,14 @@ function myFunction()
 }*/
 
 (new SphinxDocument())->getAbschnitte(33);
+echo plugins_url("/GUI_Frontend/JS/AceEditor/src-min/ace.js", __FILE__);
+add_action('wp_enqueue_script', 'addAceEdtiorScript'); //wp_enque_script hooked nur im front-end.
+function addAceEdtiorScript(){
 
+    wp_enqueue_script('AceEditor,js', plugins_url("/GUI_Frontend/JS/AceEditor/src-min/ace.js", __FILE__));
+}
+
+echo "<pre>";
+$result = (new Documents())->getDocumentsInGroup(1);
+print_r($result);
+echo "</pre>";

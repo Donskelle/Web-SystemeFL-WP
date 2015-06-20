@@ -8,10 +8,112 @@
  */
 
 
+/**
+ * Class Documents
+ */
 class Documents {
 
-	private $dbTableNameDocuments = "dokumummy_documents";
-	private $dbTableNameDocumentInGroup = "dokumummy_documents_in_groups";
+    /**
+     * @var string
+     */
+    private $dbTableNameDocuments = "dokumummy_documents";
+    /**
+     * @var string
+     */
+    private $dbTableNameDocumentInGroup = "dokumummy_documents_in_groups";
+
+
+    /**
+     *
+     */
+    public function __construct(){
+        global $wpdb;
+
+        $this->dbTableNameDocuments = $wpdb->prefix . $this->dbTableNameDocuments;
+        $this->dbTableNameDocumentInGroup = $wpdb->prefix . $this->dbTableNameDocumentInGroup;
+    }
+
+
+    /**
+     *
+     */
+    public function getAllDocuments(){
+        global $wpdb;
+
+        $documents = $wpdb->get_results("SELECT * FROM  $this->dbTableNameDocuments");
+        return $documents;
+
+    }
+
+
+    /**
+     * @param $user_id
+     */
+    public function getDocumentsCreatedByUser($user_id){
+        global $wpdb;
+
+        $documents = $wpdb->get_results("SELECT * FROM $this->dbTableNameDocuments WHERE user_id=$user_id");
+        return $documents;
+    }
+
+
+    /**
+     * @param $groupId
+     */
+    public function getDocumentsInGroup($groupId){
+        global $wpdb;
+        //TODO: Select spezifizieren. Man braucht nicht alles
+        $documents = $wpdb->get_results("SELECT * FROM $this->dbTableNameDocumentInGroup dig
+                                  INNER JOIN $this->dbTableNameDocuments d on dig.document_id = d.id
+                                  WHERE dig.group_id = $groupId");
+    }
+
+    /**
+     * @param $doc_id
+     * @param $group_id
+     */
+    public function removeDocumentFromGroup($doc_id, $group_id){
+        global $wpdb;
+        $wpdb->delete($this->dbTableNameDocumentInGroup, array(
+            'document_id' => $doc_id,
+            'group_id' => $group_id
+        ));
+    }
+
+
+    /**
+     * @param $document_id
+     */
+    public function deleteDocument($document_id){
+        //TODO: Auch mit Sphinx löschen.
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 	/**
