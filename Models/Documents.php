@@ -1,4 +1,13 @@
 <?php
+
+/*
+ *
+ * Siehe Sphinx/SphinxDocument
+ *
+ *
+ */
+
+
 class Documents {
 
 	private $dbTableNameDocuments = "dokumummy_documents";

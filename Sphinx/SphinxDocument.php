@@ -58,16 +58,9 @@ class SphinxDocument {
      */
     public function addAbschnitt($abschnitt){
         $abschnitt ->getFileName();
+        //TODO: Write to filesystem 
     }
 
-
-    /**
-     * Gibt die Namen der Dokumente eines Users aus.
-     * @param $userid
-     */
-    public function getDocumentsByUser($userid){
-
-    }
 
 
     /**
@@ -142,14 +135,6 @@ class SphinxDocument {
             $command = "rm -rf $result->path";
             shell_exec("$command");
         }
-    }
-
-
-    /**
-     * Jedes Projekt besteht aus Index + subFiles. Diese Funktion extrahiert die Subfiles aus dem Contents der index.rst
-     */
-    private function extractSubFileNames(){
-
     }
 
 
