@@ -32,9 +32,21 @@ class Groups {
 			return $this->getAllGroups();
 		}
 		else {
-			return $this->getUserGroups($user->ID);//TODO Methode nicht vorhanden?
+			return $this->getUserGroups($user->ID);
 		}
 	}
+
+	public function getUserGroups($user_id) {
+        global $wpdb;
+
+        //Gruppen, denen der User angehört
+        $groups = $wpdb->get_results("SELECT g.name, g.id, g.description FROM  $this->dbTableUserInGroup uig
+                        INNER JOIN $this->dbTableGroup g on uig.group_id = g.id
+                        WHERE uig.user_id=$user_id");
+        return $groups;
+   	}
+
+
 
     /**
      * Fügt einen Nutzer einer Gruppe hinzu.
