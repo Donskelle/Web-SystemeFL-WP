@@ -49,7 +49,7 @@ class SphinxDocument {
      *
      * @param string $id
      */
-    public function __construct($id= ""){
+    public function __construct(){
         //TODO: Überprüfe, ob ID schon vorhanden.
     }
 
@@ -120,21 +120,11 @@ class SphinxDocument {
      *
      * @param $project_id Id des Projektes.
      */
-    public function deleteDocument($project_id){
+    public function deleteDocument($project_path){
         global $wpdb;
+        $command = "rm -rf $project_path";
+        shell_exec("$command");
 
-        $result = $wpdb->get_row("SELECT name, path FROM $this->dbDocuments WHERE id=$project_id");
-
-        if(!$result){
-            //Wenn das Dokument nicht gefunden wurde.
-        }else {
-            $wpdb->delete($this->dbDocuments,array(
-                'id'=>$project_id
-            ));
-
-            $command = "rm -rf $result->path";
-            shell_exec("$command");
-        }
     }
 
 
@@ -146,17 +136,12 @@ class SphinxDocument {
      *
      * @return array
      */
-    public function getAbschnitte($project_id){
+    public function getAbschnitte($project_path){
         global $wpdb;
         //Abschnitte definiert in der index.rst unter Contents
         $abschnitte = array();
 
-        //Dateipfad des Projektes von der DB abfragen.
-        $project_data = $wpdb->get_row("SELECT path, name FROM $this->dbDocuments WHERE id=$project_id");
-        if(!$project_data){
-            die("no such project - debug SphinxDocument.php");
-        }
-        $filePath = $project_data->path."/source/index.rst";
+        $filePath = $project_path."/source/index.rst";
 
         //Auslesen der Index.rst um an Contents zu kommen.
         $data = file_get_contents($filePath);

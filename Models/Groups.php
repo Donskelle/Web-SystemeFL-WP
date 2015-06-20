@@ -97,7 +97,10 @@ class Groups {
 	    $table_useringroup = $this->dbTableUserInGroup;
 	    $table_wpuser = $wpdb->prefix . "users";
 
-	    $results = $wpdb->get_results("SELECT $table_wpuser.user_nicename, $table_wpuser.ID FROM wp_users LEFT OUTER JOIN $table_useringroup ON wp_users.ID = $table_useringroup.user_id AND $table_useringroup.group_id=$id WHERE $table_useringroup.group_id IS NULL ");
+	    $results = $wpdb->get_results("SELECT $table_wpuser.user_nicename, $table_wpuser.ID FROM wp_users
+                                      LEFT OUTER JOIN $table_useringroup ON wp_users.ID = $table_useringroup.user_id
+                                          AND $table_useringroup.group_id=$id
+                                      WHERE $table_useringroup.group_id IS NULL ");
 
 	    return( $results);
 	}
@@ -128,7 +131,9 @@ class Groups {
 		$table_wpuser = $wpdb->prefix . "users";
 
 		$group = $this->getGroup($id);
-		$group->user = $wpdb->get_results("SELECT user_id, $table_wpuser.user_nicename FROM  $table_useringroup right outer join $table_wpuser on $table_useringroup.user_id=$table_wpuser.ID WHERE $table_useringroup.group_id=$id");
+		$group->user = $wpdb->get_results("SELECT user_id, $table_wpuser.user_nicename FROM  $table_useringroup
+                                            right outer join $table_wpuser on $table_useringroup.user_id=$table_wpuser.ID
+                                            WHERE $table_useringroup.group_id=$id");
 		return $group;
 	}
 
