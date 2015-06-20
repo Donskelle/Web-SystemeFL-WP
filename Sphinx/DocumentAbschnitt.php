@@ -29,7 +29,7 @@ class DocumentAbschnitt {
         return $this->fileName;
     }
 
-    public function getFileContent(){
+    public function getAbschnittContent(){
         return $this->fileContent;
     }
 

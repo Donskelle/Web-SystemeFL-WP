@@ -6,6 +6,9 @@
  * Time: 17:55
  */
 
+require "DocumentAbschnitt.php";
+
+
 /**
  * Class SphinxDocument
  *
@@ -152,13 +155,54 @@ class SphinxDocument {
 
 
     /**
+     * Diese Methode liest die Abschnitte des Sphinx-Projektes aus der index.rst und gibt sie als Array von DocumentAbschnit zurück.
+     *
+     * Wenn der übergebene Parameter nicht stimmt, wird die() ausgelöst.
      *
      * @return array
      */
-    public function getAbschnitte(){
+    public function getAbschnitte($project_id){
+        global $wpdb;
+        //Abschnitte definiert in der index.rst unter Contents
         $abschnitte = array();
-        return $abschnitte; //TODO: Implement
+
+        //Dateipfad des Projektes von der DB abfragen.
+        $project_data = $wpdb->get_row("SELECT path, name FROM $this->dbDocuments WHERE id=$project_id");
+        if(!$project_data){
+            die("no such project - debug SphinxDocument.php");
+        }
+        $filePath = $project_data->path."/source/index.rst";
+
+        //Auslesen der Index.rst um an Contents zu kommen.
+        $data = file_get_contents($filePath);
+
+        //toctree ist ein Element in der index.rst. Unter Toctree werden die verlinkten Datein aufgeführt.
+        $toc_tree = ".. toctree::";
+        $toc_tree_pos = strpos($data ,$toc_tree);
+        $indices = "Indices"; //das Element unter dem Contentsabschnitt.
+        $indices_pos = strpos($data, $indices);
+
+        //Auschneiden von Contents, hat noch andere Elemente.
+        $content_with_other_stuff = substr($data, $toc_tree_pos, $indices_pos-$toc_tree_pos);
+
+
+        //Alle im Contents referenzierten Dateien fangen mit doc1, doc2 usw an.
+        $doc_results_array = array();
+        preg_match_all("/doc[0-9]+/", $content_with_other_stuff, $doc_results_array); //Pro Treffer wird ein Array mit dem Ergebnis in das Ergebnis array gepushed
+
+        //Reduzieren des Arrays.
+        $doc_results = array();
+        foreach($doc_results_array as $val ){
+            $doc_results[] = $val[0];
+        }
+
+        foreach($doc_results as $res){
+            $abschnitte[] = new DocumentAbschnitt($res, file_get_contents($this->sphinxDir."/janTest/source/$res".".rst"));
+        }
+
+        return $abschnitte;
     }
+
 
 
 }
