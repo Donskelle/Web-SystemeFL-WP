@@ -138,14 +138,17 @@ class SphinxDocument {
 
             $command = "rm -rf $result->path";
             shell_exec("$command");
-
         }
-
-
-
-
-        //TODO: implement
     }
+
+
+    /**
+     * Jedes Projekt besteht aus Index + subFiles. Diese Funktion extrahiert die Subfiles aus dem Contents der index.rst
+     */
+    private function extractSubFileNames(){
+
+    }
+
 
 
     /**

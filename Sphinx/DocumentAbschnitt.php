@@ -17,13 +17,20 @@
  */
 class DocumentAbschnitt {
 
+    private $fileName;
+    private $fileContent;
 
-    public function __construct(){
-
+    public function __construct($filename, $filecontent){
+        $this->fileName = $filename;
+        $this->fileContent = $filecontent;
     }
 
     public function getFileName(){
-        return "filename";
+        return $this->fileName;
+    }
+
+    public function getFileContent(){
+        return $this->fileContent;
     }
 
 

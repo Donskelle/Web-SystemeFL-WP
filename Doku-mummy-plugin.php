@@ -160,7 +160,7 @@ add_action('widgets_init', 'add_dokumummy_widget');*/
 
 
 //Test Sphinx.
-
+/*
 add_action('init', 'myFunction');
 
 function myFunction()
@@ -169,8 +169,8 @@ function myFunction()
     echo "qweeeeeeeeeeeeeeeeeeeUserid :" . $id;
     if ($id != 0) {
         (new SphinxDocument())->createNewDocument("janTest", "jan", $id);
-        (new SphinxDocument())->deleteDocument(10);
+        (new SphinxDocument())->deleteDocument("id here");
     }
-}
+}*/
 
 
