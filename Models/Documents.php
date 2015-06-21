@@ -93,8 +93,18 @@ class Documents {
     /**
      * @param $document_id
      */
-    public function deleteDocument($document_id){
-        //TODO: Auch mit Sphinx löschen.
+    public function deleteDocument($id){
+        global $wpdb;
+
+        $document = $wpdb->get_row("SELECT * FROM $this->dbTableNameDocuments WHERE id=$id");
+        
+        echo $document->path;
+        $sphinx = new SphinxDocument("", "", $document->path);
+        $sphinx->deleteDocument();
+
+        $wpdb->delete($this->dbTableNameDocuments, array(
+            'id' => $id
+        ));
     }
 
 
@@ -103,6 +113,7 @@ class Documents {
         global $wpdb;
         $sphinx = new SphinxDocument($project_name, $authorName);
         $project_path = $sphinx->getProjektPfad();
+
 
         if(!$wpdb->insert($this->dbTableNameDocuments, array(
                 'name' => $project_name,
