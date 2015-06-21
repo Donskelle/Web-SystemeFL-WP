@@ -49,8 +49,8 @@ class SphinxDocument {
      *
      * @param string $id
      */
-    public function __construct(){
-        //TODO: Überprüfe, ob ID schon vorhanden.
+    public function __construct($projectpath){
+
     }
 
     /**
