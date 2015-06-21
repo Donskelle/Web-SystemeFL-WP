@@ -53,14 +53,18 @@ class DocumentView{
     public function viewDocument($document) {
         $user = wp_get_current_user();
         $output = array();
-        $output[] = "<h2>$document->name</h2>";
+        echo"<h2>$document->name</h2>";
         if($user->ID == $document->user_id)
         {
             $this->viewDeleteForm($document->id);
             $this->viewFormSelectGroup($document->id);
         }
-        echo implode("\n", $output);
     }
+
+    /**
+     * [viewFormSelectGroup description]
+     * Form zum wählen einer Gruppe für ein Dokument darstellen
+     */
     public function viewFormSelectGroup($id) {
         $ouput = array();
         $ouput[] = "<h2>Gruppe zuweisen</h2>";
@@ -95,9 +99,13 @@ class DocumentView{
         
         echo implode("\n", $ouput);
     }
+
+
     public function viewGeneratedPDF(){
         //TODO: Output, soll im SphinxDocument.php generiert werden
     }
+
+
     public function viewShortDoc($documents) {
         $response = array();
         $response[] = '<h2>Deine Dokument</h2>';
@@ -108,6 +116,8 @@ class DocumentView{
         }
         echo implode("\n", $response);
     }
+
+
     public function viewDeleteForm($id) {
         $response = array();
         $response[] = '<form action="./" method="post">';
@@ -117,6 +127,8 @@ class DocumentView{
         $response[] = '</form>';
         echo implode("\n", $response);
     }
+
+
     public function viewDocumentCreateForm() {
         $response = array();
         $response[] = '<h2>Dokument erstellen</h2>';
