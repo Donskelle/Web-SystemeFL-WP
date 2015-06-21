@@ -18,26 +18,24 @@ class DocumentView{
 
     }
 
+    
+    public function viewAddAbschnitt(){
+        //TODO: das erstllen eines neuen Abschnitts.
+    }
 
 
-
-    public function addAbschnitt(){
+    public function viewGeneratedHtml(){
 
     }
 
 
-    public function generateHtml(){
+    public function viewRemoveAbschnitt(){
 
     }
 
 
-    public function removeAbschnitt(){
-
-    }
-
-
-    public function generatePDF(){
-
+    public function viewGeneratedPDF(){
+        //TODO: Output, soll im SphinxDocument.php generiert werden
     }
 
 
