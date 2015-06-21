@@ -6,7 +6,7 @@
  * Time: 17:55
  */
 
-require_once "DocumentAbschnitt.php";
+require "DocumentAbschnitt.php";
 
 
 /**
@@ -69,11 +69,7 @@ class SphinxDocument {
      * @param string $userId
      * @param string $projectPath
      */
-<<<<<<< HEAD
-    public function __construct(){
-=======
     public function __construct($projectName="", $authorName="", $userId = "", $projectPath = ""){
->>>>>>> SphinxDocumentJan
         $this->sphinxDir = plugin_dir_path( __FILE__ ) . $this->sphinxDir ;
         $this->sphinxScriptCreateDocument = plugin_dir_path( __FILE__ ) . $this->sphinxScriptCreateDocument ;
         $this->sphinxScriptPermissions = plugin_dir_path( __FILE__ ) . $this->sphinxScriptPermissions ;
