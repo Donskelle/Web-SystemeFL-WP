@@ -120,7 +120,7 @@ class DocumentView{
     public function viewDocumentCreateForm() {
         $response = array();
         $response[] = '<h2>Dokument erstellen</h2>';
-        $response[] = '<form action="" method="post">';
+        $response[] = '<form action="./" method="post">';
             $response[] = '<input type="text" name="project_name" value="" placeholder="Dokumentenname" required maxlength="250"/>';
             $response[] = '<input type="hidden" name="operation" value="create"/>';
             $response[] = '<input type="submit" name="submit" value="Erstellen" class="button" />';
