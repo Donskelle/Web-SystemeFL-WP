@@ -17,9 +17,9 @@ class DocumentView{
 
 
     public function __construct(){
-        $doc = new SphinxDocument();
+        $doc = new Documents();
 
-
+        // Neues Dokument erstellen
         if(isset($_POST["project_name"]))
         {
             $current_user = wp_get_current_user();

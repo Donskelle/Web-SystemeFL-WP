@@ -92,10 +92,23 @@ class Documents {
 
 
 
+    public function createNewDocument($project_name, $authorName, $userId) {
+        global $wpdb;
+        $sphinx = new SphinxDocument($project_name, $authorName);
+        $project_path = $sphinx->getProjektPfad();
 
-
-
-
+        if(!$wpdb->insert($this->dbTableNameDocuments, array(
+                'name' => $project_name,
+                'path' => $project_path,
+                'layout' => "",
+                'updated_at' => current_time('mysql'),
+                'user_id' => $userId
+        ))) {
+        }else{
+            //Erstelle das Projekt nur, wenn der Datenbankeintrag erfolgreich war. Verhindert komische Referenzen etc.
+            
+        }
+    }
 
 
 

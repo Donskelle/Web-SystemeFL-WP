@@ -41,20 +41,12 @@ class Menu {
 
 
 	public function __construct() {
-       /**
-        * DEMO DATEN
-        * @var array
-        */
-        $this->authDocs = array(
-            0 => array(
-                "name" => "DokuMummy",
-                "url" => "#" 
-            ),
-            1 => array(
-                "name" => "Anrufbewältigung",
-                "url" => "#" 
-            )
-        );
+        /**
+         * DEMO DATEN
+         * @var array
+         */
+        $docs = new Documents();
+        $this->authDocs = $docs->getDocumentsCreatedByUser(get_current_user_id());
 
 
         $groups = new Groups();
@@ -96,8 +88,9 @@ class Menu {
 
 	    		$menu[] = "<li class='title'><a href='" . $documentLink . "'>Meine Dokumente</li>";
 	    		$menu[] = "<li><a href='" . $documentLink . "'>Neues Dokument</a></li>";
+
                 foreach ($this->authDocs as $document) {
-                    $menu[] = "<li><a href='" . $document["url"] . "'>" . $document["name"] . "</a></li>";
+                    $menu[] = "<li><a href='" .  $documentLink . "?id=" .  $document->id . "'>" . $document->name . "</a></li>";
                 }
 
 
