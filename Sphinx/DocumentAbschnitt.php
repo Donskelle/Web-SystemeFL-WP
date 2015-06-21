@@ -18,10 +18,12 @@ class DocumentAbschnitt {
 
     private $fileName;
     private $abschnittContent;
+    private $abschnittId;
 
-    public function __construct($filename, $abschnitt_content){
+    public function __construct($filename, $abschnitt_content, $abschnittId){
         $this->fileName = $filename;
         $this->abschnittContent = $abschnitt_content;
+        $this->abschnittId  = $abschnittId;
     }
 
     /**
@@ -49,6 +51,9 @@ class DocumentAbschnitt {
         $this->fileContent = $content;
     }
 
+    public function getAbschnittId(){
+        return $this->abschnittId;
+    }
 
 
 

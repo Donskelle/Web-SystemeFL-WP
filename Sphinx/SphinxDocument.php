@@ -22,7 +22,7 @@ class SphinxDocument {
      * Speicherordner der Sphinxprojekte.
      * @var
      */
-    private $sphinxDir = "Sphinx/SphinxProjects";
+    private $sphinxDir = "/SphinxProjects";
 
 
     /**
@@ -30,7 +30,7 @@ class SphinxDocument {
      *
      * @var string
      */
-    private $sphinxScriptCreateDocument = "Sphinx/Scripts/createDocument.py";
+    private $sphinxScriptCreateDocument = "/Scripts/createDocument.py";
 
 
     /**
@@ -38,7 +38,7 @@ class SphinxDocument {
      *
      * @var string
      */
-    private $sphinxScriptPermissions = "Sphinx/Scripts/./changePermission.sh";
+    private $sphinxScriptPermissions = "/Scripts/./changePermission.sh";
 
 
     /**
@@ -57,6 +57,12 @@ class SphinxDocument {
      */
     private $documentDeleted = false;
 
+
+    /**
+     * @var int
+     */
+    private $internalAbschnittCoutner = 0;
+
     /**
      * Erlaubt das Erstellen eines neuen , aber auch das Aufrufen eines alten Projektes.
      *
@@ -66,7 +72,6 @@ class SphinxDocument {
      *
      * @param string $projectName
      * @param string $authorName
-     * @param string $userId
      * @param string $projectPath
      */
     public function __construct($projectName="", $authorName="", $projectPath = ""){
@@ -90,31 +95,82 @@ class SphinxDocument {
         }else{
             die("falscher Parameter - SphinxDocument.php");
         }
-    }   
+    }
 
     /**
      *
      * @param  $content string
+     * @return string
      */
     public function addAbschnitt($content){
         $this->isUnuseable();
-        $abschnitt = new DocumentAbschnitt(("doc".$this->getNewAbschnittFileName()), $content);
-        $abschnitt ->getFileName();
+        $abschnitt = new DocumentAbschnitt(("doc".$this->getNewAbschnittFileName()), $content, $this->generateAbschnittId());
+
         //TODO: Write to filesystem
+        return $abschnitt->getAbschnittId();
     }
 
+    /**
+     * Updatet einen Abschnitt.
+     *
+     *
+     * @param $abschnittId string Die Id des Abschnitts.
+     * @param $content
+     * @return bool Wurde ein Abschnitt gefunden und geupdated?
+     * @throws Exception
+     */
+    public function updateAbschnitt($abschnittId, $content){
+        $this->isUnuseable();
+
+        //wurde ein Abschnitt geupdated?
+        $bUpdated = false;
+        //Der Abschnitt, der upgedated werden soll.
+        $updateAbschnitt = null;
+        foreach($this->aAbschnitteDesDokuments as $abschnitt){
+            if($abschnitt->getAbschnittId() == $abschnittId){
+                $abschnitt->setAbschnittContent($content);
+                $bUpdated = true;
+                break;
+            }
+        }
+        return $bUpdated;
+    }
+
+
+    private function buildAbschnittFile($abschnitt){
+
+
+
+    }
+
+    /**
+     * @return int
+     */
     private function getNewAbschnittFileName(){
         $newId = 0;
 
         if(count($this->aAbschnitteDesDokuments) != 0){
             //Der idWert des letzten Abschnittes + 1
             $newId = intval(substr($this->aAbschnitteDesDokuments[count($this->aAbschnitteDesDokuments-1)], 3)) + 1;
-
         }
         return $newId;
     }
 
+    /**
+     * @return int
+     */
+    private function generateAbschnittId(){
+        $tmp = $this->internalAbschnittCoutner;
+        $this->internalAbschnittCounter++;
+        return $tmp;
+    }
+
+    /**
+     * @return string
+     * @throws Exception
+     */
     public function getProjektPfad(){
+        $this->isUnuseable();
         return $this->sProjectPath;
     }
 
@@ -131,6 +187,8 @@ class SphinxDocument {
         $command = "python ". $this->sphinxScriptCreateDocument ." ".$this->sProjectPath." ".$project_name." ".$authorName;
 
         $output = shell_exec($command);
+        echo "<pre>Command: $command</pre>";
+        echo "<pre>ShellOutput: $output</pre>";
         $this->changePermissions(); //gibt dem webserver schreib rechte für das neue Projekt.
 
         //TODO: Dieser Teil soll in Document.php ausgelagert werden.
@@ -232,9 +290,9 @@ class SphinxDocument {
         foreach($doc_results_array as $val ){
             $doc_results[] = $val[0];
         }
-
         foreach($doc_results as $res){
-            $abschnitte[] = new DocumentAbschnitt($res, file_get_contents($this->sphinxDir."/janTest/source/$res".".rst"));
+            $abschnittIdCounter++;
+            $abschnitte[] = new DocumentAbschnitt($res, file_get_contents($this->sphinxDir."/janTest/source/$res".".rst"), $this->generateAbschnittId());
         }
 
         return $abschnitte;
