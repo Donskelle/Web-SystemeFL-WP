@@ -24,8 +24,23 @@ class DocumentView{
         {
             $current_user = wp_get_current_user();
             $doc->createNewDocument($_POST["project_name"], $current_user->display_name, get_current_user_id());
+
         }
-        echo $this->viewDocumentCreateForm();
+        if(isset($_GET["id"]))
+        {
+            $document = $doc->getDocument($_GET["id"]);
+            $this->viewDocument($document);
+        }
+        else if(isset($_GET["create"])) {
+            $this->viewDocumentCreateForm($_GET["create"]);
+        }
+        else {
+           $authDocs = $doc->getDocumentsCreatedByUser(get_current_user_id());
+
+            $this->viewShortDoc($authDocs); 
+
+            $this->viewDocumentCreateForm();
+        }
     }
 
     
@@ -42,10 +57,27 @@ class DocumentView{
     public function viewRemoveAbschnitt(){
 
     }
+    
+    public function viewDocument($document) {
+        print_r($document);
+    }
 
 
     public function viewGeneratedPDF(){
         //TODO: Output, soll im SphinxDocument.php generiert werden
+    }
+
+    public function viewShortDoc($documents) {
+        $response = array();
+        $response[] = '<h2>Deine Dokument</h2>';
+
+        foreach ($documents as $doc) {
+            $response[] = "<div>";
+            $response[] = $doc->name;
+            $response[] = "</div>";
+        }
+
+        echo implode("\n", $response);
     }
 
 
@@ -56,7 +88,7 @@ class DocumentView{
             $response[] = '<input type="text" name="project_name" value="" placeholder="Dokumentenname" required maxlength="250"/>';
             $response[] = '<input type="submit" name="submit" value="Erstellen" class="button" />';
         $response[] = '</form>';
-        return implode("\n", $response);
+        echo implode("\n", $response);
     }
 
 }

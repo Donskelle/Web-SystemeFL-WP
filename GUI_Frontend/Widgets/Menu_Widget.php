@@ -87,7 +87,7 @@ class Menu {
 	    		$menu[] = "<li><a href='" . $homeLink . "'>Startseite</a></li>";
 
 	    		$menu[] = "<li class='title'><a href='" . $documentLink . "'>Meine Dokumente</li>";
-	    		$menu[] = "<li><a href='" . $documentLink . "'>Neues Dokument</a></li>";
+	    		$menu[] = "<li><a href='" . $documentLink . "?create='>Neues Dokument</a></li>";
 
                 foreach ($this->authDocs as $document) {
                     $menu[] = "<li><a href='" .  $documentLink . "?id=" .  $document->id . "'>" . $document->name . "</a></li>";

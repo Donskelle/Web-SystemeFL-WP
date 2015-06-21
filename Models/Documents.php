@@ -46,6 +46,13 @@ class Documents {
     }
 
 
+    public function getDocument($id) {
+        global $wpdb;
+
+        $document = $wpdb->get_row("SELECT * FROM $this->dbTableNameDocuments WHERE id=$id");
+        return $document;
+    }
+
     /**
      * @param $user_id
      */
