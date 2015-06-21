@@ -26,7 +26,7 @@ class SphinxDocument {
      * Speicherordner der Sphinxprojekte.
      * @var
      */
-    private $sphinxDir = plugin_dir_path( __FILE__ ) . "Sphinx/SphinxProjects";
+    private $sphinxDir = "Sphinx/SphinxProjects";
 
 
     /**
@@ -34,7 +34,7 @@ class SphinxDocument {
      *
      * @var string
      */
-    private $sphinxScriptCreateDocument = plugin_dir_path( __FILE__ ) . "Sphinx/Scripts/createDocument.py";
+    private $sphinxScriptCreateDocument = "Sphinx/Scripts/createDocument.py";
 
 
     /**
@@ -42,7 +42,7 @@ class SphinxDocument {
      *
      * @var string
      */
-    private $sphinxScriptPermissions = plugin_dir_path( __FILE__ ) . "Sphinx/Scripts/./changePermission.sh";
+    private $sphinxScriptPermissions = "Sphinx/Scripts/./changePermission.sh";
 
     /**
      * Erstellt ein SphinxDocument-Objekt.
@@ -50,13 +50,18 @@ class SphinxDocument {
      * @param string $id
      */
     public function __construct($projectpath){
-
-    }
+        $this->sphinxDir = plugin_dir_path( __FILE__ ) . $this->sphinxDir ;
+        $this->sphinxScriptCreateDocument = plugin_dir_path( __FILE__ ) . $this->sphinxScriptCreateDocument ;
+        $this->sphinxScriptPermissions = plugin_dir_path( __FILE__ ) . $this->sphinxScriptPermissions ;
+    }   
 
     /**
      * @param  DocumentAbschnitt $abschnitt
      */
     public function addAbschnitt($abschnitt){
+        
+
+
         $abschnitt ->getFileName();
         //TODO: Write to filesystem
     }
