@@ -26,7 +26,7 @@ class SphinxDocument {
      * Speicherordner der Sphinxprojekte.
      * @var
      */
-    private $sphinxDir = "/var/www/wordpress/wp-content/plugins/doku_mummy-plugin/Sphinx/SphinxProjects";
+    private $sphinxDir = plugin_dir_path( __FILE__ ) . "Sphinx/SphinxProjects";
 
 
     /**
@@ -34,7 +34,7 @@ class SphinxDocument {
      *
      * @var string
      */
-    private $sphinxScriptCreateDocument  = "/var/www/wordpress/wp-content/plugins/doku_mummy-plugin/Sphinx/Scripts/createDocument.py";
+    private $sphinxScriptCreateDocument = plugin_dir_path( __FILE__ ) . "Sphinx/Scripts/createDocument.py";
 
 
     /**
@@ -42,7 +42,7 @@ class SphinxDocument {
      *
      * @var string
      */
-    private $sphinxScriptPermissions = "/var/www/wordpress/wp-content/plugins/doku_mummy-plugin/Sphinx/Scripts/./changePermission.sh";
+    private $sphinxScriptPermissions = plugin_dir_path( __FILE__ ) . "Sphinx/Scripts/./changePermission.sh";
 
     /**
      * Erstellt ein SphinxDocument-Objekt.
