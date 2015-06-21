@@ -18,8 +18,6 @@ class DocumentView{
 
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     
     public function viewAddAbschnitt(){
         //TODO: das erstllen eines neuen Abschnitts.
@@ -27,51 +25,17 @@ class DocumentView{
 
 
     public function viewGeneratedHtml(){
-=======
-=======
->>>>>>> cf4262e00fef1f122fbdaaa87fb11ac8ed4527f0
-
-
-
-    public function addAbschnitt(){
 
     }
 
 
-    public function generateHtml(){
-<<<<<<< HEAD
->>>>>>> cf4262e00fef1f122fbdaaa87fb11ac8ed4527f0
-=======
->>>>>>> cf4262e00fef1f122fbdaaa87fb11ac8ed4527f0
-
-    }
-
-
-<<<<<<< HEAD
-<<<<<<< HEAD
     public function viewRemoveAbschnitt(){
-=======
-    public function removeAbschnitt(){
->>>>>>> cf4262e00fef1f122fbdaaa87fb11ac8ed4527f0
-=======
-    public function removeAbschnitt(){
->>>>>>> cf4262e00fef1f122fbdaaa87fb11ac8ed4527f0
 
     }
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     public function viewGeneratedPDF(){
         //TODO: Output, soll im SphinxDocument.php generiert werden
-=======
-    public function generatePDF(){
-
->>>>>>> cf4262e00fef1f122fbdaaa87fb11ac8ed4527f0
-=======
-    public function generatePDF(){
-
->>>>>>> cf4262e00fef1f122fbdaaa87fb11ac8ed4527f0
     }
 
 
