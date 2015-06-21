@@ -147,7 +147,7 @@ class SphinxDocument {
 
         }*/
 
-        return $this->sProjectPath = $this->sphinxDir."/".$project_name;
+        $this->sProjectPath = $this->sphinxDir."/".$project_name;
     }
 
 
