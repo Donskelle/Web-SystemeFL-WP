@@ -18,10 +18,6 @@ require "DocumentAbschnitt.php";
  */
 class SphinxDocument {
 
-    private $dbDocuments = 'wp_dokumummy_documents';
-
-
-
     /**
      * Speicherordner der Sphinxprojekte.
      * @var
@@ -44,22 +40,63 @@ class SphinxDocument {
      */
     private $sphinxScriptPermissions = "Sphinx/Scripts/./changePermission.sh";
 
+
     /**
-     * Erstellt ein SphinxDocument-Objekt.
-     *
-     * @param string $id
+     * @var array
      */
-    public function __construct($projectpath){
+    private $aAbschnitteDesDokuments = array();
+
+
+    /**
+     * @var string
+     */
+    private $sProjectPath = "";
+
+    /**
+     * @var bool
+     */
+    private $documentDeleted = false;
+
+    /**
+     * Erlaubt das Erstellen eines neuen , aber auch das Aufrufen eines alten Projektes.
+     *
+     * Wenn ein projectPath, aber kein anderer Parameter übergeben wird, soll ein existierendes Projekt aufgerufen werden.
+     *
+     * Wenn projectName, authorName und userId übergeben werden, wird ein neues Projekt angelegt.
+     *
+     * @param string $projectName
+     * @param string $authorName
+     * @param string $userId
+     * @param string $projectPath
+     */
+    public function __construct($projectName="", $authorName="", $userId = "", $projectPath = ""){
         $this->sphinxDir = plugin_dir_path( __FILE__ ) . $this->sphinxDir ;
         $this->sphinxScriptCreateDocument = plugin_dir_path( __FILE__ ) . $this->sphinxScriptCreateDocument ;
         $this->sphinxScriptPermissions = plugin_dir_path( __FILE__ ) . $this->sphinxScriptPermissions ;
+
+        $this->sProjectPath = $projectPath;
+
+
+        if($this->sProjectPath != ""){
+
+            if($this->isProjectExisting($this->sProjectPath)){
+                $this->aAbschnitteDesDokuments = $this->extractAbschnitte($this->sProjectPath);
+            }else{
+                die("corrupted projectPath - SphinxDocument.php");
+            }
+
+        }else if($projectName != "" AND $authorName != "" AND $userId != ""){
+            $this->createNewDocument($projectName, $authorName, $userId);
+        }else{
+            die("falscher Parameter - SphinxDocument.php");
+        }
     }   
 
     /**
      * @param  DocumentAbschnitt $abschnitt
      */
     public function addAbschnitt($abschnitt){
-        
+        $this->isUnuseable();
 
 
         $abschnitt ->getFileName();
@@ -69,19 +106,24 @@ class SphinxDocument {
 
 
     /**
-     * Ertellt eine neues Sphinxproject
+     * Ertellt eine neues Sphinxproject im Filesystem.
      *
-     * @param $project_name Name des Projektes.
-     * @param $authorName Autorname, wahrscheinlich wp nicename.
-     * @param $userId Ersteller des Projekts.
+     * Wichtig: Keine DB Registrierung an dieser Stelle. Nur ausführen, nachdem das Projekt in der DB erstellt wurde.
+     *
+     * @param $project_name string Name des Projektes.
+     * @param $authorName string Autorname, wahrscheinlich wp nicename.
+     * @param $userId string Ersteller des Projekts.
      */
-    public function createNewDocument( $project_name, $authorName, $userId){
-        global $wpdb;
-        $project_path = $this->sphinxDir."/".$project_name;
-        $command = "python ". $this->sphinxScriptCreateDocument ." ".$project_path." ".$project_name." ".$authorName;
+    private function createNewDocument( $project_name, $authorName, $userId){
+        $this->sProjectPath = $this->sphinxDir."/".$project_name;
 
+        $command = "python ". $this->sphinxScriptCreateDocument ." ".$this->sProjectPath." ".$project_name." ".$authorName;
 
-        if(!$wpdb->insert($this->dbDocuments, array(
+        $output = shell_exec($command);
+        $this->changePermissions(); //gibt dem webserver schreib rechte für das neue Projekt.
+
+        //TODO: Dieser Teil soll in Document.php ausgelagert werden.
+       /* if(!$wpdb->insert($this->dbDocuments, array(
                 'name' => $project_name,
                 'path' => $project_path,
                 'layout' => "",
@@ -91,11 +133,8 @@ class SphinxDocument {
            echo "createNewDocument not successful";
         }else{
             //Erstelle das Projekt nur, wenn der Datenbankeintrag erfolgreich war. Verhindert komische Referenzen etc.
-            $output = shell_exec($command);
-            echo "<pre>$output</pre>";
-            echo $command;
-            $this->changePermissions(); //gibt dem webserver schreib rechte für das neue Projekt.
-        }
+
+        }*/
     }
 
 
@@ -105,11 +144,8 @@ class SphinxDocument {
      * @param $id ProjektID
      * @return bool
      */
-    private function isProjectExisting($id){
-        global $wpdb;
-        $projectName = $wpdb->get_results( "SELECT name FROM  wp_dokumummy_documents WHERE id=".$id);
-
-        return mysql_fetch_row($projectName); //TODO: Asutesten.
+    private function isProjectExisting($projekt_path){
+        return file_exists($projekt_path."/source/index.rst");
     }
 
     /**
@@ -121,18 +157,27 @@ class SphinxDocument {
     }
 
     /**
-     * Löscht ein Dokument
+     * Löscht das Dokument dieses Objektes.
+     *
+     * Wichtig: Das Dokument ist hier nach unbrauchbar.
      *
      * @param $project_id Id des Projektes.
      */
-    public function deleteDocument($project_path){
-        global $wpdb;
-        $command = "rm -rf $project_path";
+    public function deleteDocument(){
+        $this->isUnuseable();
+        $command = "rm -rf $this->sProjectPath";
         shell_exec("$command");
-
+        $this->documentDeleted = true;
     }
 
-
+    /**
+     * @throws Exception 
+     */
+    private function isUnuseable(){
+        if($this->documentDeleted){
+            throw new Exception("Das referenzierte Dokument besteht nicht mehr");
+        }
+    }
 
     /**
      * Diese Methode liest die Abschnitte des Sphinx-Projektes aus der index.rst und gibt sie als Array von DocumentAbschnit zurück.
@@ -141,8 +186,7 @@ class SphinxDocument {
      *
      * @return array
      */
-    public function getAbschnitte($project_path){
-        global $wpdb;
+    private function extractAbschnitte($project_path){
         //Abschnitte definiert in der index.rst unter Contents
         $abschnitte = array();
 
@@ -178,6 +222,13 @@ class SphinxDocument {
         return $abschnitte;
     }
 
-
+    /**
+     * @return array
+     * @throws Exception
+     */
+    public function getAbschnitte(){
+        $this->isUnuseable();
+        return $this->aAbschnitteDesDokuments;
+    }
 
 }
