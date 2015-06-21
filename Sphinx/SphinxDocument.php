@@ -114,7 +114,9 @@ class SphinxDocument {
         return $newId;
     }
 
-
+    public function getProjektPfad(){
+        return $this->sProjectPath;
+    }
 
     /**
      * Ertellt eine neues Sphinxproject im Filesystem.
