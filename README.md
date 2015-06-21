@@ -9,6 +9,8 @@ Man darf dem Repo nur joinen, wenn man ein cooles Profilbild hat!!
 
 * Bitte die Sudo file ändern, sonst laufen die ganzen scripts etc nicht: https://stackoverflow.com/questions/3173201/sudo-in-php-exec
 
+* die min-js vom AceEditor bitte an der Stelle Gui_FrontEnd/JS/AceEditor einbinden.
+
 
 ##Ressourcen:
 
