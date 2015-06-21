@@ -13,7 +13,6 @@
  *
  *
  * Stellt einen Abschnitt eines Sphinxprojekts dar.
- * TODO: IMplement
  */
 class DocumentAbschnitt {
 

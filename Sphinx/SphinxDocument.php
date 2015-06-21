@@ -69,7 +69,7 @@ class SphinxDocument {
      * @param string $userId
      * @param string $projectPath
      */
-    public function __construct($projectName="", $authorName="", $userId = "", $projectPath = ""){
+    public function __construct($projectName="", $authorName="", $projectPath = ""){
         $this->sphinxDir = plugin_dir_path( __FILE__ ) . $this->sphinxDir ;
         $this->sphinxScriptCreateDocument = plugin_dir_path( __FILE__ ) . $this->sphinxScriptCreateDocument ;
         $this->sphinxScriptPermissions = plugin_dir_path( __FILE__ ) . $this->sphinxScriptPermissions ;
@@ -85,22 +85,33 @@ class SphinxDocument {
                 die("corrupted projectPath - SphinxDocument.php");
             }
 
-        }else if($projectName != "" AND $authorName != "" AND $userId != ""){
-            $this->createNewDocument($projectName, $authorName, $userId);
+        }else if($projectName != "" AND $authorName != ""){
+            $this->createNewDocument($projectName, $authorName);
         }else{
             die("falscher Parameter - SphinxDocument.php");
         }
     }   
 
     /**
-     * @param  DocumentAbschnitt $abschnitt
+     *
+     * @param  $content string
      */
-    public function addAbschnitt($abschnitt){
+    public function addAbschnitt($content){
         $this->isUnuseable();
-
-
+        $abschnitt = new DocumentAbschnitt(("doc".$this->getNewAbschnittFileName()), $content);
         $abschnitt ->getFileName();
         //TODO: Write to filesystem
+    }
+
+    private function getNewAbschnittFileName(){
+        $newId = 0;
+
+        if(count($this->aAbschnitteDesDokuments) != 0){
+            //Der idWert des letzten Abschnittes + 1
+            $newId = intval(substr($this->aAbschnitteDesDokuments[count($this->aAbschnitteDesDokuments-1)], 3)) + 1;
+
+        }
+        return $newId;
     }
 
 
@@ -111,10 +122,8 @@ class SphinxDocument {
      * Wichtig: Keine DB Registrierung an dieser Stelle. Nur ausführen, nachdem das Projekt in der DB erstellt wurde.
      *
      * @param $project_name string Name des Projektes.
-     * @param $authorName string Autorname, wahrscheinlich wp nicename.
-     * @param $userId string Ersteller des Projekts.
-     */
-    private function createNewDocument( $project_name, $authorName, $userId){
+     * @param $authorName string Autorname, wahrscheinlich wp nicename. */
+    private function createNewDocument( $project_name, $authorName){
         $this->sProjectPath = $this->sphinxDir."/".$project_name;
 
         $command = "python ". $this->sphinxScriptCreateDocument ." ".$this->sProjectPath." ".$project_name." ".$authorName;
@@ -135,13 +144,16 @@ class SphinxDocument {
             //Erstelle das Projekt nur, wenn der Datenbankeintrag erfolgreich war. Verhindert komische Referenzen etc.
 
         }*/
+
+        return $this->sProjectPath = $this->sphinxDir."/".$project_name;
     }
 
 
     /**
      * Überprüft ob ein Projekt bereits vorhanden ist.
      *
-     * @param $id ProjektID
+     *
+     * @param $projekt_path string Projektpfad.
      * @return bool
      */
     private function isProjectExisting($projekt_path){
@@ -171,6 +183,10 @@ class SphinxDocument {
     }
 
     /**
+     * Wenn das referenzierte Dokument gelöscht wurde, aber das Objekt wieder verwendet wird, wird eine Excepton geworfen.
+     *
+     * Alle Publicmethods dieser Klasse haben diese Methode im Funktionskörper.
+     *
      * @throws Exception 
      */
     private function isUnuseable(){
