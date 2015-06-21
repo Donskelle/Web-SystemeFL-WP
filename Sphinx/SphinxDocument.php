@@ -22,7 +22,7 @@ class SphinxDocument {
      * Speicherordner der Sphinxprojekte.
      * @var
      */
-    private $sphinxDir = "SphinxProjects";
+    private $sphinxDir = "Sphinx/SphinxProjects";
 
 
     /**
@@ -30,7 +30,7 @@ class SphinxDocument {
      *
      * @var string
      */
-    private $sphinxScriptCreateDocument = "Scripts/createDocument.py";
+    private $sphinxScriptCreateDocument = "Sphinx/Scripts/createDocument.py";
 
 
     /**
@@ -38,7 +38,7 @@ class SphinxDocument {
      *
      * @var string
      */
-    private $sphinxScriptPermissions = "Scripts/./changePermission.sh";
+    private $sphinxScriptPermissions = "Sphinx/Scripts/./changePermission.sh";
 
 
     /**
