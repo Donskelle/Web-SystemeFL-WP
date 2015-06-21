@@ -66,6 +66,8 @@ class Documents {
         $documents = $wpdb->get_results("SELECT * FROM $this->dbTableNameDocumentInGroup dig
                                   INNER JOIN $this->dbTableNameDocuments d on dig.document_id = d.id
                                   WHERE dig.group_id = $groupId");
+
+        return $documents;
     }
 
     /**

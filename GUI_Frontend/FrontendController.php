@@ -42,7 +42,8 @@ class ShowCustomField {
                         break;
 
                     case 'Dokumente':
-                        $content .= "Dokumente";
+                        //$content .= "Dokumente";
+                        require_once("Views/DokumentView.php");
                         break;
 
                     case 'Gruppen':

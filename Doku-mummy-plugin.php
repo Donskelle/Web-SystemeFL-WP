@@ -14,6 +14,7 @@ require_once( 'Administration/RoleSetup.php' );
 
 require_once( 'Models/Groups.php' );
 require_once( 'Models/Documents.php' );
+require_once('Sphinx/SphinxDocument.php');
 
 require_once('GUI_Backend/Admin_GUI.php');
 require_once('GUI_Backend/Moderator_GUI.php');
@@ -24,7 +25,7 @@ require_once('GUI_Frontend/FrontendController.php');
 require_once('GUI_Frontend/Widgets/Menu_Widget.php');
 
 
-require_once('Sphinx/SphinxDocument.php');
+
 
 
 /*
