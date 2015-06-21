@@ -3,13 +3,39 @@ class Groups {
 
 	private $dbTableGroup = "dokumummy_groups";
 	private $dbTableUserInGroup = "dokumummy_users_in_groups";
-
+private $dbTableDocumentInGroup = "dokumummy_documents_in_groups";
 
 	function __construct() {
 		global $wpdb;
-
+		$this->dbTableDocumentInGroup = $wpdb->prefix . $this->dbTableDocumentInGroup;
 		$this->dbTableGroup = $wpdb->prefix . $this->dbTableGroup;
 		$this->dbTableUserInGroup = $wpdb->prefix . $this->dbTableUserInGroup;
+	}
+
+	public function selectGroup($group_id, $doc_id) {
+		global $wpdb;
+		$sql = $wpdb->delete(
+			$this->dbTableDocumentInGroup, 
+			array( 
+				'document_id' => $doc_id
+			)
+		);
+		if($group_id == "none")
+			return; 
+		$sql = $wpdb->insert(
+			$this->dbTableDocumentInGroup, 
+			array( 
+				'group_id' => $group_id, 
+				'document_id' => $doc_id
+			)
+		);
+	}
+	public function getDocumentGroups($doc_id) {
+		global $wpdb;
+		$groups = array();
+		$groups["groups"] = $this->getUserGroups(get_current_user_id());
+		$groups["active"] = $wpdb->get_row( "SELECT * FROM  $this->dbTableDocumentInGroup WHERE document_id=$doc_id");
+		return $groups;
 	}
 
     /**
