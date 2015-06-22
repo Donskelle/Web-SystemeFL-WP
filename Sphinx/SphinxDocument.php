@@ -74,7 +74,7 @@ class SphinxDocument {
      * @param string $authorName
      * @param string $projectPath
      */
-    public function __construct($projectName="", $authorName="", $projectPath = ""){
+    public function __construct($projectName="", $authorName="", $projectPath = ""){ //TODO: Change to ID.
         $this->sphinxDir = plugin_dir_path( __FILE__ ) . $this->sphinxDir ;
         $this->sphinxScriptCreateDocument = plugin_dir_path( __FILE__ ) . $this->sphinxScriptCreateDocument ;
         $this->sphinxScriptPermissions = plugin_dir_path( __FILE__ ) . $this->sphinxScriptPermissions ;
