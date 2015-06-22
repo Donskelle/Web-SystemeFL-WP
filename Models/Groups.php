@@ -30,6 +30,8 @@ private $dbTableDocumentInGroup = "dokumummy_documents_in_groups";
 			)
 		);
 	}
+
+	
 	public function getDocumentGroups($doc_id) {
 		global $wpdb;
 		$groups = array();

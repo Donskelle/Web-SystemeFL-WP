@@ -89,6 +89,18 @@ class Documents {
         ));
     }
 
+    public function getAbschnitte($path) {
+      global $wpdb;
+
+      $sphinx = new SphinxDocument("", "", $path);
+      return $sphinx->getAbschnitte();
+    }
+
+    public function addAbschnitt ($content, $path) {
+      $sphinx = new SphinxDocument("", "", $path);
+      $sphinx->addAbschnitt($content);
+    }
+
 
     /**
      * @param $document_id

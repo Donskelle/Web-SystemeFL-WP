@@ -26,11 +26,17 @@ class DocumentView{
                 $group = new Groups();
                 $group->selectGroup($_POST["selectedGroup"], $_POST["document_id"]);
             }
+            else if($_POST["operation"] == "addAbschnitt") {
+                $doc->addAbschnitt($_POST["content"],$_POST["document_path"] );
+            }
         }
         if(isset($_GET["id"]))
         {
             $document = $doc->getDocument($_GET["id"]);
+            print_r($doc->getAbschnitte($document->path));
             $this->viewDocument($document);
+
+
         }
         else if(isset($_GET["create"])) {
             $this->viewDocumentCreateForm($_GET["create"]);
@@ -42,8 +48,17 @@ class DocumentView{
         }
     }
     
-    public function viewAddAbschnitt(){
-        //TODO: das erstllen eines neuen Abschnitts.
+    public function viewAddAbschnitt($docPath){
+        $ouput = array();
+        $ouput[] = "<h2>Abschnitt hinzufügen</h2>";
+        $ouput[] = '<form action="" method="post">';
+        $ouput[] = '<input type="hidden" name="operation" value="addAbschnitt"/>';
+        $ouput[] = '<input type="hidden" name="document_path" value="' . $docPath . '"/>';
+        $ouput[] = '<textarea name="content" value=""></textarea>';
+        $ouput[] = '<button type="submit">Hinzufügen</button>';
+        $ouput[] = '</form>';
+
+        echo implode("\n", $ouput);
     }
     public function viewGeneratedHtml(){
     }
@@ -53,11 +68,13 @@ class DocumentView{
     public function viewDocument($document) {
         $user = wp_get_current_user();
         $output = array();
-        echo"<h2>$document->name</h2>";
+
+        echo "<h2>$document->name</h2>";
         if($user->ID == $document->user_id)
         {
             $this->viewDeleteForm($document->id);
             $this->viewFormSelectGroup($document->id);
+            $this->viewAddAbschnitt($document->path);
         }
     }
 
