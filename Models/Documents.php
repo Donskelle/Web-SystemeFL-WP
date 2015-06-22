@@ -89,15 +89,13 @@ class Documents {
         ));
     }
 
-    public function getAbschnitte($path) {
-      global $wpdb;
-
-      $sphinx = new SphinxDocument("", "", $path);
+    public function getAbschnitte($docId) {
+      $sphinx = new SphinxDocument("", "", $docId);
       return $sphinx->getAbschnitte();
     }
 
-    public function addAbschnitt ($content, $path) {
-      $sphinx = new SphinxDocument("", "", $path);
+    public function addAbschnitt ($content, $doc_id) {
+      $sphinx = new SphinxDocument("", "", $doc_id);
       $sphinx->addAbschnitt($content);
     }
 
@@ -105,15 +103,14 @@ class Documents {
     /**
      * @param $document_id
      */
-    public function deleteDocument($id){
+    public function deleteDocument($document_id){
         global $wpdb;
-        $document = $wpdb->get_row("SELECT * FROM $this->dbTableNameDocuments WHERE id=$id");
-        
-        echo $document->path;
-        $sphinx = new SphinxDocument("", "", $document->path);
+        $document = $wpdb->get_row("SELECT * FROM $this->dbTableNameDocuments WHERE id=$document_id");
+
+        $sphinx = new SphinxDocument("", "", $document->id);
         $sphinx->deleteDocument();
         $wpdb->delete($this->dbTableNameDocuments, array(
-            'id' => $id
+            'id' => $document_id
         ));
     }
 
@@ -121,19 +118,19 @@ class Documents {
 
     public function createNewDocument($project_name, $authorName, $userId) {
         global $wpdb;
-        $sphinx = new SphinxDocument($project_name, $authorName);
-        $project_path = $sphinx->getProjektPfad();
+
+        //$project_path = $sphinx->getProjektPfad();
 
         if(!$wpdb->insert($this->dbTableNameDocuments, array(
                 'name' => $project_name,
-                'path' => $project_path,
+                'path' => "",
                 'layout' => "",
                 'updated_at' => current_time('mysql'),
                 'user_id' => $userId
         ))) {
+            die("Eintrag in der DB nicht erfolgreich - Models/Documents.php");
         }else{
-            //Erstelle das Projekt nur, wenn der Datenbankeintrag erfolgreich war. Verhindert komische Referenzen etc.
-            
+            $sphinx = new SphinxDocument($project_name, $authorName, $wpdb->insert_id);//die id nicht vergessen!
         }
     }
 

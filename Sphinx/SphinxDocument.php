@@ -22,7 +22,7 @@ class SphinxDocument {
      * Speicherordner der Sphinxprojekte.
      * @var
      */
-    private $sphinxDir = "/SphinxProjects";
+    private $sphinxDirPath = "SphinxProjects";
 
 
     /**
@@ -30,7 +30,7 @@ class SphinxDocument {
      *
      * @var string
      */
-    private $sphinxScriptCreateDocument = "/Scripts/createDocument.py";
+    private $sphinxScriptCreateDocumentPath = "Scripts/createDocument.py";
 
 
     /**
@@ -38,7 +38,7 @@ class SphinxDocument {
      *
      * @var string
      */
-    private $sphinxScriptPermissions = "/Scripts/./changePermission.sh";
+    private $sphinxScriptPermissionsPath = "Scripts/./changePermission.sh";
 
 
     /**
@@ -57,43 +57,43 @@ class SphinxDocument {
      */
     private $documentDeleted = false;
 
+    private $sProjectId = "";
 
     /**
      * @var int
      */
-    private $internalAbschnittCoutner = 0;
+    private $internalAbschnittCounter = 0;
 
     /**
      * Erlaubt das Erstellen eines neuen , aber auch das Aufrufen eines alten Projektes.
      *
-     * Wenn ein projectPath, aber kein anderer Parameter übergeben wird, soll ein existierendes Projekt aufgerufen werden.
+     * Wenn ein projectId, aber kein anderer Parameter übergeben wird, soll ein existierendes Projekt aufgerufen werden.
      *
-     * Wenn projectName, authorName und userId übergeben werden, wird ein neues Projekt angelegt.
+     * Wenn projectName, authorName und projectId übergeben werden, wird ein neues Projekt angelegt.
      *
      * @param string $projectName
      * @param string $authorName
-     * @param string $projectPath
+     * @param string $projectId
      */
-    public function __construct($projectName="", $authorName="", $projectPath = ""){ //TODO: Change to ID.
-        $this->sphinxDir = plugin_dir_path( __FILE__ ) . $this->sphinxDir ;
-        $this->sphinxScriptCreateDocument = plugin_dir_path( __FILE__ ) . $this->sphinxScriptCreateDocument ;
-        $this->sphinxScriptPermissions = plugin_dir_path( __FILE__ ) . $this->sphinxScriptPermissions ;
-
-        $this->sProjectPath = $projectPath;
+    public function __construct($projectName="", $authorName="", $projectId = ""){ //TODO: Change to ID.
+        $this->sphinxDirPath = plugin_dir_path( __FILE__ ) . $this->sphinxDirPath ;
+        $this->sphinxScriptCreateDocumentPath = plugin_dir_path( __FILE__ ) . $this->sphinxScriptCreateDocumentPath ;
+        $this->sphinxScriptPermissionsPath = plugin_dir_path( __FILE__ ) . $this->sphinxScriptPermissionsPath ;
 
 
-        if($this->sProjectPath !== ""){
+        //Felder mit neuen Werten versorgen.
+        $this->sProjectId = $projectId;
+        $this->sProjectPath = $this->sphinxDirPath."/".$this->sProjectId;
 
-            if($this->isProjectExisting($this->sProjectPath)){
-                $this->aAbschnitteDesDokuments = $this->extractAbschnitte($this->sProjectPath);
-            }else{
-                die("corrupted projectPath - SphinxDocument.php");
-            }
-
-        }else if($projectName !== "" AND $authorName !== ""){
+        if($projectName !== "" AND $authorName !== "") {
             $this->createNewDocument($projectName, $authorName);
-        }else{
-            die("falscher Parameter - SphinxDocument.php");
+        }else {
+            $this->sProjectPath = $this->sProjectPath."/".$this->extractProjectName($this->sProjectPath);
+            if ($this->isProjectExisting($this->sProjectPath)) {
+                $this->aAbschnitteDesDokuments = $this->extractAbschnitte($this->sProjectPath);
+            } else {
+                die("corrupted projectPath - SphinxDocument.php: $this->sProjectPath");
+            }
         }
     }
 
@@ -113,6 +113,13 @@ class SphinxDocument {
         $this->aAbschnitteDesDokuments[] = $abschnitt;
         return $abschnitt->getAbschnittId();
     }
+
+
+    private function extractProjectName(){
+        $scanDir = array_diff(scandir($this->sProjectPath), array(".", "..")); //scandir gibt auch die verzeichnisse "." und ".." zurück. Diese müssen entfernt werden.
+        return array_pop($scanDir); //das letzte u. einzige Element ist der Verzeichnisname.
+    }
+
 
     /**
      * Updatet einen Abschnitt.
@@ -143,21 +150,24 @@ class SphinxDocument {
 
 
     /**
-     *
+     * WICHTIG: Führe diese Methode aus, bevor aAbschnitteDesDokumentes erweitert usw wird.
      *
      * @param $abschnitt
      */
     private function updateIndexFile($abschnitt){
         $indexContent = file_get_contents($this->sProjectPath."/source/index.rst");
+        echo "IndexCntent<pre>$indexContent</pre>";
+        //finde die verlinkten abschnitte
 
-        $search_string = "";
+
+        $search_string = "   :maxdepth: 2".PHP_EOL.PHP_EOL; //Enspricht dem Keyword unter toctree in der index.rst
         foreach($this->aAbschnitteDesDokuments as $ab){
-            $search_string .="  ".$ab->getFileName().PHP_EOL;
+            $search_string .=PHP_EOL."   ".$ab->getFileName();
         }
 
-        $replace_str = $search_string."  ".$abschnitt->getFileName().PHP_EOL;
+        $replace_str = $search_string."   ".$abschnitt->getFileName().PHP_EOL;
 
-        $str = str_replace($search_string, $replace_str, $indexContent);
+        $str = preg_replace("/$search_string/s", $replace_str, $indexContent);
         file_put_contents($this->sProjectPath."/source/index.rst", $str);
     }
 
@@ -170,7 +180,7 @@ class SphinxDocument {
      * @param $abschnitt DocumentAbschnitt
      */
     private function buildAbschnittFile($abschnitt){
-        $abschnittFile = fopen($this->sProjectPath."/source/".$abschnitt->getFileName(), w);
+        $abschnittFile = fopen($this->sProjectPath."/source/".$abschnitt->getFileName().".rst", 'w');
         fwrite($abschnittFile, $abschnitt->getAbschnittContent());
         fclose($abschnittFile);
     }
@@ -196,7 +206,7 @@ class SphinxDocument {
      * @return int
      */
     private function generateAbschnittId(){
-        $tmp = $this->internalAbschnittCoutner;
+        $tmp = $this->internalAbschnittCounter;
         $this->internalAbschnittCounter++;
         return $tmp;
     }
@@ -211,21 +221,34 @@ class SphinxDocument {
     }
 
     /**
-     * Ertellt eine neues Sphinxproject im Filesystem.
+     * Ertellt eine neues Sphinxproject im Filesystem und legt einen ersten Abschnitt an.
      *
      * Wichtig: Keine DB Registrierung an dieser Stelle. Nur ausführen, nachdem das Projekt in der DB erstellt wurde.
      *
      * @param $project_name string Name des Projektes.
      * @param $authorName string Autorname, wahrscheinlich wp nicename. */
     private function createNewDocument( $project_name, $authorName){
-        $this->sProjectPath = $this->sphinxDir."/".$project_name;
 
-        $command = "python ". $this->sphinxScriptCreateDocument ." ".$this->sProjectPath." ".$project_name." ".$authorName;
+        //Erstellt das Verzeichnis basierend auf der im construktor übergebenen ID.
+        $res = mkdir($this->sphinxDirPath."/".$this->sProjectId);
+        if(!$res){
+            die("Verzeichnis nicht erstellt - SphinxDocument.php");
+        }
+        //var/www/wordpress/...../Sphinx/SphinxProjects/id/projectName
+        $this->sProjectPath = $this->sphinxDirPath."/".$this->sProjectId."/".$project_name;
+
+        $command = "python ". $this->sphinxScriptCreateDocumentPath ." ".$this->sProjectPath." ".$project_name." ".$authorName;
 
         $output = shell_exec($command);
+
+        //Erstelle den ersten Abschnitt.
+        $this->addAbschnitt("h1".PHP_EOL."==");
+
         $this->changePermissions(); //gibt dem webserver schreib rechte für das neue Projekt.
 
-        $this->sProjectPath = $this->sphinxDir."/".$project_name;
+
+
+
     }
 
 
@@ -237,6 +260,7 @@ class SphinxDocument {
      * @return bool
      */
     private function isProjectExisting($projekt_path){
+        echo "projectPath: $projekt_path/source/index.rst";
         return file_exists($projekt_path."/source/index.rst");
     }
 
@@ -245,7 +269,7 @@ class SphinxDocument {
      * Führe dies nach jeder Änderung aus.
      */
     private function changePermissions(){
-        shell_exec("sudo ".$this->sphinxScriptPermissions);
+        shell_exec("sudo ".$this->sphinxScriptPermissionsPath);
     }
 
     /**
@@ -307,12 +331,14 @@ class SphinxDocument {
 
         //Reduzieren des Arrays.
         $doc_results = array();
-        foreach($doc_results_array as $val ){
-            $doc_results[] = $val[0];
+        if(count($doc_results_array) > 0){ //gibt ein leeres array im array zurück. Die Länge zählt als 1.
+            foreach($doc_results_array as $val ){
+                $doc_results[] = $val[0];
+            }
         }
         //Erzeugen des Abschnittarrayss
         foreach($doc_results as $res){
-            $abschnitte[] = new DocumentAbschnitt($res, file_get_contents($this->sphinxDir."/janTest/source/$res".".rst"), $this->generateAbschnittId());
+            $abschnitte[] = new DocumentAbschnitt($res, file_get_contents($this->sProjectPath."/source/$res".".rst"), $this->generateAbschnittId());
         }
 
         return $abschnitte;
@@ -324,7 +350,22 @@ class SphinxDocument {
      */
     public function getAbschnitte(){
         $this->isUnuseable();
-        return $this->aAbschnitteDesDokuments;
+        $abschnitteContent = [];
+
+        foreach($this->aAbschnitteDesDokuments as $ab){
+            $abschnitteContent[] = array(
+                "id" => $ab->getAbschnittId(),
+                "filename" => $ab->getFileName(),
+                "content" => $ab->getAbschnittContent()
+            );
+        }
+
+//        echo "<br><pre>";
+//        echo "abschnitteContent: <br>";
+//        print_r($abschnitteContent);
+//        echo "</pre>";
+
+        return $abschnitteContent;
     }
 
     public function removeAbschnitt($abschnittId){

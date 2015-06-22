@@ -33,7 +33,10 @@ class DocumentView{
         if(isset($_GET["id"]))
         {
             $document = $doc->getDocument($_GET["id"]);
-            print_r($doc->getAbschnitte($document->path));
+            echo "<br>viewDebug - getabschnitte";
+            echo "<pre>";
+            print_r($doc->getAbschnitte($document->id));
+            echo "<pre>";
             $this->viewDocument($document);
 
 
@@ -48,17 +51,17 @@ class DocumentView{
         }
     }
     
-    public function viewAddAbschnitt($docPath){
-        $ouput = array();
-        $ouput[] = "<h2>Abschnitt hinzufügen</h2>";
-        $ouput[] = '<form action="" method="post">';
-        $ouput[] = '<input type="hidden" name="operation" value="addAbschnitt"/>';
-        $ouput[] = '<input type="hidden" name="document_path" value="' . $docPath . '"/>';
-        $ouput[] = '<textarea name="content" value=""></textarea>';
-        $ouput[] = '<button type="submit">Hinzufügen</button>';
-        $ouput[] = '</form>';
+    public function viewAddAbschnitt($doc_id){
+        $output = array();
+        $output[] = "<h2>Abschnitt hinzufügen</h2>";
+        $output[] = '<form action="" method="post">';
+        $output[] = '<input type="hidden" name="operation" value="addAbschnitt"/>';
+        $output[] = '<input type="hidden" name="document_id" value="' . $doc_id . '"/>';
+        $output[] = '<textarea name="content" value=""></textarea>';
+        $output[] = '<button type="submit">Hinzufügen</button>';
+        $output[] = '</form>';
 
-        echo implode("\n", $ouput);
+        echo implode("\n", $output);
     }
     public function viewGeneratedHtml(){
     }
