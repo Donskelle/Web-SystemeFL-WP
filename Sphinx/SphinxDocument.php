@@ -22,7 +22,7 @@ class SphinxDocument {
      * Speicherordner der Sphinxprojekte.
      * @var
      */
-    private $sphinxDir = "/SphinxProjects";
+    private $sphinxDir = "SphinxProjects";
 
 
     /**
@@ -30,7 +30,7 @@ class SphinxDocument {
      *
      * @var string
      */
-    private $sphinxScriptCreateDocument = "/Scripts/createDocument.py";
+    private $sphinxScriptCreateDocument = "Scripts/createDocument.py";
 
 
     /**
@@ -38,7 +38,7 @@ class SphinxDocument {
      *
      * @var string
      */
-    private $sphinxScriptPermissions = "/Scripts/./changePermission.sh";
+    private $sphinxScriptPermissions = "Scripts/./changePermission.sh";
 
 
     /**
@@ -57,12 +57,6 @@ class SphinxDocument {
      */
     private $documentDeleted = false;
 
-
-    /**
-     * @var int
-     */
-    private $internalAbschnittCoutner = 0;
-
     /**
      * Erlaubt das Erstellen eines neuen , aber auch das Aufrufen eines alten Projektes.
      *
@@ -72,6 +66,7 @@ class SphinxDocument {
      *
      * @param string $projectName
      * @param string $authorName
+     * @param string $userId
      * @param string $projectPath
      */
     public function __construct($projectName="", $authorName="", $projectPath = ""){ //TODO: Change to ID.
@@ -82,7 +77,7 @@ class SphinxDocument {
         $this->sProjectPath = $projectPath;
 
 
-        if($this->sProjectPath !== ""){
+        if($this->sProjectPath != ""){
 
             if($this->isProjectExisting($this->sProjectPath)){
                 $this->aAbschnitteDesDokuments = $this->extractAbschnitte($this->sProjectPath);
@@ -90,123 +85,36 @@ class SphinxDocument {
                 die("corrupted projectPath - SphinxDocument.php");
             }
 
-        }else if($projectName !== "" AND $authorName !== ""){
+        }else if($projectName != "" AND $authorName != ""){
             $this->createNewDocument($projectName, $authorName);
         }else{
             die("falscher Parameter - SphinxDocument.php");
         }
-    }
+    }   
 
     /**
-     * Erzeugt einen neuen Abschnitt.
-     *
-     * Erzeugt ein Abschnittobjekt, schreibt es ins Filesystem, updatet die index.rst und hängt die Abschnitt ans interne Abschnittarray.
      *
      * @param  $content string
-     * @return string
      */
     public function addAbschnitt($content){
         $this->isUnuseable();
-        $abschnitt = new DocumentAbschnitt(("doc".$this->getNewAbschnittFileName()), $content, $this->generateAbschnittId());
-        $this->buildAbschnittFile($abschnitt);
-        $this->updateIndexFile($abschnitt);
-        $this->aAbschnitteDesDokuments[] = $abschnitt;
-        return $abschnitt->getAbschnittId();
+        $abschnitt = new DocumentAbschnitt(("doc".$this->getNewAbschnittFileName()), $content);
+        $abschnitt ->getFileName();
+        //TODO: Write to filesystem
     }
 
-    /**
-     * Updatet einen Abschnitt.
-     *
-     *
-     * @param $abschnittId string Die Id des Abschnitts.
-     * @param $content
-     * @return bool Wurde ein Abschnitt gefunden und geupdated?
-     * @throws Exception
-     */
-    public function updateAbschnitt($abschnittId, $content){
-        $this->isUnuseable();
-
-        //wurde ein Abschnitt geupdated?
-        $bUpdated = false;
-        //Der Abschnitt, der upgedated werden soll.
-        $updateAbschnitt = null;
-        foreach($this->aAbschnitteDesDokuments as $abschnitt){
-            if($abschnitt->getAbschnittId() == $abschnittId){
-                $abschnitt->setAbschnittContent($content);
-                $this->buildAbschnittFile($abschnitt);
-                $bUpdated = true;
-                break;
-            }
-        }
-        return $bUpdated;
-    }
-
-
-    /**
-     *
-     *
-     * @param $abschnitt
-     */
-    private function updateIndexFile($abschnitt){
-        $indexContent = file_get_contents($this->sProjectPath."/source/index.rst");
-
-        $search_string = "";
-        foreach($this->aAbschnitteDesDokuments as $ab){
-            $search_string .="  ".$ab->getFileName().PHP_EOL;
-        }
-
-        $replace_str = $search_string."  ".$abschnitt->getFileName().PHP_EOL;
-
-        $str = str_replace($search_string, $replace_str, $indexContent);
-        file_put_contents($this->sProjectPath."/source/index.rst", $str);
-    }
-
-
-    /**
-     * Schreibt den Inhalt des Abschnittes in eine Datei mit dem Filenamen, der im Abschnitt gespeichert ist.
-     *
-     * Die File liegt im source-Ordner des Projektes.
-     *
-     * @param $abschnitt DocumentAbschnitt
-     */
-    private function buildAbschnittFile($abschnitt){
-        $abschnittFile = fopen($this->sProjectPath."/source/".$abschnitt->getFileName(), w);
-        fwrite($abschnittFile, $abschnitt->getAbschnittContent());
-        fclose($abschnittFile);
-    }
-
-    /**
-     * @return int
-     */
     private function getNewAbschnittFileName(){
         $newId = 0;
 
-        if(count($this->aAbschnitteDesDokuments) !== 0){
+        if(count($this->aAbschnitteDesDokuments) != 0){
             //Der idWert des letzten Abschnittes + 1
             $newId = intval(substr($this->aAbschnitteDesDokuments[count($this->aAbschnitteDesDokuments-1)], 3)) + 1;
+
         }
         return $newId;
     }
 
-    /**
-     * Erzeugt eine AbschnittId.
-     *
-     * Diese Id ist im jeweiligen Abschnitt gespeichert und soll an den Client geschickt werden.
-     *
-     * @return int
-     */
-    private function generateAbschnittId(){
-        $tmp = $this->internalAbschnittCoutner;
-        $this->internalAbschnittCounter++;
-        return $tmp;
-    }
-
-    /**
-     * @return string
-     * @throws Exception
-     */
     public function getProjektPfad(){
-        $this->isUnuseable();
         return $this->sProjectPath;
     }
 
@@ -224,6 +132,20 @@ class SphinxDocument {
 
         $output = shell_exec($command);
         $this->changePermissions(); //gibt dem webserver schreib rechte für das neue Projekt.
+
+        //TODO: Dieser Teil soll in Document.php ausgelagert werden.
+       /* if(!$wpdb->insert($this->dbDocuments, array(
+                'name' => $project_name,
+                'path' => $project_path,
+                'layout' => "",
+                'updated_at' => current_time('mysql'),
+                'user_id' => $userId
+        ))){
+           echo "createNewDocument not successful";
+        }else{
+            //Erstelle das Projekt nur, wenn der Datenbankeintrag erfolgreich war. Verhindert komische Referenzen etc.
+
+        }*/
 
         $this->sProjectPath = $this->sphinxDir."/".$project_name;
     }
@@ -310,9 +232,9 @@ class SphinxDocument {
         foreach($doc_results_array as $val ){
             $doc_results[] = $val[0];
         }
-        //Erzeugen des Abschnittarrayss
+
         foreach($doc_results as $res){
-            $abschnitte[] = new DocumentAbschnitt($res, file_get_contents($this->sphinxDir."/janTest/source/$res".".rst"), $this->generateAbschnittId());
+            $abschnitte[] = new DocumentAbschnitt($res, file_get_contents($this->sphinxDir."/janTest/source/$res".".rst"));
         }
 
         return $abschnitte;
@@ -325,10 +247,6 @@ class SphinxDocument {
     public function getAbschnitte(){
         $this->isUnuseable();
         return $this->aAbschnitteDesDokuments;
-    }
-
-    public function removeAbschnitt($abschnittId){
-        //TODO: Implementieren.
     }
 
 }

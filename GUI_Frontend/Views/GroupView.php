@@ -6,7 +6,8 @@ new GroupView();
 class GroupView {
 
 	public function __construct() {
-		$groups = new Groups();
+        $groups = new Groups();
+		$doc = new Documents();
 
         /**
          * Wenn gepostet wurde
@@ -38,8 +39,9 @@ class GroupView {
             {
                 $detailGroup->userToAdd = $groups->getUserNotInGroup($_GET["id"]);
             }
+            $documentsInGroup = $doc->getDocumentsInGroup($_GET["id"]);
 
-            echo $this->detailView($detailGroup);
+            echo $this->detailView($detailGroup, $documentsInGroup);
         }
 
         // Allgemeine Gruppenansicht
@@ -104,15 +106,42 @@ class GroupView {
      * @param $arDetailGroup
      * @return string
      */
-    private function detailView($arDetailGroup) {
+    private function detailView($arDetailGroup, $documents) {
         $output = array();
         $currentUser = wp_get_current_user();
 
+        print_r($documents);
         $output[] = "<div class='groupView'>";
             $output[] = "<h2>" . $arDetailGroup->name . "</h2>";
 
             if($arDetailGroup->description != "" && $arDetailGroup->description != null)
                 $output[] = "<p>" . $arDetailGroup->description . "</p>";
+
+
+
+            $output[] = "<div class='dm_documents'>";
+            $output[] = "<h2>Dokumente von " . $arDetailGroup->name . "</h2>";
+            if(count($documents) > 0)
+            {   
+                $pagesFilter = array(
+                    'post_type' => 'page',
+                    'meta_key' => 'custom_element_grid_class_meta_box',
+                    'meta_value' => 'Dokumente'
+                );
+
+                $pages = get_posts($pagesFilter);
+                $documentLink = get_permalink($pages[0]->ID);
+
+
+
+                foreach($documents as $document) {
+                    $output[] = "<p><a href='" . $documentLink . "?id=" . $document->id . "'>" . $document->name . "</a></p>";
+                }
+            }
+            else {
+                $output[] = "<p>Bisher keine Dokumente hinzugefügt</p>";
+            }
+            $output[] = "</div>";
 
             $output[] = "<div class='users'>";
             $output[] = "<h2>Benutzer von " . $arDetailGroup->name . "</h2>";
