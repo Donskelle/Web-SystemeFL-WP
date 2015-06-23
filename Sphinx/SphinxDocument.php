@@ -48,6 +48,7 @@ class SphinxDocument {
 
 
     /**
+     * Der Pfad zum Projektordner
      * @var string
      */
     private $sProjectPath = "";
@@ -57,9 +58,14 @@ class SphinxDocument {
      */
     private $documentDeleted = false;
 
+    /**
+     * Die Id des Projektes in der Datenbank
+     * @var string
+     */
     private $sProjectId = "";
 
     /**
+     * Counter für die Abschnitte des Dokumentes
      * @var int
      */
     private $internalAbschnittCounter = 0;
@@ -113,6 +119,10 @@ class SphinxDocument {
         return $abschnitt->getAbschnittId();
     }
 
+    /**
+     * @param $abschnittId
+     * @throws Exception
+     */
     public function removeAbschnitt($abschnittId){
         $this->isUnuseable();
         $abschnitt = null;
@@ -128,7 +138,9 @@ class SphinxDocument {
     }
 
 
-
+    /**
+     * @return mixed
+     */
     private function extractProjectName(){
         $scanDir = array_diff(scandir($this->sProjectPath), array(".", "..")); //scandir gibt auch die verzeichnisse "." und ".." zurück. Diese müssen entfernt werden.
         return array_pop($scanDir); //das letzte u. einzige Element ist der Verzeichnisname.
@@ -326,16 +338,32 @@ class SphinxDocument {
     }
 
 
+    /**
+     * Erstellt das zugehörige HTML in projectid/name/build/html
+     */
     private function makeHTML(){
         shell_exec("cd $this->sProjectPath && make html");
     }
 
+    /**
+     * Erstellt das zugehörige PDF in projectid/name/build/latex
+     */
     private function makePDF(){
         shell_exec("cd $this->sProjectPath && make PDF");
     }
 
+    /**
+     * Testfkt für makeHTML
+     */
     public function makeHTMLTest(){
         $this->makeHTML();
+    }
+
+    /**
+     * Testfkt für makePDF
+     */
+    public function makePDFTest(){
+        $this->makePDF();
     }
 
 
