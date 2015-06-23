@@ -353,14 +353,16 @@ class SphinxDocument {
      */
     public function makeHTMLTest(){
         $this->makeHTML();
+        echo $this->getHTML("");
+    }
+    
+    private function getHTMLPath($abschnittId){
+        return $this->sProjectPath."/build/$abschnittId.html";
     }
 
-    private function readHTML($documentId){
+    public function getHTML($abschnitt_id){
         //TODO implement
-    }
-
-    public function getHTML(){
-        //TODO implement
+        return $this->getHTMLPath($abschnitt_id);
     }
 
     public function getPDF(){
