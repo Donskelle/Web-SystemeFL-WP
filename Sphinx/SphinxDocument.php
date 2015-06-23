@@ -103,16 +103,30 @@ class SphinxDocument {
      * Erzeugt ein Abschnittobjekt, schreibt es ins Filesystem, updatet die index.rst und hängt die Abschnitt ans interne Abschnittarray.
      *
      * @param  $content string
-     * @return string
+     * @return string Die Id des Abschnittes.
      */
     public function addAbschnitt($content){
         $this->isUnuseable();
         $abschnitt = new DocumentAbschnitt(("doc".$this->getNewAbschnittFileName()), $content, $this->generateAbschnittId());
         $this->buildAbschnittFile($abschnitt);
-        $this->updateIndexFile($abschnitt);
-        $this->aAbschnitteDesDokuments[] = $abschnitt;
+        $this->addAbschnittToIndex($abschnitt);
         return $abschnitt->getAbschnittId();
     }
+
+    public function removeAbschnitt($abschnittId){
+        $this->isUnuseable();
+        $abschnitt = null;
+        foreach($this->aAbschnitteDesDokuments as $ab){
+            if($ab->getAbschnittId() === $abschnittId){
+                $abschnitt = $ab;
+                break;
+            }else{
+                die("Falsche Abschnitt ID - SphinxDocuments.php");
+            }
+        }
+        $this->removeAbschnittFromIndexFile($abschnitt);
+    }
+
 
 
     private function extractProjectName(){
@@ -150,15 +164,14 @@ class SphinxDocument {
 
 
     /**
-     * WICHTIG: Führe diese Methode aus, bevor aAbschnitteDesDokumentes erweitert usw wird.
+     * Fügt einen Abschnitt dem Dokument zu.
      *
-     * @param $abschnitt
+     * Fügt es dem Objekt und der index.rst zu.
+     *
+     * @param $abschnitt DocumentAbschnitt
      */
-    private function updateIndexFile($abschnitt){
+    private function addAbschnittToIndex($abschnitt){
         $indexContent = file_get_contents($this->sProjectPath."/source/index.rst");
-        echo "IndexCntent<pre>$indexContent</pre>";
-        //finde die verlinkten abschnitte
-
 
         $search_string = "   :maxdepth: 2".PHP_EOL.PHP_EOL; //Enspricht dem Keyword unter toctree in der index.rst
         foreach($this->aAbschnitteDesDokuments as $ab){
@@ -167,8 +180,48 @@ class SphinxDocument {
 
         $replace_str = $search_string."   ".$abschnitt->getFileName().PHP_EOL;
 
+        $this->aAbschnitteDesDokuments[]=$abschnitt;//Füge den Abschnitt dem internen Verzeichnis zu.
+
         $str = preg_replace("/$search_string/s", $replace_str, $indexContent);
         file_put_contents($this->sProjectPath."/source/index.rst", $str);
+    }
+
+
+    /**
+     *  Entfernt einen Abchnitt von dem Dokument.
+     *
+     *  Entfern von dem Objekt und der index.rst.
+     *
+     * @param $abschnitt DocumentAbschnitt
+     */
+    private function removeAbschnittFromIndexFile($abschnitt){
+        //Der erste Teil ist wie addAbschnittToIndexFile. Zuerst wird das alte Abschnittsverzeichnis aufgebaut.
+        $indexContent = file_get_contents($this->sProjectPath."/source/index.rst");
+
+        $search_string = "   :maxdepth: 2".PHP_EOL.PHP_EOL; //Enspricht dem Keyword unter toctree in der index.rst
+        $replace_string = $search_string;
+
+        foreach($this->aAbschnitteDesDokuments as $ab){
+            $search_string .=PHP_EOL."   ".$ab->getFileName();
+        } //search_string hat jetzt alle Abschnitte als Einträge.
+
+        //Entferne $abschnitt vom Verzeichnis.
+        $tmp_arr = [];
+        foreach($this->aAbschnitteDesDokuments as $ab){
+            if($ab->getAbschnittId() !== $abschnitt->getAbschnittId()){
+                $tmp_arr[]=$ab;
+            }
+        }
+        $this->aAbschnitteDesDokuments = $tmp_arr;
+
+        //Baue den replace_str auf
+        foreach($this->aAbschnitteDesDokuments as $ab){
+            $replace_string .=PHP_EOL."   ".$ab->getFileName();
+        } //replace_str hat jetzt alle aktuellen Abschnitte als Einträge.
+
+        $str = preg_replace("/$search_string/s", $replace_string, $indexContent);
+        file_put_contents($this->sProjectPath."/source/index.rst", $str);
+
     }
 
 
@@ -360,16 +413,8 @@ class SphinxDocument {
             );
         }
 
-//        echo "<br><pre>";
-//        echo "abschnitteContent: <br>";
-//        print_r($abschnitteContent);
-//        echo "</pre>";
-
         return $abschnitteContent;
     }
 
-    public function removeAbschnitt($abschnittId){
-        //TODO: Implementieren.
-    }
 
 }
