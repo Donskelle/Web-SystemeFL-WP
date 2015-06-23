@@ -325,6 +325,21 @@ class SphinxDocument {
         shell_exec("sudo ".$this->sphinxScriptPermissionsPath);
     }
 
+
+    private function makeHTML(){
+        shell_exec("cd $this->sProjectPath && make html");
+    }
+
+    private function makePDF(){
+        shell_exec("cd $this->sProjectPath && make PDF");
+    }
+
+    public function makeHTMLTest(){
+        $this->makeHTML();
+    }
+
+
+
     /**
      * Löscht das Dokument dieses Objektes.
      *

@@ -69,7 +69,6 @@ class Documents {
      */
     public function getDocumentsInGroup($groupId){
         global $wpdb;
-        //TODO: Select spezifizieren. Man braucht nicht alles
         $documents = $wpdb->get_results("SELECT * FROM $this->dbTableNameDocumentInGroup dig
                                   INNER JOIN $this->dbTableNameDocuments d on dig.document_id = d.id
                                   WHERE dig.group_id = $groupId");
@@ -90,13 +89,14 @@ class Documents {
     }
 
     public function getAbschnitte($docId) {
-      $sphinx = new SphinxDocument("", "", $docId);
-      return $sphinx->getAbschnitte();
+        $sphinx = new SphinxDocument("", "", $docId);
+        $sphinx->makeHTMLTest();
+        return $sphinx->getAbschnitte();
     }
 
     public function addAbschnitt ($content, $doc_id) {
-      $sphinx = new SphinxDocument("", "", $doc_id);
-      $sphinx->addAbschnitt($content);
+        $sphinx = new SphinxDocument("", "", $doc_id);
+        $sphinx->addAbschnitt($content);
     }
 
 
