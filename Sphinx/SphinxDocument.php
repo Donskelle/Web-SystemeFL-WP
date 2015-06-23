@@ -310,10 +310,6 @@ class SphinxDocument {
         $this->addAbschnitt("h1".PHP_EOL."==");
 
         $this->changePermissions(); //gibt dem webserver schreib rechte für das neue Projekt.
-
-
-
-
     }
 
 
@@ -359,6 +355,17 @@ class SphinxDocument {
         $this->makeHTML();
     }
 
+    private function readHTML($documentId){
+        //TODO implement
+    }
+
+    public function getHTML(){
+        //TODO implement
+    }
+
+    public function getPDF(){
+        //TODO implement
+    }
     /**
      * Testfkt für makePDF
      */
