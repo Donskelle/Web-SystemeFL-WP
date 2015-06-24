@@ -118,7 +118,7 @@ class DocumentView {
             $output[] = '<input type="hidden" name="abschnitt_id" value="' . $ab["id"] . '"/>';
             $output[] = '<input type="hidden" name="operation" value="setContentAbschnitt"/>';
 
-            $output[] = "<textarea name='content'>" . $ab["content"] . "</textarea>";
+            $output[] = "<textarea name='content' rows='15' >" . $ab["content"] . "</textarea>";
             $output[] = "<button type='submit'>Ändern</button>";
             $output[] = "<a target='_blank' href='" . $ab["htmlUrl"] . "'>Ansehen</a>";
             $output[] = "</form>";
