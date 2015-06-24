@@ -3,6 +3,9 @@
 
 new GroupView();
 
+/**
+ * Stellt die Gruppenansicht und Operation zur Verfügung
+ */
 class GroupView {
 
 	public function __construct() {
@@ -15,15 +18,15 @@ class GroupView {
         if($_POST) {
             // Gruppe wird erstellt
             if(isset($_POST["group_name"])) {
-                $groups->saveGroup($_POST["group_name"], $_POST["group_description"], get_current_user_id());
+                $groups->saveGroup($this->saveInputs($_POST["group_name"]), $this->saveInputs($_POST["group_description"]), get_current_user_id());
             }
             // User wird hinzugefügt
             if(isset($_POST["userToAdd"])) {
-                $groups->addUser($_POST["group_id"], $_POST["userToAdd"]);
+                $groups->addUser($this->saveInputs($_POST["group_id"]), $this->saveInputs($_POST["userToAdd"]));
             }
 
             if(isset($_POST["userToDelete"])) {
-                $groups->deleteUser($_POST["group_id"], $_POST["userToDelete"]);
+                $groups->deleteUser($this->saveInputs($_POST["group_id"]), $this->saveInputs($_POST["userToDelete"]));
             }
         }
         
@@ -31,15 +34,15 @@ class GroupView {
         if(isset($_GET["id"]))
         {
             $user = wp_get_current_user();
-            $detailGroup = $groups->getGroupAndUsers($_GET["id"]);
+            $detailGroup = $groups->getGroupAndUsers($this->saveInputs($_GET["id"]));
 
             $detailGroup->userToAdd = array();
 
             if($user->roles[0] == "dokuAdmin" || $user->roles[0] == "administrator" )
             {
-                $detailGroup->userToAdd = $groups->getUserNotInGroup($_GET["id"]);
+                $detailGroup->userToAdd = $groups->getUserNotInGroup($this->saveInputs($_GET["id"]));
             }
-            $documentsInGroup = $doc->getDocumentsInGroup($_GET["id"]);
+            $documentsInGroup = $doc->getDocumentsInGroup($this->saveInputs($_GET["id"]));
 
             echo $this->detailView($detailGroup, $documentsInGroup);
         }
@@ -102,7 +105,6 @@ class GroupView {
 
     /**
      * Einzel Gruppenansicht
-     *
      * @param $arDetailGroup
      * @return string
      */
@@ -177,8 +179,7 @@ class GroupView {
     }
 
     /**
-     * Form für die Erstellung einer neuen Gruppe.
-     *
+     * Form für die Erstellung einer neuen Gruppe
      * @return string
      */
     private function viewFormCreateGroup() {
@@ -212,8 +213,6 @@ class GroupView {
 
     /**
      * Form: Lösche einen Nutzer von einer Gruppe.
-     *
-     *
      * @param $group_id
      * @param $user_id
      * @param $user_name
@@ -230,5 +229,19 @@ class GroupView {
         return implode("\n", $response);
     }
 
+
+    /**
+     * [saveInputs description]
+     * Escaped des übergebenen String
+     * @param  [string] $str [description]
+     * @return [string]      [description]
+     * Sicherer String
+     */
+    public function saveInputs($str) {
+        $str = stripslashes($str);
+        $str = strip_tags($str);
+        $str = esc_sql ($str);
+        return $str;
+    }
 }
 ?>
