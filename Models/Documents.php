@@ -81,7 +81,7 @@ class Documents {
     }
 
     /**
-     * [removeDocumentFromGroup description]
+ * [removeDocumentFromGroup description]
      * Dokument wird von Gruppe entfernt
      * @param  [int] $doc_id   [description]
      * @param  [int] $group_id [description]

@@ -129,8 +129,11 @@ class SphinxDocument {
     public function removeAbschnitt($abschnittId){
         $this->isUnuseable();
         $abschnitt = null;
+        echo "<pre>";
+        print_r($this->aAbschnitteDesDokuments);
+        echo "</pre>";
         foreach($this->aAbschnitteDesDokuments as $ab){
-            if($ab->getAbschnittId() === $abschnittId){
+            if($ab->getAbschnittId() == $abschnittId){
                 $abschnitt = $ab;
                 break;
             }else{
@@ -138,6 +141,10 @@ class SphinxDocument {
             }
         }
         $this->removeAbschnittFromIndexFile($abschnitt);
+        $this->deleteAbschnittFromFS($abschnitt);
+        echo "<pre>";
+        print_r($this->aAbschnitteDesDokuments);
+        echo "</pre>";
         $this->makeHTML();
     }
 
@@ -220,13 +227,15 @@ class SphinxDocument {
         $replace_string = $search_string;
 
         foreach($this->aAbschnitteDesDokuments as $ab){
-            $search_string .=PHP_EOL."   ".$ab->getFileName();
+            $search_string .="   ".$ab->getFileName().PHP_EOL;
         } //search_string hat jetzt alle Abschnitte als Einträge.
+
+        echo "<pre>RemoveAbschnitt - searchstinrg: $search_string";
 
         //Entferne $abschnitt vom Verzeichnis.
         $tmp_arr = [];
         foreach($this->aAbschnitteDesDokuments as $ab){
-            if($ab->getAbschnittId() !== $abschnitt->getAbschnittId()){
+            if($ab->getAbschnittId() != $abschnitt->getAbschnittId()){
                 $tmp_arr[]=$ab;
             }
         }
@@ -236,6 +245,8 @@ class SphinxDocument {
         foreach($this->aAbschnitteDesDokuments as $ab){
             $replace_string .=PHP_EOL."   ".$ab->getFileName();
         } //replace_str hat jetzt alle aktuellen Abschnitte als Einträge.
+
+        echo "<br>replacestring: $replace_string</pre>";
 
         $str = preg_replace("/$search_string/s", $replace_string, $indexContent);
         file_put_contents($this->sProjectPath."/source/index.rst", $str);
@@ -442,6 +453,12 @@ class SphinxDocument {
         return $abschnitte;
     }
 
+    private function deleteAbschnittFromFS($abschnitt){
+
+        $output = shell_exec("sudo rm ".$this->sProjectPath."/source/".$abschnitt->getFileName().".rst");
+        echo "sudo rm ".$this->sProjectPath."/source/".$abschnitt->getFileName().".rst";
+        echo $output;
+    }
     /**
      * @return array
      * @throws Exception
