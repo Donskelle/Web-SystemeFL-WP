@@ -30,7 +30,6 @@ class DocumentView{
                 $doc->addAbschnitt($_POST["content"],$_POST["document_id"] );
             }
             else if($_POST["operation"] == "setContentAbschnitt") {
-                echo "setContentAbschnitt";
                 $doc->updateAbschnitt($_POST["document_id"], $_POST["abschnitt_id"], $_POST["content"]);
             }
         }
@@ -85,29 +84,30 @@ class DocumentView{
         }
         
 
-        foreach ($document->abschnitte as $abschnitt) {
-            $this->viewAbschnitt($abschnitt, $document->id);
-        }
+
+        $this->viewAbschnitte($document->abschnitte, $document->id);
+    
         $this->viewAddAbschnitt($document->id);
     }
 
 
-    public function viewAbschnitt($ab, $doc_id) {
-
-        print_r($ab);
+    public function viewAbschnitte($abschnitte, $doc_id) {
         $output = array();
-        $output[] = "<div>";
-        $output[] = "<form action='' method='post'>";
-        $output[] = '<input type="hidden" name="document_id" value="' . $doc_id . '"/>';
-        $output[] = '<input type="hidden" name="abschnitt_id" value="' . $ab["id"] . '"/>';
-        $output[] = '<input type="hidden" name="operation" value="setContentAbschnitt"/>';
+        $output[] = "<h2>Abschnitte</h2>";
+        foreach ($abschnitte as $ab) {
+            $output[] = "<div class='abschnitt'>";
+            $output[] = "<form action='' method='post'>";
+            $output[] = '<input type="hidden" name="document_id" value="' . $doc_id . '"/>';
+            $output[] = '<input type="hidden" name="abschnitt_id" value="' . $ab["id"] . '"/>';
+            $output[] = '<input type="hidden" name="operation" value="setContentAbschnitt"/>';
 
-        $output[] = "<textarea name='content'>" . $ab["content"] . "</textarea>";
-        $output[] = "<button type='submit'>Ändern</button>";
-        $output[] = "<a href='" . $ab["htmlUrl"] . "'>Ansehen</a>";
-        $output[] = "</form>";
+            $output[] = "<textarea name='content'>" . $ab["content"] . "</textarea>";
+            $output[] = "<button type='submit'>Ändern</button>";
+            $output[] = "<a target='_blank' href='" . $ab["htmlUrl"] . "'>Ansehen</a>";
+            $output[] = "</form>";
 
-        $output[] = "</div>";
+            $output[] = "</div>";
+        }
         echo implode("\n", $output);
     }
 
@@ -134,7 +134,6 @@ class DocumentView{
         }
         // aktive gruppe
         else {
-            echo $groups["groups"][0]->id;
             $ouput[] = "<option value='none'>Keiner Gruppe zugewiesen</h2>";
             for ($i=0; $i < count($groups["groups"]); $i++) { 
                 if($groups["groups"][$i]->id == $groups["active"]->group_id)

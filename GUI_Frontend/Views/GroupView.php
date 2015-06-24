@@ -110,7 +110,6 @@ class GroupView {
         $output = array();
         $currentUser = wp_get_current_user();
 
-        print_r($documents);
         $output[] = "<div class='groupView'>";
             $output[] = "<h2>" . $arDetailGroup->name . "</h2>";
 
