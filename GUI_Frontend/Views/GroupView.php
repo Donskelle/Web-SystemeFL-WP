@@ -3,6 +3,9 @@
 
 new GroupView();
 
+/**
+ * Stellt die Gruppenansicht und Operation zur Verfügung
+ */
 class GroupView {
 
 	public function __construct() {
@@ -102,7 +105,6 @@ class GroupView {
 
     /**
      * Einzel Gruppenansicht
-     *
      * @param $arDetailGroup
      * @return string
      */
@@ -177,8 +179,7 @@ class GroupView {
     }
 
     /**
-     * Form für die Erstellung einer neuen Gruppe.
-     *
+     * Form für die Erstellung einer neuen Gruppe
      * @return string
      */
     private function viewFormCreateGroup() {
@@ -212,8 +213,6 @@ class GroupView {
 
     /**
      * Form: Lösche einen Nutzer von einer Gruppe.
-     *
-     *
      * @param $group_id
      * @param $user_id
      * @param $user_name
@@ -230,6 +229,14 @@ class GroupView {
         return implode("\n", $response);
     }
 
+
+    /**
+     * [saveInputs description]
+     * Escaped des übergebenen String
+     * @param  [string] $str [description]
+     * @return [string]      [description]
+     * Sicherer String
+     */
     public function saveInputs($str) {
         $str = stripslashes($str);
         $str = strip_tags($str);

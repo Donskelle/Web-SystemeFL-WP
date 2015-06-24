@@ -1,15 +1,17 @@
 <?php
-/**
- * Created for doku_mummy-plugin.
- * User: Jan
- * Date: 20.06.2015
- * Time: 13:21
- */
-/*TODO: Ansicht eines Dokumentes/Projektes. Siehe Sphinx/SphinxDocument und Models/Documents.php für Model.
- *
- */
+
+
+
 new DocumentView();
-class DocumentView{
+/**
+ * Stellt Dokumenten dar
+ */
+class DocumentView {
+
+    /**
+     * [__construct description]
+     * Stellt entsprechend der Anfrage das Dokument dar
+     */
     public function __construct(){
         $doc = new Documents();
         // Neues Dokument erstellen
@@ -46,8 +48,6 @@ class DocumentView{
 
             $this->viewDocument($document);
         }
-
-
         else if(isset($_GET["create"])) {
             $this->viewDocumentCreateForm($_GET["create"]);
         }
@@ -57,14 +57,12 @@ class DocumentView{
             $this->viewDocumentCreateForm();
         }
     }
-
-    public function saveInputs($str) {
-        $str = stripslashes($str);
-        $str = strip_tags($str);
-        $str = esc_sql($str);
-        return $str;
-    }
     
+    /**
+     * [viewAddAbschnitt description]
+     * Gibt eine Form zum Erstellen eines Abschnitts aus
+     * @param  [int] $doc_id [description]
+     */
     public function viewAddAbschnitt($doc_id){
         $output = array();
         $output[] = "<h2>Abschnitt hinzufügen</h2>";
@@ -78,6 +76,11 @@ class DocumentView{
         echo implode("\n", $output);
     }
     
+    /**
+     * [viewDocument description]
+     * Stellt das übergebene Dokument dar
+     * @param  [object] $document [description]
+     */
     public function viewDocument($document) {
         $user = wp_get_current_user();
 
@@ -88,10 +91,7 @@ class DocumentView{
             $this->viewFormSelectGroup($document->id);
 
         }
-        
 
-
-        
         if($user->ID == $document->user_id || $user->roles[0] == "dokuAdmin" || $user->roles[0] == "administrator" )
         {
             $this->viewAbschnitte($document->abschnitte, $document->id, true);
@@ -100,6 +100,7 @@ class DocumentView{
             $this->viewAbschnitte($document->abschnitte, $document->id, false);
         }
     }
+
 
     /**
      * [viewAbschnitte description]
@@ -134,6 +135,7 @@ class DocumentView{
         }
         echo implode("\n", $output);
     }
+
 
     /**
      * [viewFormSelectGroup description]
@@ -174,11 +176,11 @@ class DocumentView{
     }
 
 
-    public function viewGeneratedPDF(){
-        //TODO: Output, soll im SphinxDocument.php generiert werden
-    }
-
-
+    /**
+     * [viewShortDoc description]
+     * Gibt eine Übersicht der übergebenen Dokumente aus
+     * @param  [array] $documents [description]
+     */
     public function viewShortDoc($documents) {
         $response = array();
         $response[] = '<h2>Deine Dokument</h2>';
@@ -191,6 +193,12 @@ class DocumentView{
     }
 
 
+    /**
+     * [viewDeleteForm description]
+     * Stellt einen Button zum Löschen des Dokuments dar
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
     public function viewDeleteForm($id) {
         $response = array();
         $response[] = '<form action="./" method="post">';
@@ -202,6 +210,10 @@ class DocumentView{
     }
 
 
+    /**
+     * [viewDocumentCreateForm description]
+     * Gibt eine Form zum Erstellen eines Dokuments aus
+     */
     public function viewDocumentCreateForm() {
         $response = array();
         $response[] = '<h2>Dokument erstellen</h2>';
@@ -211,5 +223,20 @@ class DocumentView{
             $response[] = '<input type="submit" name="submit" value="Erstellen" class="button" />';
         $response[] = '</form>';
         echo implode("\n", $response);
+    }
+
+
+    /**
+     * [saveInputs description]
+     * Escaped des übergebenen String
+     * @param  [string] $str [description]
+     * @return [string]      [description]
+     * Sicherer String
+     */
+    public function saveInputs($str) {
+        $str = stripslashes($str);
+        $str = strip_tags($str);
+        $str = esc_sql($str);
+        return $str;
     }
 }
