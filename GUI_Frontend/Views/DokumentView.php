@@ -91,7 +91,6 @@ class DocumentView {
             $this->viewFormSelectGroup($document->id);
 
         }
-
         if($user->ID == $document->user_id || $user->roles[0] == "dokuAdmin" || $user->roles[0] == "administrator" )
         {
             $this->viewAbschnitte($document->abschnitte, $document->id, true);
@@ -99,6 +98,7 @@ class DocumentView {
         else {
             $this->viewAbschnitte($document->abschnitte, $document->id, false);
         }
+        $this->viewAddAbschnitt($document->id);
     }
 
 
