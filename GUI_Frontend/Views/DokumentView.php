@@ -17,30 +17,29 @@ class DocumentView{
         {   
             if($_POST["operation"] == "create") {
                 $current_user = wp_get_current_user();
-                $doc->createNewDocument($_POST["project_name"], $current_user->display_name, get_current_user_id());
+                $doc->createNewDocument($this->saveInputs($_POST["project_name"]), $current_user->display_name, get_current_user_id());
             }
             else if ($_POST["operation"] == "delete") {
-                $doc->deleteDocument($_POST["id"]);
+                $doc->deleteDocument($this->saveInputs($_POST["id"]));
             }
             else if($_POST["operation"] == "selectGroup") {
                 $group = new Groups();
-                $group->selectGroup($_POST["selectedGroup"], $_POST["document_id"]);
+                $group->selectGroup($this->saveInputs($_POST["selectedGroup"]), $this->saveInputs($_POST["document_id"]));
             }
             else if($_POST["operation"] == "addAbschnitt") {
-                $doc->addAbschnitt($_POST["content"],$_POST["document_id"] );
+                $doc->addAbschnitt($this->saveInputs($_POST["content"]), $this->saveInputs($_POST["document_id"] ));
             }
             else if($_POST["operation"] == "setContentAbschnitt") {
-                $doc->updateAbschnitt($_POST["document_id"], $_POST["abschnitt_id"], $_POST["content"]);
+                $doc->updateAbschnitt($this->saveInputs($_POST["document_id"]), $this->saveInputs($_POST["abschnitt_id"]), $this->saveInputs($_POST["content"]));
             }
             else if($_POST["operation"] == "deleteAbschnitt") {
-                $doc->deleteAbschnitt($_POST["document_id"], $_POST["abschnitt_id"]);
+                $doc->deleteAbschnitt($this->saveInputs($_POST["document_id"]), $this->saveInputs($_POST["abschnitt_id"]));
             }
         }
 
-
         if(isset($_GET["id"]))
         {
-            $document = $doc->getDocument($_GET["id"]);
+            $document = $doc->getDocument($this->saveInputs($_GET["id"]));
 
             $document->abschnitte = array();
             $document->abschnitte = $doc->getAbschnitte($document->id);
@@ -57,6 +56,13 @@ class DocumentView{
             $this->viewShortDoc($authDocs); 
             $this->viewDocumentCreateForm();
         }
+    }
+
+    public function saveInputs($str) {
+        $str = stripslashes($str);
+        $str = strip_tags($str);
+        $str = esc_sql($str);
+        return $str;
     }
     
     public function viewAddAbschnitt($doc_id){
