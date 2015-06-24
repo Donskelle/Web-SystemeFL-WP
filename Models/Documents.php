@@ -90,8 +90,16 @@ class Documents {
 
     public function getAbschnitte($docId) {
         $sphinx = new SphinxDocument("", "", $docId);
-        $sphinx->makeHTMLTest();
-        return $sphinx->getAbschnitte();
+
+        
+        $abschnitte = $sphinx->getAbschnitte();
+        $url = site_url();
+
+        for ($i=0; $i < count($abschnitte); $i++) {
+          $abschnitte[$i]["htmlUrl"] = $url . "/" . str_replace(ABSPATH , "", $sphinx->getHTML($abschnitte[$i]["id"]));
+        }
+
+        return $abschnitte;
     }
 
     public function addAbschnitt ($content, $doc_id) {
@@ -101,7 +109,7 @@ class Documents {
 
     public function updateAbschnitt($doc_id, $abschnitt_id, $content) {
       $sphinx = new SphinxDocument("", "", $doc_id);
-      echo "test -----" . $sphinx->updateAbschnitt($abschnitt_id, $content);
+      $sphinx->updateAbschnitt($abschnitt_id, $content);
     }
 
 

@@ -42,9 +42,7 @@ class DocumentView{
 
             $document->abschnitte = array();
             $document->abschnitte = $doc->getAbschnitte($document->id);
-            // echo "<pre>";
-            //print_r($doc->getAbschnitte($document->id));
-            //echo "</pre>";
+
             $this->viewDocument($document);
         }
 
@@ -106,6 +104,7 @@ class DocumentView{
 
         $output[] = "<textarea name='content'>" . $ab["content"] . "</textarea>";
         $output[] = "<button type='submit'>Ändern</button>";
+        $output[] = "<a href='" . $ab["htmlUrl"] . "'>Ansehen</a>";
         $output[] = "</form>";
 
         $output[] = "</div>";
@@ -124,7 +123,7 @@ class DocumentView{
         $ouput[] = '<input type="hidden" name="document_id" value="' . $id . '"/>';
         $group = new Groups();
         $groups = $group->getDocumentGroups($id);
-        print_r($groups);
+
         $ouput[] = "<select name='selectedGroup'>";
         // keine aktive gruppe
         if($groups["active"] == "") {

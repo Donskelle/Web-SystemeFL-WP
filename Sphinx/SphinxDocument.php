@@ -249,7 +249,7 @@ class SphinxDocument {
      */
     private function buildAbschnittFile($abschnitt){
         $abschnittFile = fopen($this->sProjectPath."/source/".$abschnitt->getFileName().".rst", 'w');
-        echo fwrite($abschnittFile, $abschnitt->getAbschnittContent());
+        fwrite($abschnittFile, $abschnitt->getAbschnittContent());
         fclose($abschnittFile);
     }
 
@@ -324,7 +324,6 @@ class SphinxDocument {
      * @return bool
      */
     private function isProjectExisting($projekt_path){
-        echo "projectPath: $projekt_path/source/index.rst";
         return file_exists($projekt_path."/source/index.rst");
     }
 
@@ -356,15 +355,15 @@ class SphinxDocument {
      */
     public function makeHTMLTest(){
         $this->makeHTML();
-        echo $this->getHTML("");
     }
     
     private function getHTMLPath($abschnittId){
-        return $this->sProjectPath."/build/$abschnittId.html";
+        return $this->sProjectPath."/build/html/doc$abschnittId.html";
     }
 
     public function getHTML($abschnitt_id){
         //TODO implement
+        $this->makeHTML();
         return $this->getHTMLPath($abschnitt_id);
     }
 
