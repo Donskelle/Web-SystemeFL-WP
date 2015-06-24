@@ -88,7 +88,7 @@ class SphinxDocument {
 
 
         //Felder mit neuen Werten versorgen.
-        $this->sProjectId = $projectId;
+        $this->sProjectId = intval($projectId);
         $this->sProjectPath = $this->sphinxDirPath."/".$this->sProjectId;
 
         if($projectName !== "" AND $authorName !== "") {
@@ -113,7 +113,9 @@ class SphinxDocument {
      */
     public function addAbschnitt($content){
         $this->isUnuseable();
-        $abschnitt = new DocumentAbschnitt(("doc".$this->getNewAbschnittFileName()), $content, $this->generateAbschnittId());
+
+        $id = intval($this->getNewAbschnittFileName());
+        $abschnitt = new DocumentAbschnitt("doc".$id, $content, $id);
         $this->buildAbschnittFile($abschnitt);
         $this->addAbschnittToIndex($abschnitt);
         return $abschnitt->getAbschnittId();
@@ -185,12 +187,13 @@ class SphinxDocument {
     private function addAbschnittToIndex($abschnitt){
         $indexContent = file_get_contents($this->sProjectPath."/source/index.rst");
 
-        $search_string = "   :maxdepth: 2".PHP_EOL.PHP_EOL; //Enspricht dem Keyword unter toctree in der index.rst
+        $search_string = "   :maxdepth: 2".PHP_EOL; //Enspricht dem Keyword unter toctree in der index.rst
         foreach($this->aAbschnitteDesDokuments as $ab){
-            $search_string .=PHP_EOL."   ".$ab->getFileName();
+            $search_string .= PHP_EOL."   ".$ab->getFileName();
         }
 
-        $replace_str = $search_string."   ".$abschnitt->getFileName().PHP_EOL;
+        $replace_str = $search_string . PHP_EOL . "   " . $abschnitt->getFileName().PHP_EOL;
+
 
         $this->aAbschnitteDesDokuments[]=$abschnitt;//Füge den Abschnitt dem internen Verzeichnis zu.
 
@@ -246,7 +249,7 @@ class SphinxDocument {
      */
     private function buildAbschnittFile($abschnitt){
         $abschnittFile = fopen($this->sProjectPath."/source/".$abschnitt->getFileName().".rst", 'w');
-        fwrite($abschnittFile, $abschnitt->getAbschnittContent());
+        echo fwrite($abschnittFile, $abschnitt->getAbschnittContent());
         fclose($abschnittFile);
     }
 
@@ -256,9 +259,9 @@ class SphinxDocument {
     private function getNewAbschnittFileName(){
         $newId = 0;
 
-        if(count($this->aAbschnitteDesDokuments) !== 0){
+        if(count($this->aAbschnitteDesDokuments) != 0){
             //Der idWert des letzten Abschnittes + 1
-            $newId = intval(substr($this->aAbschnitteDesDokuments[count($this->aAbschnitteDesDokuments-1)], 3)) + 1;
+            $newId = intval($this->aAbschnitteDesDokuments[count($this->aAbschnitteDesDokuments) -1]->getAbschnittId()) + 1;
         }
         return $newId;
     }
@@ -421,24 +424,25 @@ class SphinxDocument {
         $data = file_get_contents($filePath);
 
         //toctree ist ein Element in der index.rst. Unter Toctree werden die verlinkten Datein aufgeführt.
-        $toc_tree = ".. toctree::";
+        $toc_tree = ".. toctree::".PHP_EOL.PHP_EOL;
         $toc_tree_pos = strpos($data ,$toc_tree);
         $indices = "Indices"; //das Element unter dem Contentsabschnitt.
         $indices_pos = strpos($data, $indices);
 
         //Auschneiden von Contents, hat noch andere Elemente.
-        $content_with_other_stuff = substr($data, $toc_tree_pos, $indices_pos-$toc_tree_pos);
+        $content_with_other_stuff = substr($data, $toc_tree_pos, $indices_pos - $toc_tree_pos);
 
 
         //Alle im Contents referenzierten Dateien fangen mit doc1, doc2 usw an.
         $doc_results_array = array();
         preg_match_all("/doc[0-9]+/", $content_with_other_stuff, $doc_results_array); //Pro Treffer wird ein Array mit dem Ergebnis in das Ergebnis array gepushed
 
+
         //Reduzieren des Arrays.
         $doc_results = array();
         if(count($doc_results_array) > 0){ //gibt ein leeres array im array zurück. Die Länge zählt als 1.
-            foreach($doc_results_array as $val ){
-                $doc_results[] = $val[0];
+            foreach($doc_results_array[0] as $val ){
+                $doc_results[] = $val;
             }
         }
         //Erzeugen des Abschnittarrayss

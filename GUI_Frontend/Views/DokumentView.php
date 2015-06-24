@@ -27,20 +27,28 @@ class DocumentView{
                 $group->selectGroup($_POST["selectedGroup"], $_POST["document_id"]);
             }
             else if($_POST["operation"] == "addAbschnitt") {
-                $doc->addAbschnitt($_POST["content"],$_POST["document_path"] );
+                $doc->addAbschnitt($_POST["content"],$_POST["document_id"] );
+            }
+            else if($_POST["operation"] == "setContentAbschnitt") {
+                echo "setContentAbschnitt";
+                $doc->updateAbschnitt($_POST["document_id"], $_POST["abschnitt_id"], $_POST["content"]);
             }
         }
+
+
         if(isset($_GET["id"]))
         {
             $document = $doc->getDocument($_GET["id"]);
-            echo "<br>viewDebug - getabschnitte";
-            echo "<pre>";
-            print_r($doc->getAbschnitte($document->id));
-            echo "<pre>";
+
+            $document->abschnitte = array();
+            $document->abschnitte = $doc->getAbschnitte($document->id);
+            // echo "<pre>";
+            //print_r($doc->getAbschnitte($document->id));
+            //echo "</pre>";
             $this->viewDocument($document);
-
-
         }
+
+
         else if(isset($_GET["create"])) {
             $this->viewDocumentCreateForm($_GET["create"]);
         }
@@ -70,15 +78,38 @@ class DocumentView{
     
     public function viewDocument($document) {
         $user = wp_get_current_user();
-        $output = array();
 
         echo "<h2>$document->name</h2>";
         if($user->ID == $document->user_id)
         {
             $this->viewDeleteForm($document->id);
             $this->viewFormSelectGroup($document->id);
-            $this->viewAddAbschnitt($document->path);
         }
+        
+
+        foreach ($document->abschnitte as $abschnitt) {
+            $this->viewAbschnitt($abschnitt, $document->id);
+        }
+        $this->viewAddAbschnitt($document->id);
+    }
+
+
+    public function viewAbschnitt($ab, $doc_id) {
+
+        print_r($ab);
+        $output = array();
+        $output[] = "<div>";
+        $output[] = "<form action='' method='post'>";
+        $output[] = '<input type="hidden" name="document_id" value="' . $doc_id . '"/>';
+        $output[] = '<input type="hidden" name="abschnitt_id" value="' . $ab["id"] . '"/>';
+        $output[] = '<input type="hidden" name="operation" value="setContentAbschnitt"/>';
+
+        $output[] = "<textarea name='content'>" . $ab["content"] . "</textarea>";
+        $output[] = "<button type='submit'>Ändern</button>";
+        $output[] = "</form>";
+
+        $output[] = "</div>";
+        echo implode("\n", $output);
     }
 
     /**

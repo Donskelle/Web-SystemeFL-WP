@@ -99,6 +99,11 @@ class Documents {
         $sphinx->addAbschnitt($content);
     }
 
+    public function updateAbschnitt($doc_id, $abschnitt_id, $content) {
+      $sphinx = new SphinxDocument("", "", $doc_id);
+      echo "test -----" . $sphinx->updateAbschnitt($abschnitt_id, $content);
+    }
+
 
     /**
      * @param $document_id
