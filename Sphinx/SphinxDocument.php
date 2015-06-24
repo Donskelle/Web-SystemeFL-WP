@@ -118,6 +118,7 @@ class SphinxDocument {
         $abschnitt = new DocumentAbschnitt("doc".$id, $content, $id);
         $this->buildAbschnittFile($abschnitt);
         $this->addAbschnittToIndex($abschnitt);
+        $this->makeHTML();
         return $abschnitt->getAbschnittId();
     }
 
@@ -137,6 +138,7 @@ class SphinxDocument {
             }
         }
         $this->removeAbschnittFromIndexFile($abschnitt);
+        $this->makeHTML();
     }
 
 
@@ -173,6 +175,7 @@ class SphinxDocument {
                 break;
             }
         }
+        $this->makeHTML();
         return $bUpdated;
     }
 
@@ -351,14 +354,6 @@ class SphinxDocument {
         shell_exec("cd $this->sProjectPath && make PDF");
     }
 
-    /**
-     * Testfkt für makeHTML
-     */
-    public function makeHTMLTest(){
-        $this->makeHTML();
-        echo $this->getHTML("");
-    }
-    
     private function getHTMLPath($abschnittId){
         return $this->sProjectPath."/build/$abschnittId.html";
     }
@@ -370,12 +365,6 @@ class SphinxDocument {
 
     public function getPDF(){
         //TODO implement
-    }
-    /**
-     * Testfkt für makePDF
-     */
-    public function makePDFTest(){
-        $this->makePDF();
     }
 
 
@@ -459,6 +448,7 @@ class SphinxDocument {
      */
     public function getAbschnitte(){
         $this->isUnuseable();
+
         $abschnitteContent = [];
 
         foreach($this->aAbschnitteDesDokuments as $ab){
