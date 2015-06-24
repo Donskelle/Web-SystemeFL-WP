@@ -14,3 +14,30 @@
 .abschnitt {
 	margin: 30px 0;
 }
+
+.lightboxWrapper {
+	width: 100%;
+	height: 100vh;
+
+	position: fixed;
+	top: 0;
+	left: 0;
+
+	background-color: rgba(0, 0, 0, 0.7);
+	
+}
+#lightboxContent {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	height: 600px;
+	width: 800px;
+	margin-top: -300px;
+	margin-left: -400px;
+
+	background: white;
+}
+#lightboxContent iframe {
+	width: 100%;
+	height: 100%;
+}

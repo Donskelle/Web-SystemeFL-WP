@@ -1,15 +1,6 @@
 <?php
-
-/*
- *
- * Siehe Sphinx/SphinxDocument
- *
- *
- */
-
-
 /**
- * Class Documents
+ * Verwaltet Dokumenten Zugriffe und Abfragen
  */
 class Documents {
 
@@ -23,9 +14,7 @@ class Documents {
     private $dbTableNameDocumentInGroup = "dokumummy_documents_in_groups";
 
 
-    /**
-     *
-     */
+
     public function __construct(){
         global $wpdb;
 
@@ -35,7 +24,9 @@ class Documents {
 
 
     /**
-     *
+     * [getAllDocuments description]
+     * Gibt ein Array aus Objekten aller Dokumente zurück
+     * @return [array] [description]
      */
     public function getAllDocuments(){
         global $wpdb;
@@ -45,7 +36,13 @@ class Documents {
 
     }
 
-
+    /**
+     * [getDocument description]
+     * Liest das angebene Dokument
+     * @param  [type] $id [description]
+     * @return [object]     [description]
+     * Gibt ein Object aus der Datenbnak zurücl
+     */
     public function getDocument($id) {
         global $wpdb;
 
@@ -54,7 +51,11 @@ class Documents {
     }
 
     /**
-     * @param $user_id
+     * [getDocumentsCreatedByUser description]
+     * Gibt Dokumente vom aktiven User zurück
+     * @param  [int] $user_id [description]
+     * @return [array]          [description]
+     * Gibt ein Array aus Dokumenten zurück
      */
     public function getDocumentsCreatedByUser($user_id){
         global $wpdb;
@@ -65,7 +66,10 @@ class Documents {
 
 
     /**
-     * @param $groupId
+     * [getDocumentsInGroup description]
+     * Gibt ein Array aus Dokumenten der Gruppe zurück
+     * @param  [int] $groupId [description]
+     * @return [type]          [description]
      */
     public function getDocumentsInGroup($groupId){
         global $wpdb;
@@ -77,8 +81,10 @@ class Documents {
     }
 
     /**
-     * @param $doc_id
-     * @param $group_id
+     * [removeDocumentFromGroup description]
+     * Dokument wird von Gruppe entfernt
+     * @param  [int] $doc_id   [description]
+     * @param  [int] $group_id [description]
      */
     public function removeDocumentFromGroup($doc_id, $group_id){
         global $wpdb;
@@ -88,6 +94,13 @@ class Documents {
         ));
     }
 
+    /**
+     * [getAbschnitte description]
+     * Holt alle Abschnitte des angebenen Dokuments
+     * @param  [int] $docId [description]
+     * @return [array]        [description]
+     * Array aller Abschnitte
+     */
     public function getAbschnitte($docId) {
         $sphinx = new SphinxDocument("", "", $docId);
 
@@ -102,11 +115,25 @@ class Documents {
         return $abschnitte;
     }
 
+    /**
+     * [addAbschnitt description]
+     * Abschnitt mit Content wird erstellt
+     * @param [type] $content [description]
+     * @param [type] $doc_id  [description]
+     */
     public function addAbschnitt ($content, $doc_id) {
         $sphinx = new SphinxDocument("", "", $doc_id);
         $sphinx->addAbschnitt($content);
     }
 
+    /**
+     * [updateAbschnitt description]
+     * Content eines Abschnitts wird überschrieben
+     * @param  [int] $doc_id       [description]
+     * @param  [int] $abschnitt_id [description]
+     * @param  [string] $content      [description]
+     * @return [type]               [description]
+     */
     public function updateAbschnitt($doc_id, $abschnitt_id, $content) {
       $sphinx = new SphinxDocument("", "", $doc_id);
       $sphinx->updateAbschnitt($abschnitt_id, $content);
@@ -128,7 +155,14 @@ class Documents {
     }
 
 
-
+    /**
+     * [createNewDocument description]
+     * Erstellt Neues Dokument in der Datenbank und im Dateisystem
+     * @param  [string] $project_name [description]
+     * @param  [string] $authorName   [description]
+     * @param  [int] $userId       [description]
+     * @return [type]               [description]
+     */
     public function createNewDocument($project_name, $authorName, $userId) {
         global $wpdb;
 
@@ -146,26 +180,6 @@ class Documents {
             $sphinx = new SphinxDocument($project_name, $authorName, $wpdb->insert_id);//die id nicht vergessen!
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	/**

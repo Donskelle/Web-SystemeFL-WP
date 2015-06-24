@@ -1,4 +1,7 @@
 <?php
+/**
+ * Verwaltet Gruppen Zugriffe und Abfragen
+ */
 class Groups {
 
 	private $dbTableGroup = "dokumummy_groups";
@@ -12,6 +15,13 @@ private $dbTableDocumentInGroup = "dokumummy_documents_in_groups";
 		$this->dbTableUserInGroup = $wpdb->prefix . $this->dbTableUserInGroup;
 	}
 
+
+	/**
+	 * [selectGroup description]
+	 * Dokument wird Gruppe zugewiesen
+	 * @param  [int] $group_id [description]
+	 * @param  [int] $doc_id   [description]
+	 */
 	public function selectGroup($group_id, $doc_id) {
 		global $wpdb;
 		$sql = $wpdb->delete(
@@ -31,7 +41,12 @@ private $dbTableDocumentInGroup = "dokumummy_documents_in_groups";
 		);
 	}
 
-	
+	/**
+	 * [getDocumentGroups description]
+	 * Gibt ein Array aus Dokumenten der Gruppe zurück
+	 * @param  [int] $doc_id [description]
+	 * @return [array]         [description]
+	 */
 	public function getDocumentGroups($doc_id) {
 		global $wpdb;
 		$groups = array();
@@ -39,6 +54,7 @@ private $dbTableDocumentInGroup = "dokumummy_documents_in_groups";
 		$groups["active"] = $wpdb->get_row( "SELECT * FROM  $this->dbTableDocumentInGroup WHERE document_id=$doc_id");
 		return $groups;
 	}
+
 
     /**
      * @return mixed Alle vorhandenen Gruppen.
@@ -52,7 +68,11 @@ private $dbTableDocumentInGroup = "dokumummy_documents_in_groups";
 	}
 
 
-
+	/**
+	 * [getAuthGroups description]
+	 * Gibt ein Array der Gruppen die der Nutzerrolle entsprechenden  zurück
+	 * @return [array] [description]
+	 */
 	public function getAuthGroups() {
 		$user = wp_get_current_user();
 
@@ -64,6 +84,12 @@ private $dbTableDocumentInGroup = "dokumummy_documents_in_groups";
 		}
 	}
 
+	/**
+	 * [getUserGroups description]
+	 * Gibt ein Array der Gruppen zurück, in welcher der User sich befindet.
+	 * @param  [type] $user_id [description]
+	 * @return [type]          [description]
+	 */
 	public function getUserGroups($user_id) {
         global $wpdb;
 

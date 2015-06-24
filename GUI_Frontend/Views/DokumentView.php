@@ -68,10 +68,6 @@ class DocumentView{
 
         echo implode("\n", $output);
     }
-    public function viewGeneratedHtml(){
-    }
-    public function viewRemoveAbschnitt(){
-    }
     
     public function viewDocument($document) {
         $user = wp_get_current_user();
@@ -90,7 +86,12 @@ class DocumentView{
         $this->viewAddAbschnitt($document->id);
     }
 
-
+    /**
+     * [viewAbschnitte description]
+     * Gibt ddie Abschnitte inklusive einer Form aus
+     * @param  [array] $abschnitte [description]
+     * @param  [int] $doc_id     [description]
+     */
     public function viewAbschnitte($abschnitte, $doc_id) {
         $output = array();
         $output[] = "<h2>Abschnitte</h2>";
