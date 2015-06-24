@@ -137,7 +137,7 @@ class SphinxDocument {
                 $abschnitt = $ab;
                 break;
             }else{
-                die("Falsche Abschnitt ID - SphinxDocuments.php");
+                //die("Falsche Abschnitt ID - SphinxDocuments.php");
             }
         }
         $this->removeAbschnittFromIndexFile($abschnitt);
@@ -197,12 +197,12 @@ class SphinxDocument {
     private function addAbschnittToIndex($abschnitt){
         $indexContent = file_get_contents($this->sProjectPath."/source/index.rst");
 
-        $search_string = "   :maxdepth: 2".PHP_EOL; //Enspricht dem Keyword unter toctree in der index.rst
+        $search_string = "   :maxdepth: 2".PHP_EOL.PHP_EOL; //Enspricht dem Keyword unter toctree in der index.rst
         foreach($this->aAbschnitteDesDokuments as $ab){
-            $search_string .= PHP_EOL."   ".$ab->getFileName();
+            $search_string .= "   ".$ab->getFileName().PHP_EOL;
         }
 
-        $replace_str = $search_string . PHP_EOL . "   " . $abschnitt->getFileName().PHP_EOL;
+        $replace_str = $search_string . "   " . $abschnitt->getFileName().PHP_EOL;
 
 
         $this->aAbschnitteDesDokuments[]=$abschnitt;//Füge den Abschnitt dem internen Verzeichnis zu.
@@ -243,7 +243,7 @@ class SphinxDocument {
 
         //Baue den replace_str auf
         foreach($this->aAbschnitteDesDokuments as $ab){
-            $replace_string .=PHP_EOL."   ".$ab->getFileName();
+            $replace_string .="   ".$ab->getFileName().PHP_EOL;
         } //replace_str hat jetzt alle aktuellen Abschnitte als Einträge.
 
         echo "<br>replacestring: $replace_string</pre>";
@@ -275,8 +275,10 @@ class SphinxDocument {
 
         if(count($this->aAbschnitteDesDokuments) != 0){
             //Der idWert des letzten Abschnittes + 1
-            $newId = intval($this->aAbschnitteDesDokuments[count($this->aAbschnitteDesDokuments) -1]->getAbschnittId()) + 1;
+            $newId = intval(substr($this->aAbschnitteDesDokuments[count($this->aAbschnitteDesDokuments) -1]->getFileName(), 3)) + 1;
         }
+
+
         return $newId;
     }
 
@@ -445,9 +447,16 @@ class SphinxDocument {
                 $doc_results[] = $val;
             }
         }
+
+        echo "doc_results: <pre>";
+        print_r($doc_results);
+        echo "</pre>";
         //Erzeugen des Abschnittarrayss
         foreach($doc_results as $res){
-            $abschnitte[] = new DocumentAbschnitt($res, file_get_contents($this->sProjectPath."/source/$res".".rst"), $this->generateAbschnittId());
+            $id = $this->generateAbschnittId();
+            echo "<br>Name: $res<br>ID: $id";
+
+            $abschnitte[] = new DocumentAbschnitt($res, file_get_contents($this->sProjectPath."/source/$res".".rst"), $id);
         }
 
         return $abschnitte;
