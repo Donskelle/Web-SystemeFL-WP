@@ -48,7 +48,7 @@ class DocumentAbschnitt {
      * @param $content
      */
     public function setAbschnittContent($content){
-        $this->fileContent = $content;
+        $this->abschnittContent = $content;
     }
 
     public function getAbschnittId(){
