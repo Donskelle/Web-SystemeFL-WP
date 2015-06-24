@@ -66,10 +66,10 @@ class DocumentView {
     public function viewAddAbschnitt($doc_id){
         $output = array();
         $output[] = "<h2>Abschnitt hinzufügen</h2>";
-        $output[] = '<form action="" method="post">';
+        $output[] = '<form action="" method="post"  class="abschnitt">';
         $output[] = '<input type="hidden" name="operation" value="addAbschnitt"/>';
         $output[] = '<input type="hidden" name="document_id" value="' . $doc_id . '"/>';
-        $output[] = '<textarea name="content" value=""></textarea>';
+        $output[] = '<textarea name="content" rows="15" value=""></textarea>';
         $output[] = '<button type="submit">Hinzufügen</button>';
         $output[] = '</form>';
 
@@ -118,7 +118,7 @@ class DocumentView {
             $output[] = '<input type="hidden" name="abschnitt_id" value="' . $ab["id"] . '"/>';
             $output[] = '<input type="hidden" name="operation" value="setContentAbschnitt"/>';
 
-            $output[] = "<textarea name='content'>" . $ab["content"] . "</textarea>";
+            $output[] = "<textarea name='content' rows='15' >" . $ab["content"] . "</textarea>";
             $output[] = "<button type='submit'>Ändern</button>";
             $output[] = "<a target='_blank' href='" . $ab["htmlUrl"] . "'>Ansehen</a>";
             $output[] = "</form>";
