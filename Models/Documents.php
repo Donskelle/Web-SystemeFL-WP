@@ -94,6 +94,13 @@ class Documents {
         ));
     }
 
+
+    public function deleteAbschnitt($doc_id, $abschnitt_id) {
+        $sphinx = new SphinxDocument("", "", $doc_id);
+        $sphinx->removeAbschnitt($abschnitt_id);
+    }
+
+
     /**
      * [getAbschnitte description]
      * Holt alle Abschnitte des angebenen Dokuments

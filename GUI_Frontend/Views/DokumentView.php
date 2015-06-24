@@ -32,6 +32,9 @@ class DocumentView{
             else if($_POST["operation"] == "setContentAbschnitt") {
                 $doc->updateAbschnitt($_POST["document_id"], $_POST["abschnitt_id"], $_POST["content"]);
             }
+            else if($_POST["operation"] == "deleteAbschnitt") {
+                $doc->deleteAbschnitt($_POST["document_id"], $_POST["abschnitt_id"]);
+            }
         }
 
 
@@ -77,13 +80,19 @@ class DocumentView{
         {
             $this->viewDeleteForm($document->id);
             $this->viewFormSelectGroup($document->id);
+
         }
         
 
 
-        $this->viewAbschnitte($document->abschnitte, $document->id);
-    
-        $this->viewAddAbschnitt($document->id);
+        
+        if($user->ID == $document->user_id || $user->roles[0] == "dokuAdmin" || $user->roles[0] == "administrator" )
+        {
+            $this->viewAbschnitte($document->abschnitte, $document->id, true);
+        }
+        else {
+            $this->viewAbschnitte($document->abschnitte, $document->id, false);
+        }
     }
 
     /**
@@ -92,7 +101,7 @@ class DocumentView{
      * @param  [array] $abschnitte [description]
      * @param  [int] $doc_id     [description]
      */
-    public function viewAbschnitte($abschnitte, $doc_id) {
+    public function viewAbschnitte($abschnitte, $doc_id, $boolAdmin) {
         $output = array();
         $output[] = "<h2>Abschnitte</h2>";
         foreach ($abschnitte as $ab) {
@@ -106,7 +115,15 @@ class DocumentView{
             $output[] = "<button type='submit'>Ändern</button>";
             $output[] = "<a target='_blank' href='" . $ab["htmlUrl"] . "'>Ansehen</a>";
             $output[] = "</form>";
-
+            // Wenn Admin können Abschnitte gelöscht werden
+            if($boolAdmin) {
+                $output[] = "<form action='' method='post'>";
+                $output[] = '<input type="hidden" name="document_id" value="' . $doc_id . '"/>';
+                $output[] = '<input type="hidden" name="abschnitt_id" value="' . $ab["id"] . '"/>';
+                $output[] = '<input type="hidden" name="operation" value="deleteAbschnitt"/>';
+                $output[] = "<button type='submit'>Löschen</button>";
+                $output[] = "</form>";
+            }
             $output[] = "</div>";
         }
         echo implode("\n", $output);
