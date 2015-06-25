@@ -172,12 +172,12 @@ class DocumentView {
             $output[] = '<option value="agogo">Layout3</option>';
         }
 
-        if($doc->layout == "sphinx_rtd_theme") 
+        if($doc->layout == "nature") 
         {
-            $output[] = '<option selected value="sphinx_rtd_theme">Layout4</option>';
+            $output[] = '<option selected value="nature">Layout4</option>';
         }
         else{
-            $output[] = '<option value="sphinx_rtd_theme">Layout4</option>';
+            $output[] = '<option value="nature">Layout4</option>';
         }
 
         if($doc->layout == "scrolls") 
