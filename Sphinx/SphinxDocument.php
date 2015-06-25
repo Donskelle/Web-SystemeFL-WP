@@ -363,7 +363,7 @@ class SphinxDocument {
      * Erstellt das zugehörige PDF in projectid/name/build/latex
      */
     private function makePDF(){
-        shell_exec("cd $this->sProjectPath && make LatexPDF");
+        shell_exec("cd $this->sProjectPath && make latexpdf");
     }
 
 
@@ -511,22 +511,14 @@ class SphinxDocument {
         }
     }
 
-    public function invokeZipDownload(){
+    public function invokeZipDownload($project_name){
         $this->buildZipFile();
-
-        header('Content-Type: application/zip');
-        header('Content-disposition: attachment; filename=html.zip');
-        header('Content-Length: ' . filesize($this->sProjectPath."/html.zip"));
-        readfile($this->sProjectPath."/html.zip");
+        return plugins_url("SphinxProjects/$this->sProjectId/$project_name/html.zip", __FILE__);
     }
 
     public function invokePDFDownload($project_name){
         $this->makePDF();
-
-        header('Content-Type: application/pdf');
-        header('Content-disposition: attachment; filename='.$project_name.'.pdf');
-        header('Content-Length: ' . filesize($this->sProjectPath."/latex/".$project_name."pdf"));
-        readfile($this->sProjectPath."/latex/".$project_name."pdf");
+        return plugins_url("SphinxProjects/$this->sProjectId/$project_name/build/latex/$project_name.pdf", __FILE__);
     }
 
 
