@@ -29,10 +29,10 @@ class DocumentView {
                 $group->selectGroup($this->saveInputs($_POST["selectedGroup"]), $this->saveInputs($_POST["document_id"]));
             }
             else if($_POST["operation"] == "addAbschnitt") {
-                $doc->addAbschnitt($this->saveInputs($_POST["content"]), $this->saveInputs($_POST["document_id"] ));
+                $doc->addAbschnitt(esc_textarea($_POST["content"]), $this->saveInputs($_POST["document_id"] ));
             }
             else if($_POST["operation"] == "setContentAbschnitt") {
-                $doc->updateAbschnitt($this->saveInputs($_POST["document_id"]), $this->saveInputs($_POST["abschnitt_id"]), $this->saveInputs($_POST["content"]));
+                $doc->updateAbschnitt($this->saveInputs($_POST["document_id"]), $this->saveInputs($_POST["abschnitt_id"]), esc_textarea($_POST["content"]));
             }
             else if($_POST["operation"] == "deleteAbschnitt") {
                 $doc->deleteAbschnitt($this->saveInputs($_POST["document_id"]), $this->saveInputs($_POST["abschnitt_id"]));
@@ -148,35 +148,40 @@ class DocumentView {
         $output[] = '<input type="hidden" name="document_id" value="' . $doc->id . '"/>';
         $output[] = "<select name='selectedLayout'>";
 
-        if($doc->layout == "default"){
+        if($doc->layout == "default")
+        {
             $output[] = '<option selected value="default">Layout1</option>';
         }
         else {
             $output[] = '<option value="default">Layout1</option>';
         }
 
-        if($doc->layout == "sphinxdoc") {
+        if($doc->layout == "sphinxdoc") 
+        {
             $output[] = '<option selected value="sphinxdoc">Layout2</option>';
         }
         else {
             $output[] = '<option value="sphinxdoc">Layout2</option>';
         }
 
-        if($doc->layout == "agogo") {
+        if($doc->layout == "agogo") 
+        {
             $output[] = '<option selected value="agogo">Layout3</option>';
         }
         else {
             $output[] = '<option value="agogo">Layout3</option>';
         }
 
-        if($doc->layout == "sphinx_rtd_theme") {
+        if($doc->layout == "sphinx_rtd_theme") 
+        {
             $output[] = '<option selected value="sphinx_rtd_theme">Layout4</option>';
         }
         else{
             $output[] = '<option value="sphinx_rtd_theme">Layout4</option>';
         }
 
-        if($doc->layout == "scrolls") {
+        if($doc->layout == "scrolls") 
+        {
             $output[] = '<option selected value="scrolls">Layout5</option>';
         }
         else {
@@ -207,7 +212,7 @@ class DocumentView {
         // keine aktive gruppe
         if($groups["active"] == "") {
             $output[] = "<option value=\"none\">Keiner Gruppe zugewiesen</h2>";
-            for ($i=0; $i < count($groups["groups"]); $i++) { 
+            for ($i=0; $i < count($groups["groups"]); $i++) {
                 $output[] = "<option value='" . $groups["groups"][$i]->id . "'>" . $groups["groups"][$i]->name . "</option>";
             }
         }
@@ -294,8 +299,7 @@ class DocumentView {
      * Sicherer String
      */
     public function saveInputs($str) {
-        $str = stripslashes($str);
-        $str = strip_tags($str);
+
         $str = esc_sql($str);
         return $str;
     }

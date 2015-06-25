@@ -536,6 +536,7 @@ class SphinxDocument {
         $replace_str = "html_theme = '$newLayout'";
         $newContent = preg_replace($match_str, $replace_str, $content);
         file_put_contents($this->sProjectPath."/source/conf.py", $newContent);
+        $this->makeHTML();
     }
 
 

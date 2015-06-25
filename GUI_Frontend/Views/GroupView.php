@@ -238,8 +238,6 @@ class GroupView {
      * Sicherer String
      */
     public function saveInputs($str) {
-        $str = stripslashes($str);
-        $str = strip_tags($str);
         $str = esc_sql ($str);
         return $str;
     }
