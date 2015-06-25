@@ -511,6 +511,24 @@ class SphinxDocument {
         }
     }
 
+    public function invokeZipDownload(){
+        $this->buildZipFile();
+
+        header('Content-Type: application/zip');
+        header('Content-disposition: attachment; filename=html.zip');
+        header('Content-Length: ' . filesize($this->sProjectPath."/html.zip"));
+        readfile($this->sProjectPath."/html.zip");
+    }
+
+    public function invokePDFDownload($project_name){
+        $this->makePDF();
+
+        header('Content-Type: application/pdf');
+        header('Content-disposition: attachment; filename='.$project_name.'.pdf');
+        header('Content-Length: ' . filesize($this->sProjectPath."/latex/".$project_name."pdf"));
+        readfile($this->sProjectPath."/latex/".$project_name."pdf");
+    }
+
 
     public function changeConfig($oldLayout, $newLayout){
         $content = file_get_contents($this->sProjectPath."/source/conf.py");
