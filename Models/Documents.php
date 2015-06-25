@@ -170,7 +170,7 @@ class Documents {
      * @param  [int] $userId       [description]
      * @return [type]               [description]
      */
-    public function createNewDocument($project_name, $authorName, $userId) {
+    public function createNewDocument($project_name, $authorName, $userId, $layout) {
         global $wpdb;
 
         //$project_path = $sphinx->getProjektPfad();
@@ -178,7 +178,7 @@ class Documents {
         if(!$wpdb->insert($this->dbTableNameDocuments, array(
                 'name' => $project_name,
                 'path' => "",
-                'layout' => "",
+                'layout' => $layout,
                 'updated_at' => current_time('mysql'),
                 'user_id' => $userId
         ))) {

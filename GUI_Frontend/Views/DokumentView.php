@@ -19,7 +19,7 @@ class DocumentView {
         {   
             if($_POST["operation"] == "create") {
                 $current_user = wp_get_current_user();
-                $doc->createNewDocument($this->saveInputs($_POST["project_name"]), $current_user->display_name, get_current_user_id());
+                $doc->createNewDocument($this->saveInputs($_POST["project_name"]), $current_user->display_name, get_current_user_id(), $this->saveInputs($_POST["layout"]));
             }
             else if ($_POST["operation"] == "delete") {
                 $doc->deleteDocument($this->saveInputs($_POST["id"]));
@@ -219,6 +219,13 @@ class DocumentView {
         $response[] = '<h2>Dokument erstellen</h2>';
         $response[] = '<form action="./" method="post">';
             $response[] = '<input type="text" name="project_name" value="" placeholder="Dokumentenname" required maxlength="250"/>';
+            $response[] = '<select class="form-control" name="layout">';
+                $response[] = '<option value="default">Layout1</option>';
+                $response[] = '<option value="sphinxdoc">Layout2</option>';
+                $response[] = '<option value="agogo">Layout3</option>';
+                $response[] = '<option value="sphinx_rtd_theme">Layout4</option>';
+                $response[] = '<option value="scrolls">Layout5</option>';
+            $response[] = '</select>';
             $response[] = '<input type="hidden" name="operation" value="create"/>';
             $response[] = '<input type="submit" name="submit" value="Erstellen" class="button" />';
         $response[] = '</form>';
