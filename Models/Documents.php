@@ -264,16 +264,12 @@ class Documents {
 	}
 
 
-    public function getDownloadZipLink($id) {
-        $sphinx = new SphinxDocument("", "", $id);
-        $sphinx->invokeZipDownload();
-    }
-
-
-    public function getDownloadPdfLink($id) {
-        $doc = $this->getDocument($id);
-        $sphinx = new SphinxDocument("", "", $id);
-        $sphinx->invokePDFDownload($doc->name);
+    public function getDownloadLinks($doc) {
+        $response = array();
+        $sphinx = new SphinxDocument("", "", $doc->id);
+        $response["zip"] = $sphinx->invokeZipDownload($doc->name);
+        $response["pdf"] = $sphinx->invokePDFDownload($doc->name);
+        return $response;
     }
 }
 

@@ -48,8 +48,9 @@ class DocumentView {
             $document->abschnitte = array();
             $document->abschnitte = $doc->getAbschnitte($document->id);
 
-            $document->downloadZip = $doc->getDownloadZipLink($document->id);
-            $document->downloadPdf = $doc->getDownloadPdfLink($document->id);
+            $downloadLinks = $doc->getDownloadLinks($document);
+            $document->downloadZip = $downloadLinks["zip"];
+            $document->downloadPdf = $downloadLinks["pdf"];
 
             $this->viewDocument($document);
         }
@@ -72,8 +73,8 @@ class DocumentView {
         $user = wp_get_current_user();
 
         echo "<h2>$document->name</h2>";
-        echo "<a href='$document->downloadZip' target='_blank'>Download Pdf</a>";
-        echo "<a href='$document->downloadPdf' target='_blank'>Download Zip</a>";
+        echo "<a href='$document->downloadZip' class='downloadLink' target='_blank'>Download Zip</a>";
+        echo "<a href='$document->downloadPdf' class='downloadLink' download='$document->name.pdf' target='_blank'>Download Pdf</a>";
         if($user->ID == $document->user_id)
         {
             $this->viewDeleteForm($document->id);
