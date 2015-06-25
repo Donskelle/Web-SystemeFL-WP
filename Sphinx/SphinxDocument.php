@@ -512,6 +512,10 @@ class SphinxDocument {
     }
 
 
+    public function changeConfig($oldLayout, $newLayout){
+        
+    }
+
 
 
 }
