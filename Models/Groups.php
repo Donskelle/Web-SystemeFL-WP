@@ -6,10 +6,11 @@ class Groups {
 
 	private $dbTableGroup = "dokumummy_groups";
 	private $dbTableUserInGroup = "dokumummy_users_in_groups";
-private $dbTableDocumentInGroup = "dokumummy_documents_in_groups";
+	private $dbTableDocumentInGroup = "dokumummy_documents_in_groups";
 
 	function __construct() {
 		global $wpdb;
+		
 		$this->dbTableDocumentInGroup = $wpdb->prefix . $this->dbTableDocumentInGroup;
 		$this->dbTableGroup = $wpdb->prefix . $this->dbTableGroup;
 		$this->dbTableUserInGroup = $wpdb->prefix . $this->dbTableUserInGroup;
@@ -266,7 +267,7 @@ private $dbTableDocumentInGroup = "dokumummy_documents_in_groups";
  			updated_at timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
 			PRIMARY KEY (id),
 			FOREIGN KEY (user_id) references $wps_usertable(ID) on update cascade on delete cascade,
-			FOREIGN KEY (group_id) references $table_name_groups(id) on update cascade on delete cascade
+			FOREIGN KEY (group_id) references $tableGroups(id) on update cascade on delete cascade
 	    )";
 		dbDelta( $sql );
 	}
