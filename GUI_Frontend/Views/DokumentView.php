@@ -38,7 +38,7 @@ class DocumentView {
                 $doc->deleteAbschnitt($this->saveInputs($_POST["document_id"]), $this->saveInputs($_POST["abschnitt_id"]));
             }
             else if($_POST["operation"] == "selectLayout")
-                $doc->selectLayout($this->saveInputs($_POST["document_id"]), $this->saveInputs($_POST["selectedLayout"]));
+                $doc->selectLayout($this->saveInputs($_POST["document_id"]), $this->saveInputs($_POST["selectedLayout"]), $this->saveInputs($_POST["old_layout"]));
         }
 
         if(isset($_GET["id"]))

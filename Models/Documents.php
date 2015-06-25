@@ -165,7 +165,7 @@ class Documents {
             )
         );
         $sphinx = new SphinxDocument("", "", $doc_id);
-        $sphinx->changeConfig();
+        $sphinx->changeConfig($layout, $oldLayout);
     }
 
     /**
