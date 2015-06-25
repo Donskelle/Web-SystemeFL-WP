@@ -148,7 +148,28 @@ class Documents {
 
 
     /**
+     * [selectLayout description]
+     * Dokument wird Layout zugewiesen
+     * @param  [int] $group_id [description]
+     * @param  [int] $doc_id   [description]
+     */
+    public function selectLayout($doc_id, $layout) {
+        global $wpdb;
+        $sql = $wpdb->update(
+            $this->dbTableNameDocuments,
+            array(
+                "layout" => $layout
+            ),
+            array( 
+                'id' => $doc_id
+            )
+        );
+
+    }
+
+    /**
      * @param $document_id
+     * Dokument wird gelöscht
      */
     public function deleteDocument($document_id){
         global $wpdb;
@@ -170,7 +191,7 @@ class Documents {
      * @param  [int] $userId       [description]
      * @return [type]               [description]
      */
-    public function createNewDocument($project_name, $authorName, $userId) {
+    public function createNewDocument($project_name, $authorName, $userId, $layout) {
         global $wpdb;
 
         //$project_path = $sphinx->getProjektPfad();
@@ -178,7 +199,7 @@ class Documents {
         if(!$wpdb->insert($this->dbTableNameDocuments, array(
                 'name' => $project_name,
                 'path' => "",
-                'layout' => "",
+                'layout' => $layout,
                 'updated_at' => current_time('mysql'),
                 'user_id' => $userId
         ))) {
