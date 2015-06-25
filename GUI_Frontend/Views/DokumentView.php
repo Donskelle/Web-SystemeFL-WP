@@ -29,10 +29,10 @@ class DocumentView {
                 $group->selectGroup($this->saveInputs($_POST["selectedGroup"]), $this->saveInputs($_POST["document_id"]));
             }
             else if($_POST["operation"] == "addAbschnitt") {
-                $doc->addAbschnitt($this->saveInputs($_POST["content"]), $this->saveInputs($_POST["document_id"] ));
+                $doc->addAbschnitt($this->saveInputs($_POST["content"]), esc_textarea($_POST["document_id"] ));
             }
             else if($_POST["operation"] == "setContentAbschnitt") {
-                $doc->updateAbschnitt($this->saveInputs($_POST["document_id"]), $this->saveInputs($_POST["abschnitt_id"]), $this->saveInputs($_POST["content"]));
+                $doc->updateAbschnitt($this->saveInputs($_POST["document_id"]), $this->saveInputs($_POST["abschnitt_id"]), esc_textarea($_POST["content"]));
             }
             else if($_POST["operation"] == "deleteAbschnitt") {
                 $doc->deleteAbschnitt($this->saveInputs($_POST["document_id"]), $this->saveInputs($_POST["abschnitt_id"]));
@@ -294,8 +294,7 @@ class DocumentView {
      * Sicherer String
      */
     public function saveInputs($str) {
-        $str = stripslashes($str);
-        $str = strip_tags($str);
+
         $str = esc_sql($str);
         return $str;
     }
