@@ -153,7 +153,7 @@ class Documents {
      * @param  [int] $group_id [description]
      * @param  [int] $doc_id   [description]
      */
-    public function selectLayout($doc_id, $layout) {
+    public function selectLayout($doc_id, $layout, $oldLayout) {
         global $wpdb;
         $sql = $wpdb->update(
             $this->dbTableNameDocuments,
@@ -164,7 +164,8 @@ class Documents {
                 'id' => $doc_id
             )
         );
-
+        $sphinx = new SphinxDocument("", "", $doc_id);
+        $sphinx->changeConfig();
     }
 
     /**
