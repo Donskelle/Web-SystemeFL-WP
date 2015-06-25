@@ -261,8 +261,20 @@ class Documents {
 			FOREIGN KEY (group_id) references $group_table(id) on update cascade on delete cascade
 	    );";
 		dbDelta( $sql );
-
 	}
+
+
+    public function getDownloadZipLink($id) {
+        $sphinx = new SphinxDocument("", "", $id);
+        $sphinx->invokeZipDownload();
+    }
+
+
+    public function getDownloadPdfLink($id) {
+        $doc = $this->getDocument($id);
+        $sphinx = new SphinxDocument("", "", $id);
+        $sphinx->invokePDFDownload($doc->name);
+    }
 }
 
 ?>
