@@ -514,10 +514,10 @@ class SphinxDocument {
 
     public function changeConfig($oldLayout, $newLayout){
         $content = file_get_contents($this->sProjectPath."/source/conf.py");
-        $match_str = "html_theme = '$oldLayout'";
+        $match_str = "/^html_theme = '$oldLayout'/m";
         $replace_str = "html_theme = '$newLayout'";
-        preg_replace($match_str, $replace_str, $content);
-        file_put_contents($this->sProjectPath."/source/conf.py", $content);
+        $newContent = preg_replace($match_str, $replace_str, $content);
+        file_put_contents($this->sProjectPath."/source/conf.py", $newContent);
     }
 
 
