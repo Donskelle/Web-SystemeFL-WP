@@ -165,7 +165,7 @@ class Documents {
             )
         );
         $sphinx = new SphinxDocument("", "", $doc_id);
-        $sphinx->changeConfig($layout, $oldLayout);
+        $sphinx->changeConfig($oldLayout, $layout);
     }
 
     /**
@@ -207,6 +207,7 @@ class Documents {
             die("Eintrag in der DB nicht erfolgreich - Models/Documents.php");
         }else{
             $sphinx = new SphinxDocument($project_name, $authorName, $wpdb->insert_id);//die id nicht vergessen!
+            $sphinx->changeConfig("default", $layout);
         }
     }
 
