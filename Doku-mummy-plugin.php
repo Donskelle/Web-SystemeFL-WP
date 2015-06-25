@@ -147,9 +147,23 @@ function remove_default_widgets(){
 	unregister_widget('WP_Widget_Tag_Cloud');
 	unregister_widget('WP_Nav_Menu_Widget');
 }
-
 add_action('widgets_init', 'remove_default_widgets', 11);
 
+
+//entfernt activity und wordpress press widget im backend
+function remove_admin_widgets(){
+    remove_meta_box( 'dashboard_incoming_links', 'dashboard', 'normal' );
+    remove_meta_box( 'dashboard_plugins', 'dashboard', 'normal' );
+    remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );
+    remove_meta_box( 'dashboard_secondary', 'dashboard', 'normal' );
+    remove_meta_box( 'dashboard_quick_press', 'dashboard', 'side' );
+    remove_meta_box( 'dashboard_recent_drafts', 'dashboard', 'side' );
+    remove_meta_box( 'dashboard_recent_comments', 'dashboard', 'normal' );
+    remove_meta_box( 'dashboard_right_now', 'dashboard', 'normal' );
+    remove_meta_box( 'dashboard_activity', 'dashboard', 'normal');//since 3.8
+}
+
+add_action('admin_init', 'remove_admin_widgets');
 /* TODO: Funktioniert noch nicht.
 function add_dokumummy_widget(){
 	unregister_widget('Widget-Menu-DokuMummy'); //der name des custom widgets
