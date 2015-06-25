@@ -129,9 +129,7 @@ class SphinxDocument {
     public function removeAbschnitt($abschnittId){
         $this->isUnuseable();
         $abschnitt = null;
-        echo "<pre>";
-        print_r($this->aAbschnitteDesDokuments);
-        echo "</pre>";
+
         foreach($this->aAbschnitteDesDokuments as $ab){
             if($ab->getAbschnittId() == $abschnittId){
                 $abschnitt = $ab;
@@ -142,9 +140,6 @@ class SphinxDocument {
         }
         $this->removeAbschnittFromIndexFile($abschnitt);
         $this->deleteAbschnittFromFS($abschnitt);
-        echo "<pre>";
-        print_r($this->aAbschnitteDesDokuments);
-        echo "</pre>";
         $this->makeHTML();
     }
 
@@ -230,7 +225,6 @@ class SphinxDocument {
             $search_string .="   ".$ab->getFileName().PHP_EOL;
         } //search_string hat jetzt alle Abschnitte als Einträge.
 
-        echo "<pre>RemoveAbschnitt - searchstinrg: $search_string";
 
         //Entferne $abschnitt vom Verzeichnis.
         $tmp_arr = [];
@@ -246,7 +240,6 @@ class SphinxDocument {
             $replace_string .="   ".$ab->getFileName().PHP_EOL;
         } //replace_str hat jetzt alle aktuellen Abschnitte als Einträge.
 
-        echo "<br>replacestring: $replace_string</pre>";
 
         $str = preg_replace("/$search_string/s", $replace_string, $indexContent);
         file_put_contents($this->sProjectPath."/source/index.rst", $str);
@@ -448,13 +441,9 @@ class SphinxDocument {
             }
         }
 
-        echo "doc_results: <pre>";
-        print_r($doc_results);
-        echo "</pre>";
         //Erzeugen des Abschnittarrayss
         foreach($doc_results as $res){
             $id = $this->generateAbschnittId();
-            echo "<br>Name: $res<br>ID: $id";
 
             $abschnitte[] = new DocumentAbschnitt($res, file_get_contents($this->sProjectPath."/source/$res".".rst"), $id);
         }
@@ -465,10 +454,7 @@ class SphinxDocument {
 
 
     private function deleteAbschnittFromFS($abschnitt){
-
-        $output = shell_exec("sudo rm ".$this->sProjectPath."/source/".$abschnitt->getFileName().".rst");
-        echo "sudo rm ".$this->sProjectPath."/source/".$abschnitt->getFileName().".rst";
-        echo $output;
+        shell_exec("sudo rm ".$this->sProjectPath."/source/".$abschnitt->getFileName().".rst");
     }
 
     /**
