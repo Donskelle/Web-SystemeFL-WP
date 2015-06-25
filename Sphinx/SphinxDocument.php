@@ -363,7 +363,7 @@ class SphinxDocument {
      * Erstellt das zugehörige PDF in projectid/name/build/latex
      */
     private function makePDF(){
-        shell_exec("cd $this->sProjectPath && make PDF");
+        shell_exec("cd $this->sProjectPath && make LatexPDF");
     }
 
 
@@ -462,12 +462,15 @@ class SphinxDocument {
         return $abschnitte;
     }
 
+
+
     private function deleteAbschnittFromFS($abschnitt){
 
         $output = shell_exec("sudo rm ".$this->sProjectPath."/source/".$abschnitt->getFileName().".rst");
         echo "sudo rm ".$this->sProjectPath."/source/".$abschnitt->getFileName().".rst";
         echo $output;
     }
+
     /**
      * @return array
      * @throws Exception
@@ -487,6 +490,28 @@ class SphinxDocument {
 
         return $abschnitteContent;
     }
+
+    public function testZIPFILE(){
+        $this->buildZipFile();
+    }
+
+    private function buildZipFile(){
+        shell_exec("cd $this->sProjectPath && make singlehtml");
+
+        $zip = new ZipArchive();
+
+        if($zip->open($this->sProjectPath."/html.zip", ZipArchive::OVERWRITE)){
+            $zip->addFile($this->sProjectPath."/build/singlehtml/index.html", "index.html");
+            $zip->addFile($this->sProjectPath."/build/singlehtml/objects.inv", "objects.inv");
+            $zip->addGlob($this->sProjectPath."/build/singlehtml/_static/*", GLOB_ERR, array(
+                    'add_path' => '_static/',
+                    'remove_all_path' => TRUE
+            ));
+            $zip->close();
+        }
+    }
+
+
 
 
 }
