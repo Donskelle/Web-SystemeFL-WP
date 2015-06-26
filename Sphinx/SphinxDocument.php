@@ -366,11 +366,19 @@ class SphinxDocument {
     private function getHTMLPath($abschnittId){
         //finde den Dateinamen des Abschnitts. 
         $fileName = "";
-        foreach($this->aAbschnitteDesDokuments as $ab){
-            if($ab->getAbschnittId() == $abschnittId){
-                $fileName = $ab->getFileName();
-                break;
+        try{
+            if(count($this->aAbschnitteDesDokuments) == 0){
+                throw new Exception("keine Abschnitte");
             }
+            foreach($this->aAbschnitteDesDokuments as $ab){
+                if($ab->getAbschnittId() == $abschnittId){
+                    $fileName = $ab->getFileName();
+                    break;
+                }
+            }
+        }catch (Exception $e){
+//            echo $e->getMessage();
+
         }
 
         return ''.$this->sProjectPath.'/build/html/'. $fileName.'.html';
@@ -453,10 +461,6 @@ class SphinxDocument {
 
             $abschnitte[] = new DocumentAbschnitt($res, file_get_contents($this->sProjectPath."/source/$res".".rst"), $id);
         }
-        echo "<pre>";
-        print_r($abschnitte);
-        echo "</pre>";
-        return $abschnitte;
     }
 
 
@@ -475,12 +479,19 @@ class SphinxDocument {
 
         $abschnitteContent = [];
 
-        foreach($this->aAbschnitteDesDokuments as $ab){
-            $abschnitteContent[] = array(
-                "id" => $ab->getAbschnittId(),
-                "filename" => $ab->getFileName(),
-                "content" => $ab->getAbschnittContent()
-            );
+        try{
+            if(count($this->aAbschnitteDesDokuments) == 0){
+                throw new Exception("keine Abschnitte");
+            }
+            foreach($this->aAbschnitteDesDokuments as $ab){
+                $abschnitteContent[] = array(
+                    "id" => $ab->getAbschnittId(),
+                    "filename" => $ab->getFileName(),
+                    "content" => $ab->getAbschnittContent()
+                );
+            }
+        }catch (Exception $e){
+//            echo $e->getMessage();
         }
 
         return $abschnitteContent;
