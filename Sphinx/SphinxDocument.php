@@ -342,7 +342,7 @@ class SphinxDocument {
      * Führe dies nach jeder Änderung aus.
      */
     private function changePermissions(){
-        shell_exec("sudo ".$this->sphinxScriptPermissionsPath);
+        shell_exec('sudo '.$this->sphinxScriptPermissionsPath.'');
     }
 
 
@@ -350,19 +350,30 @@ class SphinxDocument {
      * Erstellt das zugehörige HTML in projectid/name/build/html
      */
     private function makeHTML(){
-        shell_exec('cd '.$this->sProjectPath.' && make html');
+        $this->changePermissions();
+        shell_exec('cd "'.$this->sProjectPath.'" && make html');
     }
 
     /**
-     * Erstellt das zugehörige PDF in projectid/name/build/latex
+     * Erstellt das zugehörige PDF in projectid/project_name/latex
      */
     private function makePDF(){
-        shell_exec('cd '.$this->sProjectPath.' && make latexpdf');
+        $this->changePermissions();
+        shell_exec('cd "'.$this->sProjectPath.'" && make latexpdf');
     }
 
 
     private function getHTMLPath($abschnittId){
-        return ''.$this->sProjectPath.'/build/html/doc'. $abschnittId.'.html';
+        //finde den Dateinamen des Abschnitts. 
+        $fileName = "";
+        foreach($this->aAbschnitteDesDokuments as $ab){
+            if($ab->getAbschnittId() == $abschnittId){
+                $fileName = $ab->getFileName();
+                break;
+            }
+        }
+
+        return ''.$this->sProjectPath.'/build/html/'. $fileName.'.html';
     }
 
     public function getHTML($abschnitt_id){
@@ -442,14 +453,17 @@ class SphinxDocument {
 
             $abschnitte[] = new DocumentAbschnitt($res, file_get_contents($this->sProjectPath."/source/$res".".rst"), $id);
         }
-
+        echo "<pre>";
+        print_r($abschnitte);
+        echo "</pre>";
         return $abschnitte;
     }
 
 
 
     private function deleteAbschnittFromFS($abschnitt){
-        shell_exec("sudo rm ".$this->sProjectPath."/source/".$abschnitt->getFileName().".rst");
+        shell_exec('sudo rm "'.$this->sProjectPath.'/source/'.$abschnitt->getFileName().'.rst"');
+        shell_exec('sudo rm "'.$this->sProjectPath.'/build/html/'.$abschnitt->getFileName().'.html"'); //auch die html Datei muss entfernt werden.
     }
 
     /**
@@ -474,6 +488,7 @@ class SphinxDocument {
 
 
     private function buildZipFile(){
+        $this->changePermissions();
         shell_exec('cd "'.$this->sProjectPath.'" && sudo make singlehtml');
 
         $zip = new ZipArchive();
@@ -509,6 +524,7 @@ class SphinxDocument {
         $replace_str = "html_theme = '$newLayout'";
         $newContent = preg_replace($match_str, $replace_str, $content);
         file_put_contents(''.$this->sProjectPath.'/source/conf.py', $newContent);
+
         $this->makeHTML();
     }
 
