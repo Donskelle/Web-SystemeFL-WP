@@ -45,14 +45,14 @@ class DocumentView {
 
 
             $document = $doc->getDocument($this->saveInputs($_GET["id"]));
-            new AdminBarLayoutSelection($document->id, $document->layout); //Die Layoutauswahl soll immer angezeugt werden.
+
             $document->abschnitte = array();
             $document->abschnitte = $doc->getAbschnitte($document->id);
 
             $downloadLinks = $doc->getDownloadLinks($document);
             $document->downloadZip = $downloadLinks["zip"];
             $document->downloadPdf = $downloadLinks["pdf"];
-            new AdminBarDownloadOption($document->downloadZip, $document->downloadPdf, "$document->name.pdf");
+
             $this->viewDocument($document);
         }
         else if(isset($_GET["create"])) {
@@ -73,11 +73,9 @@ class DocumentView {
     public function viewDocument($document) {
         $user = wp_get_current_user();
 
-        echo "<h2>$document->name</h2>";
-        echo "<div class='donloadLinks'>";
-        echo "<a href='$document->downloadZip' class='downloadLink' target='_blank'>Download Zip</a>";
-        echo "<a href='$document->downloadPdf' class='downloadLink' download='$document->name.pdf' target='_blank'>Download Pdf</a>";
-        echo "</div>";
+        new AdminBarLayoutSelection($document->id, $document->layout); //Die Layoutauswahl soll immer angezeugt werden.
+        new AdminBarDownloadOption($document->downloadPdf, $document->downloadZip, $document->name);
+
 
 
 

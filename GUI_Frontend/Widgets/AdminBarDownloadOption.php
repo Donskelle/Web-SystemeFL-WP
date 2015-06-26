@@ -15,7 +15,7 @@ class AdminBarDownloadOption {
     public function __construct($pdf_link, $zip_link,  $doc_name){
         $this->pdf_link = $pdf_link;
         $this->zip_link = $zip_link;
-        $this->doc_name = $doc_name;
+        $this->doc_name = str_replace(' ', '',$doc_name);
 
         add_action('admin_bar_menu', array($this,'showDownloadOptions'), 998); ///998 ist die Priorität
     }
@@ -33,14 +33,14 @@ class AdminBarDownloadOption {
 
         $pdf_option = array(
             'id' => 'pdf_option',
-            'title' => '<a href="'.$this->pdf_link.'" class="downloadLink" download="'.$this->name.'.pdf" target="_blank">PDF</a>',
+            'title' => '<a href="'.$this->pdf_link.'" class="downloadLink" download="'.$this->doc_name.'.pdf" target="_blank">PDF</a>',
             'parent' => 'download_parent'
         );
         $wp_admin_bar->add_node($pdf_option);
 
         $zip_option = array(
             'id' => 'zip_option',
-            'title' => '<a href="'.$this->zip_link.'" class="downloadLink" target="_blank">Zip</a>',
+            'title' => '<a href="'.$this->zip_link.'" class="downloadLink" download="'.$this->doc_name.'.zip" target="_blank">ZIP</a>',
             'parent' => 'download_parent'
         );
         $wp_admin_bar->add_node($zip_option);
