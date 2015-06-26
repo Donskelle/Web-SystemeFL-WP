@@ -199,7 +199,6 @@ class Documents {
 
         if(!$wpdb->insert($this->dbTableNameDocuments, array(
                 'name' => $project_name,
-                'path' => "",
                 'layout' => $layout,
                 'updated_at' => current_time('mysql'),
                 'user_id' => $userId
@@ -228,13 +227,12 @@ class Documents {
 		/**
 		 * Datenbank für Dokumente
 		 */
-		$documents_table = $wpdb->prefix . $this->dbTableNameDocuments;
+		$documents_table = $this->dbTableNameDocuments;
 		$wps_usertable = $wpdb->prefix . "users";
 
 	    $sql = "CREATE TABLE IF NOT EXISTS $documents_table (
 			id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
 			name varchar(255) NOT NULL,
-			path varchar(255) NOT NULL,
 			layout varchar(255) NOT NULL,
 			user_id bigint(20) UNSIGNED NOT NULL,
 			created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
@@ -247,7 +245,7 @@ class Documents {
 		/**
 		 * Datenbanken für Verbindung von Gruppen zu Dokumenten
 		 */
-		$documents_in_groups_table = $wpdb->prefix . $this->dbTableNameDocumentInGroup;
+		$documents_in_groups_table = $this->dbTableNameDocumentInGroup;
 		$group_table = $wpdb->prefix . "dokumummy_groups";
 
 		$sql = "CREATE TABLE IF NOT EXISTS $documents_in_groups_table (
