@@ -42,17 +42,17 @@ class DocumentView {
 
         if(isset($_GET["id"]))
         {
-            new AdminBarDeleteButton(); //Das Dokument löschen Feld soll nur angezeigt werden, wenn ein Dokument vorhanden ist.
+
 
             $document = $doc->getDocument($this->saveInputs($_GET["id"]));
-            new AdminBarLayoutSelection($document->id, $document->layout);
+            new AdminBarLayoutSelection($document->id, $document->layout); //Die Layoutauswahl soll immer angezeugt werden.
             $document->abschnitte = array();
             $document->abschnitte = $doc->getAbschnitte($document->id);
 
             $downloadLinks = $doc->getDownloadLinks($document);
             $document->downloadZip = $downloadLinks["zip"];
             $document->downloadPdf = $downloadLinks["pdf"];
-
+            new AdminBarDownloadOption($document->downloadZip, $document->downloadPdf, "$document->name.pdf");
             $this->viewDocument($document);
         }
         else if(isset($_GET["create"])) {
@@ -78,16 +78,21 @@ class DocumentView {
         echo "<a href='$document->downloadZip' class='downloadLink' target='_blank'>Download Zip</a>";
         echo "<a href='$document->downloadPdf' class='downloadLink' download='$document->name.pdf' target='_blank'>Download Pdf</a>";
         echo "</div>";
+
+
+
         if($user->ID == $document->user_id)
         {
             $this->viewDeleteForm($document->id);
-
+            new AdminBarDeleteButton($document->id); //Das Dokument löschen Feld soll nur angezeigt werden, wenn ein Dokument vorhanden ist und wenn der Benutzer erlaubt ist, dies zu tuen.
             $this->viewFormSelectGroup($document->id);
             //$this->viewFormSelectLayout($document);
         }
-        if($user->ID == $document->user_id || $user->roles[0] == "dokuAdmin" || $user->roles[0] == "administrator" )
+        if($user->ID == $document->user_id || $user->roles[0] == "dokuAdmin" || $user->roles[0] == "administratorf" )
         {
+
             $this->viewAbschnitte($document->abschnitte, $document->id, true);
+
         }
         else {
             $this->viewAbschnitte($document->abschnitte, $document->id, false);
@@ -214,37 +219,10 @@ class DocumentView {
      * Form zum Wählen einer Gruppe für ein Dokument darstellen
      */
     public function viewFormSelectGroup($id) {
-        $output = array();
-        $output[] = "<h2>Gruppe zuweisen</h2>";
-        $output[] = "<form action=\"\" method=\"post\">";
-        $output[] = '<input type="hidden" name="operation" value="selectGroup"/>';
-        $output[] = '<input type="hidden" name="document_id" value="' . $id . '"/>';
         $group = new Groups();
         $groups = $group->getDocumentGroups($id);
 
-        $output[] = "<select name='selectedGroup'>";
-        // keine aktive gruppe
-        if($groups["active"] == "") {
-            $output[] = "<option value=\"none\">Keiner Gruppe zugewiesen</h2>";
-            for ($i=0; $i < count($groups["groups"]); $i++) {
-                $output[] = "<option value='" . $groups["groups"][$i]->id . "'>" . $groups["groups"][$i]->name . "</option>";
-            }
-        }
-        // aktive gruppe
-        else {
-            $output[] = "<option value='none'>Keiner Gruppe zugewiesen</h2>";
-            for ($i=0; $i < count($groups["groups"]); $i++) { 
-                if($groups["groups"][$i]->id == $groups["active"]->group_id)
-                    $output[] = "<option selected value='" . $groups["groups"][$i]->id . "'>" . $groups["groups"][$i]->name . "</option>";
-                else
-                    $output[] = "<option value='" . $groups["groups"][$i]->id . "'>" . $groups["groups"][$i]->name . "</option>";
-            }
-        }   
-        $output[] = "</select>";
-        $output[] = '<button type="submit" >Zuweisen</button>';
-        $output[] = "</form>";
-        
-        echo implode("\n", $output);
+        new AdminBarGroupSelection($groups, $id);
     }
 
 
@@ -272,13 +250,7 @@ class DocumentView {
      * @return [type]     [description]
      */
     public function viewDeleteForm($id) {
-        $output = array();
-        $output[] = '<form action="./" method="post">';
-            $output[] = '<input type="hidden" name="id" value="'.$id.'" placeholder="Dokumentenname" required maxlength="250"/>';
-            $output[] = '<input type="hidden" name="operation" value="delete"/>';
-            $output[] = '<button type="submit" value="" class="button" >Dokument Löschen</button>';
-        $output[] = '</form>';
-        echo implode("\n", $output);
+
     }
 
 

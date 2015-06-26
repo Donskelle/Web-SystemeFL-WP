@@ -14,7 +14,7 @@ class AdminBarLayoutSelection {
     public function __construct($doc_id, $oldLayout){
         $this->doc_id = $doc_id;
         $this->old_layout = $oldLayout;
-        add_action('admin_bar_menu', array($this,'showLayoutSelection'), 999); ///998 ist die Priorität
+        add_action('admin_bar_menu', array($this,'showLayoutSelection'), 997); ///998 ist die Priorität
     }
 
     public function showLayoutSelection($wp_admin_bar){

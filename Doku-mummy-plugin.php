@@ -27,6 +27,8 @@ require_once('GUI_Frontend/Widgets/Menu_Widget.php');
 require_once('GUI_Backend/Widgets/Newsfeed_Widget.php');
 require_once('GUI_Frontend/Widgets/AdminBarDeleteButton.php');
 require_once('GUI_Frontend/Widgets/AdminBarLayoutSelection.php');
+require_once('GUI_Frontend/Widgets/AdminBarGroupSelection.php');
+require_once('GUI_Frontend/Widgets/AdminBarDownloadOption.php');
 
 
 /*
