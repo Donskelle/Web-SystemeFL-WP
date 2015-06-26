@@ -76,12 +76,12 @@ class DocumentView {
         new AdminBarLayoutSelection($document->id, $document->layout); //Die Layoutauswahl soll immer angezeugt werden.
         new AdminBarDownloadOption($document->downloadPdf, $document->downloadZip, $document->name);
 
+        echo "<h2>$document->name</h2>";
 
 
 
         if($user->ID == $document->user_id)
         {
-            $this->viewDeleteForm($document->id);
             new AdminBarDeleteButton($document->id); //Das Dokument löschen Feld soll nur angezeigt werden, wenn ein Dokument vorhanden ist und wenn der Benutzer erlaubt ist, dies zu tuen.
             $this->viewFormSelectGroup($document->id);
             //$this->viewFormSelectLayout($document);
@@ -240,16 +240,6 @@ class DocumentView {
         echo implode("\n", $output);
     }
 
-
-    /**
-     * [viewDeleteForm description]
-     * Stellt einen Button zum Löschen des Dokuments dar
-     * @param  [type] $id [description]
-     * @return [type]     [description]
-     */
-    public function viewDeleteForm($id) {
-
-    }
 
 
     /**
