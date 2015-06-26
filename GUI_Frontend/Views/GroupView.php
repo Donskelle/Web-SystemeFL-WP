@@ -186,8 +186,8 @@ class GroupView {
     private function viewFormCreateGroup() {
         $response = array();
         $response[] = '<form action="" method="post">';
-            $response[] = '<input type="text" name="group_name" value="" placeholder="Gruppenname" required maxlength="250"/>';
-            $response[] = '<input type="text" name="group_description" Placeholder="Beschreibung" maxlength="250"/>';
+            $response[] = '<input type="text" name="group_name" class="dm_formInputs" value="" placeholder="Gruppenname" required maxlength="250"/>';
+            $response[] = '<input type="text" name="group_description" class="dm_formInputs" Placeholder="Beschreibung" maxlength="250"/>';
             $response[] = '<input type="submit" name="submit" value="Erstellen" class="button" />';
         $response[] = '</form>';
         return implode("\n", $response);
@@ -206,7 +206,7 @@ class GroupView {
         $response[] = '<form action="" method="post">';        
             $response[] = '<input type="hidden" name="group_id" value="' . $group_id . '"/>';
             $response[] = '<input type="hidden" name="userToAdd" value="' . $user_id . '"/>';
-            $response[] = $user_name;
+            $response[] = '<span class="userNameForm">' . $user_name . '</span>';
             $response[] = '<input type="submit" name="submit" value="Hinzufügen" class="button" />';
         $response[] = '</form>';
         return implode("\n", $response);
@@ -224,7 +224,7 @@ class GroupView {
         $response[] = '<form action="" method="post">';        
             $response[] = '<input type="hidden" name="group_id" value="' . $group_id . '"/>';
             $response[] = '<input type="hidden" name="userToDelete" value="' . $user_id . '"/>';
-            $response[] = $user_name;
+            $response[] = '<span class="userNameForm">' . $user_name . '</span>';
             $response[] = '<input type="submit" name="submit" value="Entfernen" class="button" />';
         $response[] = '</form>';
         return implode("\n", $response);

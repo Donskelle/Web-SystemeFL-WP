@@ -73,12 +73,14 @@ class DocumentView {
         $user = wp_get_current_user();
 
         echo "<h2>$document->name</h2>";
+        echo "<div class='donloadLinks'>";
         echo "<a href='$document->downloadZip' class='downloadLink' target='_blank'>Download Zip</a>";
         echo "<a href='$document->downloadPdf' class='downloadLink' download='$document->name.pdf' target='_blank'>Download Pdf</a>";
+        echo "</div>";
         if($user->ID == $document->user_id)
         {
             $this->viewDeleteForm($document->id);
-            
+
             $this->viewFormSelectGroup($document->id);
             $this->viewFormSelectLayout($document);
         }
@@ -111,17 +113,21 @@ class DocumentView {
 
             $output[] = "<textarea name='content' rows='15' >" . $ab["content"] . "</textarea>";
             $output[] = "<button type='submit'>Ändern</button>";
-            $output[] = "<a target='_blank' href='" . $ab["htmlUrl"] . "'>Ansehen</a>";
             $output[] = "</form>";
+
             // Wenn Admin können Abschnitte gelöscht werden
             if($boolAdmin) {
-                $output[] = "<form action='' method='post'>";
+                $output[] = "<form action='' method='post' class='inlineForm'>";
                 $output[] = '<input type="hidden" name="document_id" value="' . $doc_id . '"/>';
                 $output[] = '<input type="hidden" name="abschnitt_id" value="' . $ab["id"] . '"/>';
                 $output[] = '<input type="hidden" name="operation" value="deleteAbschnitt"/>';
                 $output[] = "<button type='submit'>Löschen</button>";
                 $output[] = "</form>";
             }
+            
+            
+            
+            $output[] = "<a target='_blank' class='viewDoc' href='" . $ab["htmlUrl"] . "'>Ansehen</a>";
             $output[] = "</div>";
         }
         echo implode("\n", $output);
@@ -269,7 +275,7 @@ class DocumentView {
         $output[] = '<form action="./" method="post">';
             $output[] = '<input type="hidden" name="id" value="'.$id.'" placeholder="Dokumentenname" required maxlength="250"/>';
             $output[] = '<input type="hidden" name="operation" value="delete"/>';
-            $output[] = '<button type="submit" value="" class="button" >Löschen</button>';
+            $output[] = '<button type="submit" value="" class="button" >Dokument Löschen</button>';
         $output[] = '</form>';
         echo implode("\n", $output);
     }
@@ -283,7 +289,8 @@ class DocumentView {
         $output = array();
         $output[] = '<h2>Dokument erstellen</h2>';
         $output[] = '<form action="./" method="post">';
-            $output[] = '<input type="text" name="project_name" value="" placeholder="Dokumentenname" required maxlength="250"/>';
+            $output[] = '<input type="hidden" name="operation" value="create"/>';
+            $output[] = '<input type="text" name="project_name" value="" placeholder="Dokumentenname" class="inputNameCreate" required maxlength="250"/>';
             $output[] = '<select class="form-control" name="layout">';
                 $output[] = '<option value="default">Layout1</option>';
                 $output[] = '<option value="sphinxdoc">Layout2</option>';
@@ -291,8 +298,7 @@ class DocumentView {
                 $output[] = '<option value="sphinx_rtd_theme">Layout4</option>';
                 $output[] = '<option value="scrolls">Layout5</option>';
             $output[] = '</select>';
-            $output[] = '<input type="hidden" name="operation" value="create"/>';
-            $output[] = '<input type="submit" name="submit" value="Erstellen" class="button" />';
+            $output[] = '<button type="submit" class="buttonCreate">Erstellen</button>';
         $output[] = '</form>';
         echo implode("\n", $output);
     }
