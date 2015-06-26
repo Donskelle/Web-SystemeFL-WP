@@ -350,14 +350,14 @@ class SphinxDocument {
      * Erstellt das zugehörige HTML in projectid/name/build/html
      */
     private function makeHTML(){
-        shell_exec("cd \"$this->sProjectPath\" && make html");
+        shell_exec('cd '.$this->sProjectPath.' && make html');
     }
 
     /**
      * Erstellt das zugehörige PDF in projectid/name/build/latex
      */
     private function makePDF(){
-        shell_exec("cd \"$this->sProjectPath\" && make latexpdf");
+        shell_exec('cd '.$this->sProjectPath.' && make latexpdf');
     }
 
 
@@ -474,38 +474,41 @@ class SphinxDocument {
 
 
     private function buildZipFile(){
-        shell_exec("cd $this->sProjectPath && make singlehtml");
+        shell_exec('cd "'.$this->sProjectPath.'" && sudo make singlehtml');
 
         $zip = new ZipArchive();
 
-        if($zip->open($this->sProjectPath."/html.zip", ZipArchive::OVERWRITE)){
-            $zip->addFile($this->sProjectPath."/build/singlehtml/index.html", "index.html");
-            $zip->addFile($this->sProjectPath."/build/singlehtml/objects.inv", "objects.inv");
-            $zip->addGlob($this->sProjectPath."/build/singlehtml/_static/*", GLOB_ERR, array(
+        if($zip->open(''.$this->sProjectPath.'/html.zip', ZipArchive::OVERWRITE)){
+            $zip->addFile(''.$this->sProjectPath.'/build/singlehtml/index.html', "index.html");
+            $zip->addFile(''.$this->sProjectPath.'/build/singlehtml/objects.inv', "objects.inv");
+            $zip->addGlob(''.$this->sProjectPath.'/build/singlehtml/_static/*', GLOB_ERR, array(
                     'add_path' => '_static/',
                     'remove_all_path' => TRUE
             ));
             $zip->close();
+        }else{
+            die("zip erstellung ");
         }
     }
 
     public function invokeZipDownload($project_name){
         $this->buildZipFile();
-        return urlencode(plugins_url("SphinxProjects/$this->sProjectId/$project_name/html.zip", __FILE__));
+        return plugins_url('SphinxProjects/'.$this->sProjectId.'/'.$project_name.'/html.zip', __FILE__);
     }
 
     public function invokePDFDownload($project_name){
         $this->makePDF();
-        return urlencode(plugins_url("SphinxProjects/$this->sProjectId/$project_name/build/latex/$project_name.pdf", __FILE__));
+        $pdf_name = str_replace(' ', '', $project_name);
+        return plugins_url('SphinxProjects/'.$this->sProjectId.'/'.$project_name.'/build/latex/'.$pdf_name.'.pdf', __FILE__);
     }
 
 
     public function changeConfig($oldLayout, $newLayout){
-        $content = file_get_contents($this->sProjectPath."/source/conf.py");
+        $content = file_get_contents(''.$this->sProjectPath.'/source/conf.py');
         $match_str = "/^html_theme = '$oldLayout'/m";
         $replace_str = "html_theme = '$newLayout'";
         $newContent = preg_replace($match_str, $replace_str, $content);
-        file_put_contents($this->sProjectPath."/source/conf.py", $newContent);
+        file_put_contents(''.$this->sProjectPath.'/source/conf.py', $newContent);
         $this->makeHTML();
     }
 
