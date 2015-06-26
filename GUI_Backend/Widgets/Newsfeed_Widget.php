@@ -8,13 +8,38 @@
 
 class Newsfeed_Widget extends CustomWidget{
 
-    private $sJavascript =<<<HTML
+    private $sJavascript;
+
+
+    public function __construct(){
+        parent::__construct('newsfeed_widget', 'Newsfeed');
+
+        $this->buildConnectString();
+    }
+
+    /**
+     * Die Callbackfunktion des Widgets. Nur diese Funktion muss implementiert werden.
+     * @return mixed
+     */
+    public function widget_content()
+    {
+        echo '<div class="newsFeed"></div>';
+        echo '<script>'.$this->sJavascript.'</script>';
+    }
+
+
+    private function buildConnectString() {
+    	$this->sJavascript = <<<HTML
 function newsBuilder() {
 	var socket;
 
 
 	function init() {
-		socket = io.connect('http://192.168.56.103:8080');
+		socket = io.connect('http://
+HTML;
+
+    	$this->sJavascript .= $_SERVER["SERVER_ADDR"] . <<<HTML
+:8082');
 
 		socket.on('connect', function ()
 		{
@@ -58,25 +83,6 @@ function newsBuilder() {
 	}
 }
 newsBuilder();
-
-
-
 HTML;
-
-
-
-    public function __construct(){
-        parent::__construct('newsfeed_widget', 'Newsfeed');
     }
-
-    /**
-     * Die Callbackfunktion des Widgets. Nur diese Funktion muss implementiert werden.
-     * @return mixed
-     */
-    public function widget_content()
-    {
-        echo '<div class="newsFeed"></div>';
-        echo '<script>'.$this->sJavascript.'</script>';
-    }
-
 }

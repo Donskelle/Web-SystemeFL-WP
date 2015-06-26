@@ -1,4 +1,4 @@
-var io = require('socket.io')(8080);
+var io = require('socket.io')(8082);
 var mysql = require('mysql');
 var pool = mysql.createPool({
   host     : 'localhost',
