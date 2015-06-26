@@ -24,7 +24,7 @@ require_once('GUI_Backend/Widgets/CustomField.php');
 require_once('GUI_Frontend/FrontendController.php');
 require_once('GUI_Frontend/Widgets/Menu_Widget.php');
 
-
+require_once('GUI_Backend/Widgets/Newsfeed_Widget.php');
 
 
 
@@ -191,7 +191,10 @@ function myFunction()
 //echo plugins_url("/GUI_Frontend/JS/AceEditor/src-min/ace.js", __FILE__);
 add_action('wp_enqueue_scripts', 'addAceEdtiorScript'); //wp_enque_script hooked nur im front-end.
 function addAceEdtiorScript(){
-
     wp_enqueue_script('AceEditor.js', plugins_url("GUI_Frontend/JS/AceEditor/src-min/ace.js", __FILE__));
     wp_enqueue_script('dm_script.js', plugins_url("GUI_Frontend/Views/js/dm_script.js",  __FILE__), array(), '1.0.0', true );
 }
+
+new Newsfeed_Widget();
+
+
