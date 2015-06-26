@@ -22,8 +22,6 @@ class AdminBarDeleteButton {
             'id'    => 'delete_document',
             'title' => 'Dokument Löschen',
             'meta'  => array(
-//                'html' => '',
-//                'class' => 'my-toolbar-page'
             )
         );
         $wp_admin_bar -> add_node($delete);

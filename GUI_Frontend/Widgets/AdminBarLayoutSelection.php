@@ -7,9 +7,13 @@
  */
 
 class AdminBarLayoutSelection {
-    private $current_layout;
-    public function __construct($currentLayout){
-        //$this->current_layout = $currentLayout;
+    private $old_layout;
+    private $doc_id;
+
+
+    public function __construct($doc_id, $oldLayout){
+        $this->doc_id = $doc_id;
+        $this->old_layout = $oldLayout;
         add_action('admin_bar_menu', array($this,'showLayoutSelection'), 999); ///998 ist die Priorität
     }
 
@@ -36,12 +40,53 @@ class AdminBarLayoutSelection {
 
         $layout1 =  array(
             'id' => 'layout1',
-            'title' => 'Layout 1',
+            'title' => '<form action="" method="post">
+<input type="hidden" name="operation" value="selectLayout"/>
+<input type="hidden" name="old_layout" value="'.$this->old_layout.'"/>
+<input type="hidden" name="document_id" value="'.$this->doc_id.'"/>
+<input type="hidden" name="selectedLayout" value="default">
+                <button type="submit" >Layout 1</button></form>',
             'parent' => 'select_layout',
             'meta' => array()
         );
 
         $wp_admin_bar->add_node($layout1);
+
+        $layout2 =  array(
+            'id' => 'layout2',
+            'title' => 'Layout 2',
+            'parent' => 'select_layout',
+            'meta' => array()
+        );
+
+        $wp_admin_bar->add_node($layout2);
+
+        $layout3 =  array(
+            'id' => 'layout3',
+            'title' => 'Layout 3',
+            'parent' => 'select_layout',
+            'meta' => array()
+        );
+
+        $wp_admin_bar->add_node($layout3);
+
+        $layout4 =  array(
+            'id' => 'layout4',
+            'title' => 'Layout 4',
+            'parent' => 'select_layout',
+            'meta' => array()
+        );
+
+        $wp_admin_bar->add_node($layout4);
+
+        $layout5 =  array(
+            'id' => 'layout5',
+            'title' => 'Layout 5',
+            'parent' => 'select_layout',
+            'meta' => array()
+        );
+
+        $wp_admin_bar->add_node($layout5);
     }
 
 }
