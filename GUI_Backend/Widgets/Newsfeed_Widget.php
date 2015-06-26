@@ -49,7 +49,7 @@ function newsBuilder() {
 		newsContainer.innerHTML = "";
 
 		for (var i = 0; i < data.length; i++) {
-			addNews(data[i].name);
+			addNews(data[i].news);
 		};
 	}
 	function addNews(data) {

@@ -13,6 +13,8 @@ class Documents {
      */
     private $dbTableNameDocumentInGroup = "dokumummy_documents_in_groups";
 
+    private $dbTableNameUpdateFeed = "dokumummy_update_feed";
+
 
 
     public function __construct(){
@@ -20,6 +22,7 @@ class Documents {
 
         $this->dbTableNameDocuments = $wpdb->prefix . $this->dbTableNameDocuments;
         $this->dbTableNameDocumentInGroup = $wpdb->prefix . $this->dbTableNameDocumentInGroup;
+        $this->dbTableNameUpdateFeed = $wpdb->prefix . $this->dbTableNameUpdateFeed;
     }
 
 
@@ -98,6 +101,9 @@ class Documents {
     public function deleteAbschnitt($doc_id, $abschnitt_id) {
         $sphinx = new SphinxDocument("", "", $doc_id);
         $sphinx->removeAbschnitt($abschnitt_id);
+
+        $userName = $this->getUserName();
+        $this->updateNewsFeed("Ein Abschnitt wurde von $userName entfernt.");
     }
 
 
@@ -131,6 +137,9 @@ class Documents {
     public function addAbschnitt ($content, $doc_id) {
         $sphinx = new SphinxDocument("", "", $doc_id);
         $sphinx->addAbschnitt($content);
+
+        $userName = $this->getUserName();
+        $this->updateNewsFeed("Ein Abschnitt wurde von $userName hinzugefügt.");
     }
 
     /**
@@ -144,6 +153,9 @@ class Documents {
     public function updateAbschnitt($doc_id, $abschnitt_id, $content) {
       $sphinx = new SphinxDocument("", "", $doc_id);
       $sphinx->updateAbschnitt($abschnitt_id, $content);
+
+      $userName = $this->getUserName();
+      $this->updateNewsFeed("Ein Abschnitt wurde von $userName aktualisiert.");
     }
 
 
@@ -181,6 +193,8 @@ class Documents {
         $wpdb->delete($this->dbTableNameDocuments, array(
             'id' => $document_id
         ));
+
+        $this->updateNewsFeed("Dokument $document->name wurde gelöscht.");
     }
 
 
@@ -207,6 +221,8 @@ class Documents {
         }else{
             $sphinx = new SphinxDocument($project_name, $authorName, $wpdb->insert_id);//die id nicht vergessen!
             $sphinx->changeConfig("default", $layout);
+
+            $this->updateNewsFeed("$authorName hat ein neues Dokument $project_name erstellt.");
         }
     }
 
@@ -243,22 +259,37 @@ class Documents {
 		dbDelta( $sql );
 		
 		/**
-		 * Datenbanken für Verbindung von Gruppen zu Dokumenten
-		 */
-		$documents_in_groups_table = $this->dbTableNameDocumentInGroup;
-		$group_table = $wpdb->prefix . "dokumummy_groups";
+         * Datenbanken für Verbindung von Gruppen zu Dokumenten
+         */
+        $documents_in_groups_table = $this->dbTableNameDocumentInGroup;
+        $group_table = $wpdb->prefix . "dokumummy_groups";
 
-		$sql = "CREATE TABLE IF NOT EXISTS $documents_in_groups_table (
+        $sql = "CREATE TABLE IF NOT EXISTS $documents_in_groups_table (
+            id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+            document_id int(11) UNSIGNED NOT NULL,
+            group_id int(11) UNSIGNED NOT NULL,
+            created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
+            updated_at timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+            PRIMARY KEY (id),
+            FOREIGN KEY (document_id) references $documents_table(id) on update cascade on delete cascade,
+            FOREIGN KEY (group_id) references $group_table(id) on update cascade on delete cascade
+        );";
+        dbDelta( $sql );
+
+        /**
+		 * Datenbanken zur Darstellung der aktuellen Änderungen
+		 */
+        $table = $this->dbTableNameUpdateFeed;
+		$sql = "CREATE TABLE IF NOT EXISTS $table (
 			id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-			document_id int(11) UNSIGNED NOT NULL,
-			group_id int(11) UNSIGNED NOT NULL,
-			created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ,
-			updated_at timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-			PRIMARY KEY (id),
-			FOREIGN KEY (document_id) references $documents_table(id) on update cascade on delete cascade,
-			FOREIGN KEY (group_id) references $group_table(id) on update cascade on delete cascade
+			news varchar(255) NOT NULL,
+			created_at timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+			PRIMARY KEY (id)
 	    );";
 		dbDelta( $sql );
+
+
+        $this->updateNewsFeed("Vielen Dank für die Installation !");
 	}
 
 
@@ -268,6 +299,18 @@ class Documents {
         $response["zip"] = $sphinx->invokeZipDownload($doc->name);
         $response["pdf"] = $sphinx->invokePDFDownload($doc->name);
         return $response;
+    }
+
+    private function updateNewsFeed($news) {
+        global $wpdb;
+        $wpdb->insert($this->dbTableNameUpdateFeed, array(
+            'news' => $news
+        ));
+    }
+
+    private function getUserName() {
+        $current_user = wp_get_current_user();
+        return $current_user->user_login;
     }
 }
 
