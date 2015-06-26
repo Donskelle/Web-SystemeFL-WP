@@ -46,6 +46,7 @@ class RoleSetup {
 		'edit_others_pages' => true,
 		'delete_others_pages' => true,
 		'delete_published_pages' => true,
+        'manage_user' => true
 	);
 
 
