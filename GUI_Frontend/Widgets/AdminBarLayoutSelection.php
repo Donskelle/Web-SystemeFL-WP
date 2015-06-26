@@ -40,12 +40,7 @@ class AdminBarLayoutSelection {
 
         $layout1 =  array(
             'id' => 'layout1',
-            'title' => '<form action="" method="post">
-<input type="hidden" name="operation" value="selectLayout"/>
-<input type="hidden" name="old_layout" value="'.$this->old_layout.'"/>
-<input type="hidden" name="document_id" value="'.$this->doc_id.'"/>
-<input type="hidden" name="selectedLayout" value="default">
-                <button type="submit" >Layout 1</button></form>',
+            'title' => $this->generateTitle('Layout 1', 'default'),
             'parent' => 'select_layout',
             'meta' => array()
         );
@@ -54,7 +49,7 @@ class AdminBarLayoutSelection {
 
         $layout2 =  array(
             'id' => 'layout2',
-            'title' => 'Layout 2',
+            'title' => $this->generateTitle('Layout 2', 'sphinxdoc'),
             'parent' => 'select_layout',
             'meta' => array()
         );
@@ -63,7 +58,7 @@ class AdminBarLayoutSelection {
 
         $layout3 =  array(
             'id' => 'layout3',
-            'title' => 'Layout 3',
+            'title' => $this->generateTitle('Layout 3', 'agogo'),
             'parent' => 'select_layout',
             'meta' => array()
         );
@@ -72,7 +67,7 @@ class AdminBarLayoutSelection {
 
         $layout4 =  array(
             'id' => 'layout4',
-            'title' => 'Layout 4',
+            'title' => $this->generateTitle('Layout 4', 'nature'),
             'parent' => 'select_layout',
             'meta' => array()
         );
@@ -81,12 +76,23 @@ class AdminBarLayoutSelection {
 
         $layout5 =  array(
             'id' => 'layout5',
-            'title' => 'Layout 5',
+            'title' => $this->generateTitle('Layout 5', 'scrolls'),
             'parent' => 'select_layout',
             'meta' => array()
         );
 
         $wp_admin_bar->add_node($layout5);
+    }
+
+
+    private function generateTitle($title, $layoutValue){
+        $content = '<form action="" method="post">
+<input type="hidden" name="operation" value="selectLayout"/>
+<input type="hidden" name="old_layout" value="'.$this->old_layout.'"/>
+<input type="hidden" name="document_id" value="'.$this->doc_id.'"/>
+<input type="hidden" name="selectedLayout" value="'.$layoutValue.'">
+                <button type="submit" >'.$title.'</button></form>';
+        return $content;
     }
 
 }

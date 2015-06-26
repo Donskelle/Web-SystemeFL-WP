@@ -37,9 +37,6 @@ class DocumentView {
                 $doc->deleteAbschnitt($this->saveInputs($_POST["document_id"]), $this->saveInputs($_POST["abschnitt_id"]));
             }
             else if($_POST["operation"] == "selectLayout")
-                echo "<br>ID: ".$_POST["document_id"];
-                echo "<br>selectedLayout: ".$_POST["selectedLayout"];
-                echo "<br>oldLayout: ".$_POST["old_layout"];
                 $doc->selectLayout($this->saveInputs($_POST["document_id"]), $this->saveInputs($_POST["selectedLayout"]), $this->saveInputs($_POST["old_layout"]));
         }
 
@@ -48,7 +45,7 @@ class DocumentView {
             new AdminBarDeleteButton(); //Das Dokument löschen Feld soll nur angezeigt werden, wenn ein Dokument vorhanden ist.
 
             $document = $doc->getDocument($this->saveInputs($_GET["id"]));
-            //new AdminBarLayoutSelection($document->id, $document->layout);
+            new AdminBarLayoutSelection($document->id, $document->layout);
             $document->abschnitte = array();
             $document->abschnitte = $doc->getAbschnitte($document->id);
 
@@ -86,7 +83,7 @@ class DocumentView {
             $this->viewDeleteForm($document->id);
 
             $this->viewFormSelectGroup($document->id);
-            $this->viewFormSelectLayout($document);
+            //$this->viewFormSelectLayout($document);
         }
         if($user->ID == $document->user_id || $user->roles[0] == "dokuAdmin" || $user->roles[0] == "administrator" )
         {
