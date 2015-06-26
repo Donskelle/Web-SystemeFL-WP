@@ -32,14 +32,18 @@ Man darf dem Repo nur joinen, wenn man ein cooles Profilbild hat!!
 
 ##TODOs:
 
+ * CSS Aufwerten -> Bessere Übersicht DONE
+ * Informationen von Node.js als BackEnd-Widget DONE
+ * Dokument löschen in die Dashboardleiste verschieben DONE
  * Download von Pdf u. HTMl siehe Branch DONE
  * Layouts ändern DONE
+
  * evtl. Einstellungen wie Projektname. MACHEN WIR NICHT MEHR GG
  * Sperren von Dokumenten NICHT MEHR GG
  * Node.js DONE
 
- * CSS Aufwerten -> Bessere Übersicht DONE
- * Informationen von Node.js als BackEnd-Widget DONE
- * Dokument löschen in die Dashboardleiste verschieben
- * DokuMod soll Nutzer in Gruppen in denen er ist löschen/hinzufügen können
- 
+ * DokuMod soll Nutzer in Gruppen in denen er ist löschen/hinzufügen können TODO
+
+ * Kommentare schreiben
+ * Idee: Bei dem Löschbutton mit css eine Wartezeit einbauen: onhover->3 sekunden rot -> div verschwindet und man kann
+   link darunter clicken.
