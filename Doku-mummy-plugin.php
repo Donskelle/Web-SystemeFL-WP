@@ -25,7 +25,7 @@ require_once('GUI_Frontend/FrontendController.php');
 require_once('GUI_Frontend/Widgets/Menu_Widget.php');
 
 require_once('GUI_Backend/Widgets/Newsfeed_Widget.php');
-
+require_once('GUI_Frontend/Widgets/AdminBarFunctions.php');
 
 
 /*
@@ -202,4 +202,5 @@ function addAdminScripts(){
 
 new Newsfeed_Widget();
 
+new AdminBarFunctions();
 

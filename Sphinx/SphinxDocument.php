@@ -95,9 +95,11 @@ class SphinxDocument {
             $this->createNewDocument($projectName, $authorName);
         }else {
             $this->sProjectPath = $this->sProjectPath."/".$this->extractProjectName($this->sProjectPath);
+
             if ($this->isProjectExisting($this->sProjectPath)) {
                 $this->aAbschnitteDesDokuments = $this->extractAbschnitte($this->sProjectPath);
             } else {
+                //siehe isProjectExisting
                 die("corrupted projectPath - SphinxDocument.php: $this->sProjectPath");
             }
         }
@@ -255,7 +257,7 @@ class SphinxDocument {
      * @param $abschnitt DocumentAbschnitt
      */
     private function buildAbschnittFile($abschnitt){
-        $abschnittFile = fopen($this->sProjectPath."/source/".$abschnitt->getFileName().".rst", 'w');
+        $abschnittFile = fopen(''.$this->sProjectPath.'/source/'.$abschnitt->getFileName().'.rst', 'w');
         fwrite($abschnittFile, $abschnitt->getAbschnittContent());
         fclose($abschnittFile);
     }
@@ -307,17 +309,15 @@ class SphinxDocument {
     private function createNewDocument( $project_name, $authorName){
 
         //Erstellt das Verzeichnis basierend auf der im construktor übergebenen ID.
-        $res = mkdir($this->sphinxDirPath."/".$this->sProjectId);
+        $res = mkdir("$this->sphinxDirPath/$this->sProjectId");
         if(!$res){
             die("Verzeichnis nicht erstellt - SphinxDocument.php");
         }
         //var/www/wordpress/...../Sphinx/SphinxProjects/id/projectName
         $this->sProjectPath = $this->sphinxDirPath."/".$this->sProjectId."/".$project_name;
 
-        $command = "python ". $this->sphinxScriptCreateDocumentPath ." ".$this->sProjectPath." ".$project_name." ".$authorName;
-
+        $command = "python ". $this->sphinxScriptCreateDocumentPath ."  \"".$this->sProjectPath."\" "."\"$project_name\""." ".$authorName;
         $output = shell_exec($command);
-
         //Erstelle den ersten Abschnitt.
         $this->addAbschnitt("h1".PHP_EOL."==");
 
@@ -333,7 +333,8 @@ class SphinxDocument {
      * @return bool
      */
     private function isProjectExisting($projekt_path){
-        return file_exists($projekt_path."/source/index.rst");
+        $str = ''.$projekt_path.'/source/index.rst';
+        return file_exists($str); //file_exists scheint Probleme mit dem erkennen von Dateien mit whitespaces im Pfad.
     }
 
     /**
@@ -349,30 +350,24 @@ class SphinxDocument {
      * Erstellt das zugehörige HTML in projectid/name/build/html
      */
     private function makeHTML(){
-        shell_exec("cd $this->sProjectPath && make html");
+        shell_exec("cd \"$this->sProjectPath\" && make html");
     }
 
     /**
      * Erstellt das zugehörige PDF in projectid/name/build/latex
      */
     private function makePDF(){
-        shell_exec("cd $this->sProjectPath && make latexpdf");
+        shell_exec("cd \"$this->sProjectPath\" && make latexpdf");
     }
 
 
     private function getHTMLPath($abschnittId){
-        return $this->sProjectPath."/build/html/doc$abschnittId.html";
+        return ''.$this->sProjectPath.'/build/html/doc'. $abschnittId.'.html';
     }
 
     public function getHTML($abschnitt_id){
-        //TODO implement
         return $this->getHTMLPath($abschnitt_id);
     }
-
-    public function getPDF(){
-        //TODO implement
-    }
-
 
 
     /**
@@ -384,7 +379,7 @@ class SphinxDocument {
      */
     public function deleteDocument(){
         $this->isUnuseable();
-        $command = "rm -rf $this->sProjectPath";
+        $command = "rm -rf \"$this->sProjectPath\"";
         shell_exec("$command");
         $this->documentDeleted = true;
     }
@@ -413,10 +408,10 @@ class SphinxDocument {
         //Abschnitte definiert in der index.rst unter Contents
         $abschnitte = array();
 
-        $filePath = $project_path."/source/index.rst";
+        $filePath = ''.$project_path.'/source/index.rst';
 
         //Auslesen der Index.rst um an Contents zu kommen.
-        $data = file_get_contents($filePath);
+        $data = file_get_contents("$filePath");
 
         //toctree ist ein Element in der index.rst. Unter Toctree werden die verlinkten Datein aufgeführt.
         $toc_tree = ".. toctree::".PHP_EOL.PHP_EOL;
@@ -477,9 +472,6 @@ class SphinxDocument {
         return $abschnitteContent;
     }
 
-    public function testZIPFILE(){
-        $this->buildZipFile();
-    }
 
     private function buildZipFile(){
         shell_exec("cd $this->sProjectPath && make singlehtml");
@@ -499,12 +491,12 @@ class SphinxDocument {
 
     public function invokeZipDownload($project_name){
         $this->buildZipFile();
-        return plugins_url("SphinxProjects/$this->sProjectId/$project_name/html.zip", __FILE__);
+        return urlencode(plugins_url("SphinxProjects/$this->sProjectId/$project_name/html.zip", __FILE__));
     }
 
     public function invokePDFDownload($project_name){
         $this->makePDF();
-        return plugins_url("SphinxProjects/$this->sProjectId/$project_name/build/latex/$project_name.pdf", __FILE__);
+        return urlencode(plugins_url("SphinxProjects/$this->sProjectId/$project_name/build/latex/$project_name.pdf", __FILE__));
     }
 
 

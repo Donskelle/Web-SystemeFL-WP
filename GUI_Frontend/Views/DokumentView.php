@@ -248,7 +248,7 @@ class DocumentView {
 
 
     /**
-     * [viewShortDoc description]
+     * [viewShortDoc description]\
      * Gibt eine Übersicht der übergebenen Dokumente aus
      * @param  [array] $documents [description]
      */

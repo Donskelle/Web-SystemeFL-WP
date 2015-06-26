@@ -38,7 +38,7 @@ Man darf dem Repo nur joinen, wenn man ein cooles Profilbild hat!!
  * Sperren von Dokumenten NICHT MEHR GG
  * Node.js
 
- * CSS Aufwerten -> Bessere Übersicht
+ * CSS Aufwerten -> Bessere Übersicht DONE
  * Informationen von Node.js als BackEnd-Widget
  * Dokument löschen in die Dashboardleiste verschieben
  * DokuMod soll Nutzer in Gruppen in denen er ist löschen/hinzufügen können
