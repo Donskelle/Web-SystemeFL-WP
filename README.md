@@ -32,11 +32,14 @@ Man darf dem Repo nur joinen, wenn man ein cooles Profilbild hat!!
 
 ##TODOs:
 
- * Download von Pdf u. HTMl siehe Branch
- * (Ace-Editor einbinden)
- * Layouts ändern
- * evtl. Einstellungen wie Projektname.
+ * Download von Pdf u. HTMl siehe Branch DONE
+ * Layouts ändern DONE
+ * evtl. Einstellungen wie Projektname. MACHEN WIR NICHT MEHR GG
+ * Sperren von Dokumenten NICHT MEHR GG
  * Node.js
- * Sperren von Dokumenten
 
+ * CSS Aufwerten -> Bessere Übersicht
+ * Informationen von Node.js als BackEnd-Widget
+ * Dokument löschen in die Dashboardleiste verschieben
+ * DokuMod soll Nutzer in Gruppen in denen er ist löschen/hinzufügen können
  
