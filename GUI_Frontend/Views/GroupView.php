@@ -149,7 +149,8 @@ class GroupView {
             
             foreach($arDetailGroup->user as $user) {
                 $output[] = "<p>";
-                //Wenn Admin Form zum entfernen hinzufügen
+                //Wenn Admin Form zum Entfernen von Usern hinzufügen
+                //Worpress Custom Attribute
                 if($currentUser->roles[0] == "dokuAdmin" || $currentUser->roles[0] == "administrator" ) {
                     $output[] = $this->viewFormDeleteUser($_GET["id"], $user->user_id, $user->user_nicename);
                 }
