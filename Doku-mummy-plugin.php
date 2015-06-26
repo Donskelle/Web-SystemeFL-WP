@@ -189,11 +189,16 @@ function myFunction()
 }*/
 
 //echo plugins_url("/GUI_Frontend/JS/AceEditor/src-min/ace.js", __FILE__);
-add_action('wp_enqueue_scripts', 'addAceEdtiorScript'); //wp_enque_script hooked nur im front-end.
-function addAceEdtiorScript(){
-    wp_enqueue_script('AceEditor.js', plugins_url("GUI_Frontend/JS/AceEditor/src-min/ace.js", __FILE__));
+add_action('wp_enqueue_scripts', 'addScripts'); //wp_enque_script hooked nur im front-end.
+function addScripts(){
     wp_enqueue_script('dm_script.js', plugins_url("GUI_Frontend/Views/js/dm_script.js",  __FILE__), array(), '1.0.0', true );
 }
+
+add_action('admin_enqueue_scripts', 'addAdminScripts');
+function addAdminScripts(){
+    wp_enqueue_script('socket.io.js', plugins_url("GUI_Backend/Widgets/Scripts/socket.io.js",  __FILE__));
+}
+
 
 new Newsfeed_Widget();
 
