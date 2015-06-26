@@ -25,7 +25,8 @@ require_once('GUI_Frontend/FrontendController.php');
 require_once('GUI_Frontend/Widgets/Menu_Widget.php');
 
 require_once('GUI_Backend/Widgets/Newsfeed_Widget.php');
-require_once('GUI_Frontend/Widgets/AdminBarFunctions.php');
+require_once('GUI_Frontend/Widgets/AdminBarDeleteButton.php');
+require_once('GUI_Frontend/Widgets/AdminBarLayoutSelection.php');
 
 
 /*
@@ -126,6 +127,18 @@ function buildRoleGUI($role){
     }
 }
 
+//Entferne alle unnötigen admin_bar Functionen.
+function remove_admin_bar_functionality(){
+    global $wp_admin_bar;
+    $wp_admin_bar->remove_menu('wp-logo');
+    $wp_admin_bar->remove_menu('comments');
+    $wp_admin_bar->remove_menu('new-content');
+    $wp_admin_bar->remove_node('edit');
+    $wp_admin_bar->remove_node('search');
+}
+add_action( 'wp_before_admin_bar_render', 'remove_admin_bar_functionality' );
+
+
 
 /**
  * Löscht alle default widgets.
@@ -164,29 +177,7 @@ function remove_admin_widgets(){
 }
 
 add_action('admin_init', 'remove_admin_widgets');
-/* TODO: Funktioniert noch nicht.
-function add_dokumummy_widget(){
-	unregister_widget('Widget-Menu-DokuMummy'); //der name des custom widgets
-}
 
-add_action('widgets_init', 'add_dokumummy_widget');*/
-
-
-
-
-//Test Sphinx.
-/*
-add_action('init', 'myFunction');
-
-function myFunction()
-{
-    $id = get_current_user_id();
-    echo "qweeeeeeeeeeeeeeeeeeeUserid :" . $id;
-    if ($id != 0) {
-        (new SphinxDocument())->createNewDocument("janTest", "jan", $id);
-        (new SphinxDocument())->deleteDocument("id here");
-    }
-}*/
 
 //echo plugins_url("/GUI_Frontend/JS/AceEditor/src-min/ace.js", __FILE__);
 add_action('wp_enqueue_scripts', 'addScripts'); //wp_enque_script hooked nur im front-end.
@@ -202,5 +193,5 @@ function addAdminScripts(){
 
 new Newsfeed_Widget();
 
-new AdminBarFunctions();
+
 

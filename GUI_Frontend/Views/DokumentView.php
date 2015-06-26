@@ -1,7 +1,6 @@
 <?php
 
 
-
 new DocumentView();
 /**
  * Stellt Dokumenten dar
@@ -43,6 +42,8 @@ class DocumentView {
 
         if(isset($_GET["id"]))
         {
+            new AdminBarDeleteButton(); //Das Dokument löschen Feld soll nur angezeigt werden, wenn ein Dokument vorhanden ist.
+            new AdminBarLayoutSelection("");
             $document = $doc->getDocument($this->saveInputs($_GET["id"]));
 
             $document->abschnitte = array();
