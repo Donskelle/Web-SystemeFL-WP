@@ -378,7 +378,6 @@ class SphinxDocument {
             }
         }catch (Exception $e){
 //            echo $e->getMessage();
-
         }
 
         return ''.$this->sProjectPath.'/build/html/'. $fileName.'.html';
@@ -458,9 +457,9 @@ class SphinxDocument {
         //Erzeugen des Abschnittarrayss
         foreach($doc_results as $res){
             $id = $this->generateAbschnittId();
-
             $abschnitte[] = new DocumentAbschnitt($res, file_get_contents($this->sProjectPath."/source/$res".".rst"), $id);
         }
+        return $abschnitte;
     }
 
 
