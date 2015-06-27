@@ -8,9 +8,15 @@
 
 class Newsfeed_Widget extends CustomWidget{
 
+    /**
+     * @var
+     */
     private $sJavascript;
 
 
+    /**
+     * Erstellt das Newsfeed Widget für das Backend.
+     */
     public function __construct(){
         parent::__construct('newsfeed_widget', 'Newsfeed');
 
@@ -28,6 +34,9 @@ class Newsfeed_Widget extends CustomWidget{
     }
 
 
+    /**
+     * Baut das Javascript für das Backend abhängig von Server zusammen.
+     */
     private function buildConnectString() {
     	$this->sJavascript = <<<HTML
 function newsBuilder() {

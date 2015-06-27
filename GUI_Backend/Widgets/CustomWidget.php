@@ -12,11 +12,18 @@
  * Oberklasse für Backend Widgets.
  *
  * //http://code.tutsplus.com/tutorials/how-to-build-custom-dashboard-widgets--wp-29778
- *  TODO: Handler o. Callbacks einfügen. Sowas wie SetContent oder getContent, wenn der Benutzer das Widget benutzt.
  */
 abstract class CustomWidget {
 
+    /**
+     * Id des Widgets.
+     * @var string
+     */
     protected $widgetID = '';
+    /**
+     * Name/Titel des Widgets.
+     * @var string
+     */
     protected $widgetTitle = '';
     /**
      * Diese Variable darf nicht geändert werden.

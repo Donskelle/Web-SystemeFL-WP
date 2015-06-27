@@ -4,7 +4,7 @@ Plugin Name: Doku Mummy Plugin
 Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
 Description: A brief description of the Plugin.
 Version: 1.0
-Author: Jan und Fabian (Das doppelte Duo!)
+Author: DokuMummy
 Author URI: http://URI_Of_The_Plugin_Author
 License: A "Slug" license name e.g. GPL2
 */
@@ -35,6 +35,9 @@ require_once('GUI_Frontend/Widgets/AdminBarDownloadOption.php');
 register_activation_hook(__FILE__,  'dokumummy_activated');
 
 
+/**
+ * Diese Funktions erstellt Rollen und DB-Tables bei der Aktivierung des Plugins im WP-Backend.
+ */
 function dokumummy_activated() {
     /**
      * Rolen registrieren
@@ -59,6 +62,9 @@ function dokumummy_activated() {
  *  Der Test auf is_user_logged_in ist wichtig, da sonst immer auf die Loginpage verviesen wird.
  */
 add_action('template_redirect', 'login_redirect');
+/**
+ * Redirected den Besucher zur Login page, aber nur, wenn dieser nicht eingelogged ist.
+ */
 function login_redirect() {
 	if ( ! is_user_logged_in() ) {
 		auth_redirect(); //https://codex.wordpress.org/Function_Reference/auth_redirect
@@ -69,12 +75,17 @@ function login_redirect() {
  * Wird beim Init des Plugins ausgeführt
  */
 add_action('init', 'initPlugin');
+/**
+ * Wird beim Initieren des Plugins ausgeführt.
+ */
 function initPlugin() {
     controllerInit();
 }
 
 
-
+/**
+ * Initaliesiert die Controller.
+ */
 function controllerInit(){
     if(is_admin()) {
         add_action('load-post.php', 'init_customfield');
@@ -94,7 +105,10 @@ function get_user_role($user){
     return $user->roles[0];
 }
 
-//Entferne alle unnötigen admin_bar Functionen.
+
+/**
+ * Entferne alle unnötigen admin_bar Functionen.
+ */
 function remove_admin_bar_functionality(){
     global $wp_admin_bar;
     $wp_admin_bar->remove_menu('wp-logo');
@@ -130,7 +144,10 @@ function remove_default_widgets(){
 add_action('widgets_init', 'remove_default_widgets', 11);
 
 
-//entfernt activity und wordpress press widget im backend
+
+/**
+ * Entfernt activity und wordpress press Widget im Backend
+ */
 function remove_admin_widgets(){
     remove_meta_box( 'dashboard_incoming_links', 'dashboard', 'normal' );
     remove_meta_box( 'dashboard_plugins', 'dashboard', 'normal' );
@@ -148,16 +165,22 @@ add_action('admin_init', 'remove_admin_widgets');
 
 //echo plugins_url("/GUI_Frontend/JS/AceEditor/src-min/ace.js", __FILE__);
 add_action('wp_enqueue_scripts', 'addScripts'); //wp_enque_script hooked nur im front-end.
+/**
+ * Fügt Javascript für das Frontend hinzu.
+ */
 function addScripts(){
     wp_enqueue_script('dm_script.js', plugins_url("GUI_Frontend/Views/js/dm_script.js",  __FILE__), array(), '1.0.0', true );
 }
 
 add_action('admin_enqueue_scripts', 'addAdminScripts');
+/**
+ * Fügt Javscript für das Backend hinzu.
+ */
 function addAdminScripts(){
     wp_enqueue_script('socket.io.js', plugins_url("GUI_Backend/Widgets/Scripts/socket.io.js",  __FILE__));
 }
 
-
+//Initialisiert das Newsfeed_Widget für das Backend.
 new Newsfeed_Widget();
 
 
