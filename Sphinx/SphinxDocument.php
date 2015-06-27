@@ -1,10 +1,4 @@
 <?php
-/**
- * Created for doku_mummy-plugin.
- * User: Jan
- * Date: 17.06.2015
- * Time: 17:55
- */
 
 require "DocumentAbschnitt.php";
 

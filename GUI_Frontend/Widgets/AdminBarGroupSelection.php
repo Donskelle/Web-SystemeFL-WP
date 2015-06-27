@@ -1,15 +1,24 @@
 <?php
-/**
- * Created for doku_mummy-plugin.
- * User: Jan
- * Date: 26.06.2015
- * Time: 19:50
- */
+
 
 class AdminBarGroupSelection {
+    /**
+     * Array mit den Gruppen, denen das Dokument zugewiesen werden darf.
+     * @var
+     */
     private $groups;
+    /**
+     * Die ID des Dokumentes.
+     * @var
+     */
     private $document_id;
 
+    /**
+     * Erstellt die Auswahl der Gruppen für das Dokument.
+     *
+     * @param $groups
+     * @param $doc_id
+     */
     public function __construct($groups, $doc_id){
         $this->groups = $groups;
         $this->document_id = $doc_id;
@@ -18,7 +27,13 @@ class AdminBarGroupSelection {
     }
 
 
-
+    /**
+     * Erstellt das admin_bar Element.
+     *
+     * Wenn das Dokument einer Gruppe zugewiesen ist, wird dies angezeigt.
+     *
+     * @param $wp_admin_bar
+     */
     public function showGroupSelection($wp_admin_bar)
     {
 
@@ -38,6 +53,7 @@ class AdminBarGroupSelection {
 
         }
 
+        //Ist eine aktive Gruppe zugewiesen?
         if ($bActiveGroup == true) {
             $selection_parent = array(
                 'id' => 'select_group',
@@ -67,7 +83,13 @@ class AdminBarGroupSelection {
     }
 
 
-
+    /**
+     * Erstellt das HTML für die Auswahloptionen.
+     *
+     * @param $group_id string Gruppen ID
+     * @param $group_name string Gruppenname
+     * @return string HTML für die Option.
+     */
     private function buildOption($group_id, $group_name){
         $content = '<form method="post" action="">
 <input type="hidden" value="selectGroup" name="operation">

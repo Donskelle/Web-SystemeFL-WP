@@ -1,11 +1,13 @@
 <?php
 /**
  * Menu Sidebar Widget
- * von Fabian
  */
 add_action("plugins_loaded", "widget_sidebar_init");
 add_action('wp_enqueue_scripts', 'add_menu_stylesheet' );
 
+/**
+ *
+ */
 function add_menu_stylesheet() {
     // Respects SSL, Style.css is relative to the current file
     wp_register_style( 'dm-menu-style', plugins_url('css/menu.css', __FILE__) );
@@ -13,10 +15,16 @@ function add_menu_stylesheet() {
 }
 
 
+/**
+ *
+ */
 function viewMenu() {
 	new Menu();
 }
 
+/**
+ *
+ */
 function widget_sidebar_init() {
     if ( !function_exists("wp_register_sidebar_widget") )
         return;
@@ -33,18 +41,30 @@ function widget_sidebar_init() {
 }
 
 
-class Menu {   
+/**
+ * Class Menu
+ */
+class Menu {
+    /**
+     * Die erlaubten Dokumente
+     * @var
+     */
     private $authDocs;
+    /**
+     * Die erlaubten Gruppen
+     * @var mixed
+     */
     private $authGroups;
+    /**
+     * @var
+     */
     private $currentRoute;
 
 
-
-	public function __construct() {
-        /**
-         * DEMO DATEN
-         * @var array
-         */
+    /**
+     * Erstellt die Sidebar mit Dokumenten, Gruppen usw.
+     */
+    public function __construct() {
         $docs = new Documents();
         $this->authDocs = $docs->getDocumentsCreatedByUser(get_current_user_id());
 
@@ -79,6 +99,14 @@ class Menu {
     	echo $this->view($GroupLink, $documentLink, $homeLink);
     }
 
+    /**
+     * Erstellt das HTML der Sidebar.
+     *
+     * @param $groupLink
+     * @param $documentLink
+     * @param $homeLink
+     * @return string
+     */
     private function view($groupLink, $documentLink, $homeLink) {
     	$menu = array();
     	$menu[] = "<div class='menuDokuMummy'>";

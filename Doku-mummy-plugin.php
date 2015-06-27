@@ -16,14 +16,12 @@ require_once( 'Models/Groups.php' );
 require_once( 'Models/Documents.php' );
 require_once('Sphinx/SphinxDocument.php');
 
-require_once('GUI_Backend/Admin_GUI.php');
-require_once('GUI_Backend/Moderator_GUI.php');
-require_once('GUI_Backend/User_GUI.php');
 require_once('GUI_Backend/Widgets/CustomField.php');
 
 require_once('GUI_Frontend/FrontendController.php');
 require_once('GUI_Frontend/Widgets/Menu_Widget.php');
 
+require_once('GUI_Backend/Widgets/CustomWidget.php');
 require_once('GUI_Backend/Widgets/Newsfeed_Widget.php');
 require_once('GUI_Frontend/Widgets/AdminBarDeleteButton.php');
 require_once('GUI_Frontend/Widgets/AdminBarLayoutSelection.php');
@@ -72,19 +70,9 @@ function login_redirect() {
  */
 add_action('init', 'initPlugin');
 function initPlugin() {
-    buildDashboardGUI();
     controllerInit();
 }
 
-/**
- *  Baut die Dashboard GUI auf.
- */
-function buildDashboardGUI(){
-    if(is_user_logged_in()){
-        $role = get_user_role(wp_get_current_user());
-        buildRoleGUI($role);
-    }
-}
 
 
 function controllerInit(){
@@ -104,29 +92,6 @@ function controllerInit(){
  */
 function get_user_role($user){
     return $user->roles[0];
-}
-
-/**
- *
- * Erstellt die GUIs für die verschiedenen Rollen.
- *
- * Der WP-Admin behält seinen normale GUI.
- * @param string $role
- */
-function buildRoleGUI($role){
-    switch ($role){
-        case 'dokuAdmin':
-            new Admin_GUI();
-            break;
-        case 'dokuModerator':
-            new ModeratorGUI();
-            break;
-        case 'dokuUser':
-            new User_GUI();
-            break;
-        default:
-            break;
-    }
 }
 
 //Entferne alle unnötigen admin_bar Functionen.

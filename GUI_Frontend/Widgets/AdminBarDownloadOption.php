@@ -1,17 +1,28 @@
 <?php
-/**
- * Created for doku_mummy-plugin.
- * User: Jan
- * Date: 26.06.2015
- * Time: 21:04
- */
+
 
 class AdminBarDownloadOption {
 
+    /**
+     * @var
+     */
     private $pdf_link;
+    /**
+     * @var
+     */
     private $zip_link;
+    /**
+     * @var mixed
+     */
     private $doc_name;
 
+    /**
+     * Fügt der admin_bar die Downloadoptionen hinzu.
+     *
+     * @param $pdf_link string Link zum PDF-Download
+     * @param $zip_link string Link zum ZIP-Download
+     * @param $doc_name string Name des Projektes
+     */
     public function __construct($pdf_link, $zip_link,  $doc_name){
         $this->pdf_link = $pdf_link;
         $this->zip_link = $zip_link;
@@ -21,6 +32,9 @@ class AdminBarDownloadOption {
     }
 
 
+    /**
+     * @param $wp_admin_bar
+     */
     public function showDownloadOptions($wp_admin_bar){
 
         $download_parent = array(

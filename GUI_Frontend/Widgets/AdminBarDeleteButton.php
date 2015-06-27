@@ -1,22 +1,31 @@
 <?php
-/**
- * Created for doku_mummy-plugin.
- * User: Jan
- * Date: 26.06.2015
- * Time: 15:48
- */
+
 
 class AdminBarDeleteButton {
+
+    /**
+     * Id des Dokumentes, das gerade aufgerufen ist.
+     *
+     * @var
+     */
     private $document_id;
 
 
-//nur im Dokument view starten.
+    /**
+     * Fügt der admin_bar einen Löschbutton hinzu.
+     *
+     * @param $doc_id string Document Id
+     */
     public function __construct($doc_id){
         $this->document_id = $doc_id;
-        add_action('admin_bar_menu', array($this,'addDelete'),998); ///999 ist die Priorität
+        add_action('admin_bar_menu', array($this,'addDelete'),998); //998 ist die Priorität
     }
 
 
+    /**
+     * Fügt der Adminbar den Löschbutton hinzu.
+     * @param $wp_admin_bar
+     */
     public function addDelete($wp_admin_bar){
 
         $delete = array(

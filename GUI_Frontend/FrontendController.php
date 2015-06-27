@@ -1,10 +1,5 @@
 <?php
-/**
- * Created for DokuMummy_Plugin.
- * User: Jan
- * Date: 02.06.2015
- * Time: 13:33
- */
+
 
 add_action('wp_enqueue_scripts', 'add_view_stylesheet' );
 
