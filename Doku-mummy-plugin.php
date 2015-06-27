@@ -11,6 +11,7 @@ License: A "Slug" license name e.g. GPL2
 
 
 require_once( 'Administration/RoleSetup.php' );
+require_once('Administration/PageSetup.php');
 
 require_once( 'Models/Groups.php' );
 require_once( 'Models/Documents.php' );
@@ -43,6 +44,11 @@ function dokumummy_activated() {
      * Rolen registrieren
      */
     new RoleSetup();
+
+    /**
+     * Seiten erstellen
+     */
+    new PageSetup();
 
     /**
      * Datenbanken für Gruppen erstellen

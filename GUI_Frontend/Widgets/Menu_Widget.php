@@ -9,7 +9,6 @@ add_action('wp_enqueue_scripts', 'add_menu_stylesheet' );
  *
  */
 function add_menu_stylesheet() {
-    // Respects SSL, Style.css is relative to the current file
     wp_register_style( 'dm-menu-style', plugins_url('css/menu.css', __FILE__) );
     wp_enqueue_style( 'dm-menu-style' );
 }
