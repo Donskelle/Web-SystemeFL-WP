@@ -81,7 +81,7 @@ class SphinxDocument {
      * @param string $authorName
      * @param string $projectId
      */
-    public function __construct($projectName="", $authorName="", $projectId = ""){ //TODO: Change to ID.
+    public function __construct($projectName="", $authorName="", $projectId = ""){
         $this->sphinxDirPath = plugin_dir_path( __FILE__ ) . $this->sphinxDirPath ;
         $this->sphinxScriptCreateDocumentPath = plugin_dir_path( __FILE__ ) . $this->sphinxScriptCreateDocumentPath ;
         $this->sphinxScriptPermissionsPath = plugin_dir_path( __FILE__ ) . $this->sphinxScriptPermissionsPath ;
@@ -94,7 +94,7 @@ class SphinxDocument {
         if($projectName !== "" AND $authorName !== "") {
             $this->createNewDocument($projectName, $authorName);
         }else {
-            $this->sProjectPath = $this->sProjectPath."/".$this->extractProjectName($this->sProjectPath);
+            $this->sProjectPath = $this->sProjectPath."/".$this->extractProjectName();
 
             if ($this->isProjectExisting($this->sProjectPath)) {
                 $this->aAbschnitteDesDokuments = $this->extractAbschnitte($this->sProjectPath);
@@ -125,6 +125,8 @@ class SphinxDocument {
     }
 
     /**
+     * Entfernt den Abschnitt mit der übergebenen ID vom Filesystem und von der index.rst
+     *
      * @param $abschnittId
      * @throws Exception
      */
@@ -147,7 +149,12 @@ class SphinxDocument {
 
 
     /**
-     * @return mixed
+     *  Extrahiert den Projektnamen von den Projektpfad.
+     *
+     * Die Struktur des Projektes ist /var/www/wordpress..../SphinxProjects/id/projectName
+     * Der Projektpfad geht bis id. Dann wird mit scandir und Ausfiltern der Name des Projektes gefunden.
+     *
+     * @return string Name des Projektes
      */
     private function extractProjectName(){
         $scanDir = array_diff(scandir($this->sProjectPath), array(".", "..")); //scandir gibt auch die verzeichnisse "." und ".." zurück. Diese müssen entfernt werden.
@@ -156,11 +163,10 @@ class SphinxDocument {
 
 
     /**
-     * Updatet einen Abschnitt.
-     *
+     * Updatet einen Abschnitt im Filesystem.
      *
      * @param $abschnittId string Die Id des Abschnitts.
-     * @param $content
+     * @param $content string Neuer Inhalt des Abschnitts
      * @return bool Wurde ein Abschnitt gefunden und geupdated?
      * @throws Exception
      */
@@ -363,6 +369,12 @@ class SphinxDocument {
     }
 
 
+    /**
+     * Gibt den HTML-Pfad aus.
+     *
+     * @param $abschnittId string Id des Abschnitt
+     * @return string Pfad zum HTML des Abschnitts
+     */
     private function getHTMLPath($abschnittId){
         //finde den Dateinamen des Abschnitts. 
         $fileName = "";
@@ -383,6 +395,12 @@ class SphinxDocument {
         return ''.$this->sProjectPath.'/build/html/'. $fileName.'.html';
     }
 
+    /**
+     * Public Methode zur Ausgabe des HTML-Phfades
+     *
+     * @param $abschnitt_id string Abschnitt Id
+     * @return string HTML Pfad
+     */
     public function getHTML($abschnitt_id){
         return $this->getHTMLPath($abschnitt_id);
     }
@@ -420,7 +438,8 @@ class SphinxDocument {
      *
      * Wenn der übergebene Parameter nicht stimmt, wird die() ausgelöst.
      *
-     * @return array
+     * @param $project_path string Projektpfad
+     * @return array Die Abschnitte des Dokuments.
      */
     private function extractAbschnitte($project_path){
         //Abschnitte definiert in der index.rst unter Contents
@@ -463,13 +482,19 @@ class SphinxDocument {
     }
 
 
-
+    /**
+     * Löscht die rst- und HTML-Datei vom Filesystem, die zu diesem Abschnitt gehört.
+     *
+     * @param $abschnitt DocumentAbschnitt
+     */
     private function deleteAbschnittFromFS($abschnitt){
         shell_exec('sudo rm "'.$this->sProjectPath.'/source/'.$abschnitt->getFileName().'.rst"');
         shell_exec('sudo rm "'.$this->sProjectPath.'/build/html/'.$abschnitt->getFileName().'.html"'); //auch die html Datei muss entfernt werden.
     }
 
     /**
+     * Gib die Abschnitte als Array zurück.
+     *
      * @return array
      * @throws Exception
      */
@@ -497,6 +522,9 @@ class SphinxDocument {
     }
 
 
+    /**
+     * Baut die ZIP-Datei auf.
+     */
     private function buildZipFile(){
         $this->changePermissions();
         shell_exec('cd "'.$this->sProjectPath.'" && sudo make singlehtml');
@@ -516,11 +544,23 @@ class SphinxDocument {
         }
     }
 
+    /**
+     * Stellt den Link zum ZIP-Download zur Verfügung.
+     *
+     * @param $project_name
+     * @return mixed
+     */
     public function invokeZipDownload($project_name){
         $this->buildZipFile();
         return plugins_url('SphinxProjects/'.$this->sProjectId.'/'.$project_name.'/html.zip', __FILE__);
     }
 
+    /**
+     * Stellt den Link zum PDF Download zur Verfügung.
+     *
+     * @param $project_name
+     * @return mixed
+     */
     public function invokePDFDownload($project_name){
         $this->makePDF();
         $pdf_name = str_replace(' ', '', $project_name);
@@ -528,6 +568,15 @@ class SphinxDocument {
     }
 
 
+    /**
+     * Wechselt das Layout.
+     *
+     * Zum Wechsel des Layouts muss ein bestimmter Teil der conf.py geändert werden. Dazu wird dieser mit preg_replace
+     * ausgetauscht.
+     *
+     * @param $oldLayout string Name des alten Layouts
+     * @param $newLayout string Name des neuen Layouts
+     */
     public function changeConfig($oldLayout, $newLayout){
         $content = file_get_contents(''.$this->sProjectPath.'/source/conf.py');
         $match_str = "/^html_theme = '$oldLayout'/m";
