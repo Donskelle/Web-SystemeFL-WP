@@ -47,3 +47,22 @@ Man darf dem Repo nur joinen, wenn man ein cooles Profilbild hat!!
  * Kommentare schreiben
  * Idee: Bei dem Löschbutton mit css eine Wartezeit einbauen: onhover->3 sekunden rot -> div verschwindet und man kann
    link darunter clicken.
+
+
+
+##Testroutine:
+
+  1. Einloggen als DokuUser
+  2. Dokument mit einem "multi part"-Namen erstellen (z.B.: test 123 test)
+  3. Abschnitte zu dem Dokument hinzufügen
+  4. Abschnitt aus der Mitte löschen
+  5. Abschnitt aus der Mitte anschauen und überprüfen, ob der richtige Abschnitt dargestellt ist
+  6. PDf und Zip Download testen
+  7. Dokument in Gruppe bearbeiten und testen
+
+  8. Wiederhole als DokuMod.
+  9. Entfernen einen Benutzer als DokuMod und füge einen hinzu.
+  10. Wiederhole als DokuAdmin.
+  11. Erstelle eine neue Gruppe.
+  12. Lösche eine Gruppe.
+

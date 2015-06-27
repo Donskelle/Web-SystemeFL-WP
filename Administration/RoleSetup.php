@@ -60,7 +60,7 @@ class RoleSetup {
 
 		//Zusammenführen der Rechte
 		$this->dokuModeratorCapabilites = array_merge($this->dokuModeratorCapabilites, $this->dokuUserCapabilites);
-		$this->dokuAdminCapabilites = array_merge($this->dokuAdminCapabilites, $this->dokuUserCapabilites);
+		$this->dokuAdminCapabilites = array_merge($this->dokuAdminCapabilites, $this->dokuModeratorCapabilites);
 
 		$this->register_custom_roles();
 		$this->remove_wp_roles();

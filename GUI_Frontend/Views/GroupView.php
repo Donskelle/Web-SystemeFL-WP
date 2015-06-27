@@ -154,7 +154,7 @@ class GroupView {
 //                if($currentUser->roles[0] == "dokuAdmin" || $currentUser->roles[0] == "administrator" ) {
 //                    $output[] = $this->viewFormDeleteUser($_GET["id"], $user->user_id, $user->user_nicename);
 //                }
-                if(current_user_can('manage_user')){
+                if(current_user_can('manage_user') || $currentUser->roles[0] == "administrator"){
                     $output[] = $this->viewFormDeleteUser($_GET["id"], $user->user_id, $user->user_nicename);
                 }
                 // Wenn kein Admin nur Namen
